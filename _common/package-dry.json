@@ -16,5 +16,9 @@
         "rollup-plugin-polyfill-node": "^0.6.2",
         "tslib": "^2.1.0",
         "typescript": "^4.2.3"
+    },
+    "scripts": {
+        "build": "eslint . --ext .ts && rollup -c",
+        "push": "eslint . --ext .ts && rollup -c && clasp push"
     }
 }
