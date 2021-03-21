@@ -1,5 +1,9 @@
 {
+    "dependencies": {
+        "@types/google-apps-script": "^1.0.28"
+    },
     "devDependencies": {
+        "@google/clasp": "^2.3.0",
         "@rollup/plugin-commonjs": "^17.1.0",
         "@rollup/plugin-node-resolve": "^11.2.0",
         "@rollup/plugin-typescript": "^8.2.0",

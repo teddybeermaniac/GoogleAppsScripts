@@ -3,6 +3,17 @@ import nodePolyfills from 'rollup-plugin-polyfill-node';
 import nodeResolver from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 
+function googleAppsScript() {
+    return {
+        name: 'google-apps-script',
+        renderChunk: (code, chunk, options) => {
+            return `${code}\n${chunk.exports.map(name => {
+                return `function ${name}() {\n    ${options.name}.${name}();\n}`
+            }).join('\n')}`;
+        }
+    }
+}
+
 export default {
     input: './src/index.ts',
     output: {
@@ -29,7 +40,8 @@ export default {
             ],
             sourceMap: false,
             transformMixedEsModules: true
-        })
+        }),
+        googleAppsScript()
     ],
     strictDeprecations: true
 };
