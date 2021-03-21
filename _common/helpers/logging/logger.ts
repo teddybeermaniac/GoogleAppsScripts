@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 import LogLevel from './log-level';
+import type { ILoggerFactory } from './logger-factory';
 
-export interface ILogger {
+export interface ILogger extends ILoggerFactory {
   debug(message: string): void;
   information(message: string): void;
   warning(message: string): void;
@@ -58,5 +59,9 @@ export class Logger implements ILogger {
   public error(message: string): void {
     // eslint-disable-next-line no-console
     this.log(LogLevel.Error, message, console.error);
+  }
+
+  public getLogger(name: string): ILogger {
+    return new Logger(`${this.name}.${name}`, this.level);
   }
 }

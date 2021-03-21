@@ -24,11 +24,16 @@ import type { ILogger } from './logging/logger';
 import type { ILoggerFactory } from './logging/logger-factory';
 
 export interface IInterruptableIterator {
+  isFinished(): boolean;
   start(): void;
   restart(): void;
 }
 
 export abstract class InterruptableIterator<T> implements IInterruptableIterator {
+  private readonly MAXIMUM_RUNTIME = 6 * 60 * 1000;
+
+  private readonly ITERATION_TIME_BUFFER = 1.5;
+
   private readonly ITERATION_FINISHED_KEY = 'iterationFinished';
 
   private readonly ITERATION_TOKEN_KEY = 'iterationToken';
@@ -41,17 +46,38 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   private readonly initialized: number;
 
+  private readonly iterationTimes: number[];
+
   public constructor(loggerFactory: ILoggerFactory, name: string) {
-    this.cache = new Cache(loggerFactory, name);
     this.logger = loggerFactory.getLogger(name);
-    this.initialized = Date.now();
+    this.cache = new Cache(this.logger, name);
+    this.initialized = Date.now() + 5 * 1000;
+    this.iterationTimes = [];
 
     this.logger.debug(`Initialized at ${this.initialized}`);
   }
 
+  private shouldContinue(): boolean {
+    if (this.iterationTimes.length > 0) {
+      const averageTime = this.iterationTimes.reduce((total, current) => total + current)
+          / this.iterationTimes.length;
+      const leftTime = this.MAXIMUM_RUNTIME - (Date.now() - this.initialized);
+      this.logger.debug(`Average iteration time ${averageTime}ms; time left ${leftTime}ms`);
+
+      if (averageTime * this.ITERATION_TIME_BUFFER > leftTime) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  public isFinished(): boolean {
+    return this.cache.get<boolean>(this.ITERATION_FINISHED_KEY, false);
+  }
+
   public start(): void {
-    const iterationFinished = this.cache.get<boolean>(this.ITERATION_FINISHED_KEY, false);
-    if (iterationFinished) {
+    if (this.isFinished()) {
       this.logger.information('Iteration already finished; use restart() to start over');
 
       return;
@@ -59,20 +85,31 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
     let iterationToken = this.cache.get<T | null>(this.ITERATION_TOKEN_KEY, null);
     do {
+      const started = Date.now();
+      if (!this.shouldContinue()) {
+        this.logger.information('Not enough time left; exiting');
+
+        break;
+      }
+
+      this.logger.debug('Doing next iteration');
       iterationToken = this.doWork(iterationToken);
-      // ! Implement timeout support.
 
       if (iterationToken === null) {
         this.cache.set(this.ITERATION_FINISHED_KEY, true);
         this.cache.del(this.ITERATION_TOKEN_KEY);
       } else {
         this.cache.set(this.ITERATION_TOKEN_KEY, iterationToken);
+
+        const iterationTime = Date.now() - started;
+        this.iterationTimes.push(iterationTime);
+        this.logger.debug(`Iteration took ${iterationTime}ms`);
       }
     } while (iterationToken !== null);
   }
 
   public restart(): void {
-    // ! Implement.
+    // ! Implement triggers.
     this.cache.delAll();
   }
 }
