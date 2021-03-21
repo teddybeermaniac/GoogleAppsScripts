@@ -48,6 +48,8 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   private readonly iterationTimes: number[];
 
+  private iterationStarted?: number;
+
   public constructor(loggerFactory: ILoggerFactory, name: string) {
     this.logger = loggerFactory.getLogger(name);
     this.cache = new Cache(this.logger, name);
@@ -58,6 +60,13 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
   }
 
   private shouldContinue(): boolean {
+    if (this.iterationStarted) {
+      const iterationTime = Date.now() - this.iterationStarted;
+      this.iterationTimes.push(iterationTime);
+      this.logger.debug(`Iteration took ${iterationTime}ms`);
+    }
+    this.iterationStarted = Date.now();
+
     if (this.iterationTimes.length > 0) {
       const averageTime = this.iterationTimes.reduce((total, current) => total + current)
           / this.iterationTimes.length;
@@ -77,6 +86,8 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
   }
 
   public start(): void {
+    this.logger.information('Starting iteration');
+
     if (this.isFinished()) {
       this.logger.information('Iteration already finished; use restart() to start over');
 
@@ -85,7 +96,6 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
     let iterationToken = this.cache.get<T | null>(this.ITERATION_TOKEN_KEY, null);
     do {
-      const started = Date.now();
       if (!this.shouldContinue()) {
         this.logger.information('Not enough time left; exiting');
 
@@ -100,15 +110,13 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
         this.cache.del(this.ITERATION_TOKEN_KEY);
       } else {
         this.cache.set(this.ITERATION_TOKEN_KEY, iterationToken);
-
-        const iterationTime = Date.now() - started;
-        this.iterationTimes.push(iterationTime);
-        this.logger.debug(`Iteration took ${iterationTime}ms`);
       }
     } while (iterationToken !== null);
   }
 
   public restart(): void {
+    this.logger.information('Restarting iteration');
+
     // ! Implement triggers.
     this.cache.delAll();
   }
