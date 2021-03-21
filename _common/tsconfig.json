@@ -24,11 +24,6 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "outDir": "./build",
-        "paths": {
-            "@helpers": [
-                "../helpers/src"
-            ]
-        },
         "removeComments": true,
         "resolveJsonModule": true,
         "strict": true,

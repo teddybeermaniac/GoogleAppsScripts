@@ -1,5 +1,0 @@
-{
-    "dry": {
-        "extends": "../_common/package-dry.json"
-    }
-}
