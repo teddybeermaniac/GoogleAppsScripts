@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "allowUnreachableCode": false,
+        "composite": true,
+        "declaration": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "forceConsistentCasingInFileNames": true,
+        "importsNotUsedAsValues": "error",
+        "isolatedModules": true,
+        "lib": [
+            "ES2015",
+            "ES2016",
+            "ES2017",
+            "ES2018",
+            "ES2019",
+        ],
+        "moduleResolution": "node",
+        "newLine": "LF",
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noPropertyAccessFromIndexSignature": true,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "outDir": "./build",
+        "removeComments": true,
+        "resolveJsonModule": true,
+        "strict": true,
+        "target": "ES2019"
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}
