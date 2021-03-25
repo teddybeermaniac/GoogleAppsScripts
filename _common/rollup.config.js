@@ -30,7 +30,12 @@ export default {
     babel({
       babelrc: false,
       babelHelpers: 'bundled',
-      exclude: '**/node_modules/**',
+      generatorOpts: {
+        comments: false
+      },
+      only: [
+        './src'
+      ],
       presets: [
         [
           '@babel/preset-env',
@@ -59,6 +64,5 @@ export default {
     }),
     googleAppsScript()
   ],
-  strictDeprecations: true,
-  treeshake: false
+  strictDeprecations: true
 };
