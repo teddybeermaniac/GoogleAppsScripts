@@ -19,9 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { Cache, ICache } from './cache';
-import type { ILogger } from './logging/logger';
-import type { ILoggerFactory } from './logging/logger-factory';
+import { Cache, ICache } from './caching';
+import type { ILogger } from './logging';
 
 export interface IInterruptableIterator {
   isFinished(): boolean;
@@ -50,8 +49,8 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   private iterationStarted?: number;
 
-  public constructor(loggerFactory: ILoggerFactory, name: string) {
-    this.logger = loggerFactory.getLogger(name);
+  public constructor(parentLogger: ILogger, name: string) {
+    this.logger = parentLogger.getSubLogger(name);
     this.cache = new Cache(this.logger, name);
     this.initialized = Date.now() + 5 * 1000;
     this.iterationTimes = [];

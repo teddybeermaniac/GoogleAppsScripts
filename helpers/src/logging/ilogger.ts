@@ -19,49 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import LogLevel from './log-level';
-import type { ILoggerFactory } from './logger-factory';
-
-export interface ILogger extends ILoggerFactory {
+export interface ILogger {
   debug(message: string): void;
   information(message: string): void;
   warning(message: string): void;
   error(message: string): void;
-}
-
-export class Logger implements ILogger {
-  public constructor(private readonly name: string, private readonly level: LogLevel) {
-  }
-
-  private log(level: LogLevel, message: string, method: (message: string) => void) {
-    if (level < this.level) {
-      return;
-    }
-
-    method(`[${this.name}] ${message}`);
-  }
-
-  public debug(message: string): void {
-    // eslint-disable-next-line no-console
-    this.log(LogLevel.Debug, message, console.log);
-  }
-
-  public information(message: string): void {
-    // eslint-disable-next-line no-console
-    this.log(LogLevel.Info, message, console.info);
-  }
-
-  public warning(message: string): void {
-    // eslint-disable-next-line no-console
-    this.log(LogLevel.Warning, message, console.warn);
-  }
-
-  public error(message: string): void {
-    // eslint-disable-next-line no-console
-    this.log(LogLevel.Error, message, console.error);
-  }
-
-  public getLogger(name: string): ILogger {
-    return new Logger(`${this.name}.${name}`, this.level);
-  }
+  getSubLogger(name: string): ILogger;
 }

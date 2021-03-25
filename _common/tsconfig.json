@@ -24,12 +24,18 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "outDir": "./build",
+        "paths": {
+            "helpers": [
+                "./node_modules/helpers/src"
+            ]
+        },
         "removeComments": true,
         "resolveJsonModule": true,
         "strict": true,
         "target": "ES2019"
     },
     "include": [
-        "./src/**/*"
+        "./src/**/*",
+        "./node_modules/helpers/src/**/*"
     ]
 }

@@ -19,11 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-enum LogLevel {
-  Debug,
-  Info,
-  Warning,
-  Error,
+export interface ICache {
+  get<T>(key: string, value: T): T;
+  set<T>(key: string, value: T): void;
+  del(key: string): void;
+  delAll(): void;
 }
-
-export default LogLevel;

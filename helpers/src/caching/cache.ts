@@ -19,15 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ILogger } from './logging/logger';
-import type { ILoggerFactory } from './logging/logger-factory';
-
-export interface ICache {
-  get<T>(key: string, value: T): T;
-  set<T>(key: string, value: T): void;
-  del(key: string): void;
-  delAll(): void;
-}
+import type { ICache } from './icache';
+import type { ILogger } from '../logging';
 
 export class Cache implements ICache {
   private readonly ALL_KEYS_KEY = '__ALL_KEYS__';
@@ -36,9 +29,9 @@ export class Cache implements ICache {
 
   private readonly logger: ILogger;
 
-  public constructor(loggerFactory: ILoggerFactory, private prefix?: string) {
+  public constructor(parentLogger: ILogger, private prefix?: string) {
     this.cache = CacheService.getUserCache();
-    this.logger = loggerFactory.getLogger('Cache');
+    this.logger = parentLogger.getSubLogger('Cache');
 
     if (prefix) {
       this.logger.debug(`Creating a cache with prefix '${prefix}'`);
