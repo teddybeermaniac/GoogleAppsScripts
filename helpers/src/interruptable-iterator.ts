@@ -19,7 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { Cache, ICache } from './caching';
+import { injectable } from 'inversify';
+import type { ICache } from './caching';
 import type { ILogger } from './logging';
 
 export interface IInterruptableIterator {
@@ -28,6 +29,7 @@ export interface IInterruptableIterator {
   restart(): void;
 }
 
+@injectable()
 export abstract class InterruptableIterator<T> implements IInterruptableIterator {
   private readonly MAXIMUM_RUNTIME = 6 * 60 * 1000;
 
@@ -39,19 +41,13 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   protected abstract doWork(iterationToken: T | null): T | null;
 
-  protected readonly cache: ICache;
-
-  protected readonly logger: ILogger;
-
   private readonly initialized: number;
 
   private readonly iterationTimes: number[];
 
   private iterationStarted?: number;
 
-  public constructor(parentLogger: ILogger, name: string) {
-    this.logger = parentLogger.getSubLogger(name);
-    this.cache = new Cache(this.logger, name);
+  public constructor(private readonly logger: ILogger, protected readonly cache: ICache) {
     this.initialized = Date.now() + 5 * 1000;
     this.iterationTimes = [];
 

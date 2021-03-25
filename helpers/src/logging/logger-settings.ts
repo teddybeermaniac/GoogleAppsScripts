@@ -19,8 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
+import { injectable } from 'inversify';
+import type { ILoggerSettings } from './ilogger-settings';
+import type { LogLevel } from './log-level';
 
-export * from './caching';
-export * from './interruptable-iterator';
-export * from './logging';
+@injectable()
+export class LoggerSettings implements ILoggerSettings {
+  public constructor(public readonly logLevel: LogLevel) {}
+}

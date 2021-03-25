@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 export interface ILogger {
+  initialize(name: string): void;
   debug(message: string): void;
   information(message: string): void;
   warning(message: string): void;
   error(message: string): void;
-  getSubLogger(name: string): ILogger;
 }

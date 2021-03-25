@@ -19,19 +19,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { inject, injectable } from 'inversify';
+import { LOGGING_TYPES } from './types';
 import type { ILogger } from './ilogger';
 import { LogLevel } from './log-level';
+import type { ILoggerSettings } from './ilogger-settings';
 
+@injectable()
 export class Logger implements ILogger {
-  public constructor(private readonly name: string, private readonly level: LogLevel) {
+  private initialized: boolean;
+
+  private name?: string;
+
+  public constructor(@inject(LOGGING_TYPES.ILoggerSettings)
+  private readonly settings: ILoggerSettings) {
+    this.initialized = false;
+    this.name = undefined;
   }
 
   private log(level: LogLevel, message: string, method: (message: string) => void) {
-    if (level < this.level) {
+    if (level < this.settings.logLevel) {
       return;
     }
 
-    method(`[${this.name}] ${message}`);
+    method(this.name ? `[${this.name}] ${message}` : message);
+  }
+
+  initialize(name: string): void {
+    if (this.initialized) {
+      throw new Error('Already initialized');
+    }
+
+    this.name = name;
+    this.initialized = true;
   }
 
   public debug(message: string): void {
@@ -52,9 +72,5 @@ export class Logger implements ILogger {
   public error(message: string): void {
     // eslint-disable-next-line no-console
     this.log(LogLevel.Error, message, console.error);
-  }
-
-  public getSubLogger(name: string): ILogger {
-    return new Logger(`${this.name}.${name}`, this.level);
   }
 }

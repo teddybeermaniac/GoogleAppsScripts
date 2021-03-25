@@ -19,8 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
+const LOGGING_TYPES = {
+  ILogger: Symbol('ILogger'),
+  ILoggerSettings: Symbol('ILoggerSettings'),
+};
 
-export * from './caching';
-export * from './interruptable-iterator';
-export * from './logging';
+export { LOGGING_TYPES };

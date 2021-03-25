@@ -19,8 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
+import type { LogLevel } from './log-level';
 
-export * from './caching';
-export * from './interruptable-iterator';
-export * from './logging';
+export interface ILoggerSettings {
+  logLevel: LogLevel;
+}

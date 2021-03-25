@@ -19,23 +19,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { inject, injectable } from 'inversify';
 import type { ICache } from './icache';
-import type { ILogger } from '../logging';
+import { ILogger, LOGGING_TYPES } from '../logging';
 
+@injectable()
 export class Cache implements ICache {
   private readonly ALL_KEYS_KEY = '__ALL_KEYS__';
 
   private readonly cache: GoogleAppsScript.Cache.Cache;
 
-  private readonly logger: ILogger;
+  private initialized: boolean;
 
-  public constructor(parentLogger: ILogger, private prefix?: string) {
+  private prefix?: string;
+
+  public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {
     this.cache = CacheService.getUserCache();
-    this.logger = parentLogger.getSubLogger('Cache');
 
-    if (prefix) {
-      this.logger.debug(`Creating a cache with prefix '${prefix}'`);
+    this.initialized = false;
+    this.prefix = undefined;
+  }
+
+  initialize(prefix?: string): void {
+    if (this.initialized) {
+      throw new Error('Already initialized');
     }
+    this.logger.initialize('Cache');
+    this.prefix = prefix;
+    this.initialized = true;
   }
 
   private getKey(key: string): string {

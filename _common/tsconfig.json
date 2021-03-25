@@ -5,6 +5,7 @@
         "declaration": true,
         "esModuleInterop": true,
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "forceConsistentCasingInFileNames": true,
         "importsNotUsedAsValues": "error",
         "isolatedModules": true,
@@ -32,7 +33,11 @@
         "removeComments": true,
         "resolveJsonModule": true,
         "strict": true,
-        "target": "ES2019"
+        "target": "ES2019",
+        "types": [
+            "google-apps-script",
+            "reflect-metadata"
+        ]
     },
     "include": [
         "./src/**/*",

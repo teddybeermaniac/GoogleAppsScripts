@@ -19,8 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
+const CACHING_TYPES = {
+  ICache: Symbol('ICache'),
+};
 
-export * from './caching';
-export * from './interruptable-iterator';
-export * from './logging';
+export { CACHING_TYPES };

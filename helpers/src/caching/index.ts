@@ -19,5 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export * from './cache';
-export * from './icache';
+import { ContainerModule } from 'inversify';
+import { Cache } from './cache';
+import type { ICache } from './icache';
+import { CACHING_TYPES } from './types';
+
+const cachingModule = new ContainerModule((bind) => {
+  bind<ICache>(CACHING_TYPES.ICache).to(Cache);
+});
+
+export { CACHING_TYPES, cachingModule };
+export type { ICache };

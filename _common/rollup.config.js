@@ -1,6 +1,6 @@
+import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
-import nodePolyfills from 'rollup-plugin-polyfill-node';
-import nodeResolver from '@rollup/plugin-node-resolve';
+import nodeResolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 
 function googleAppsScript() {
@@ -17,19 +17,35 @@ function googleAppsScript() {
 export default {
   input: './src/index.ts',
   output: {
-    banner: 'var global = this;',
     dir: '.',
     format: 'iife',
     interop: 'auto',
-    name: 'module',
+    name: 'gas',
     validate: true
   },
   plugins: [
     typescript({
       tsconfig: './tsconfig.json'
     }),
-    nodePolyfills(),
-    nodeResolver({
+    babel({
+      babelrc: false,
+      babelHelpers: 'bundled',
+      exclude: '**/node_modules/**',
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            corejs: 3,
+            modules: false,
+            useBuiltIns: "entry",
+            targets: {
+              chrome: '55',
+            },
+          },
+        ],
+      ],
+    }),
+    nodeResolve({
       browser: true,
       preferBuiltins: false
     }),
@@ -43,5 +59,6 @@ export default {
     }),
     googleAppsScript()
   ],
-  strictDeprecations: true
+  strictDeprecations: true,
+  treeshake: false
 };

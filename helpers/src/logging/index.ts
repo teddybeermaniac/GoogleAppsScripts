@@ -19,6 +19,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export * from './ilogger';
-export * from './logger';
-export * from './log-level';
+import { ContainerModule } from 'inversify';
+import { Logger } from './logger';
+import type { ILogger } from './ilogger';
+import { LogLevel } from './log-level';
+import { LOGGING_TYPES } from './types';
+import type { ILoggerSettings } from './ilogger-settings';
+import { LoggerSettings } from './logger-settings';
+
+const loggingModule = new ContainerModule((bind) => {
+  bind<ILogger>(LOGGING_TYPES.ILogger).to(Logger);
+});
+
+export {
+  LOGGING_TYPES, LoggerSettings, LogLevel, loggingModule,
+};
+export type { ILogger, ILoggerSettings };
