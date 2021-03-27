@@ -19,8 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-const CACHING_TYPES = {
-  ICache: Symbol('ICache'),
-};
+import { injectable } from 'inversify';
+import { LoggerSettings } from './logger-settings';
 
-export { CACHING_TYPES };
+@injectable()
+export class ConsoleLoggerSettings extends LoggerSettings {
+}

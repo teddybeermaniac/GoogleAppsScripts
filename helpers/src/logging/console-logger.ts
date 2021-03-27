@@ -20,25 +20,23 @@
  * SOFTWARE.
  */
 import { inject, injectable } from 'inversify';
-import { LOGGING_TYPES } from './types';
+import { ConsoleLoggerSettingsSymbol } from './symbols';
 import type { ILogger } from './ilogger';
 import { LogLevel } from './log-level';
-import type { ILoggerSettings } from './ilogger-settings';
+import type { ConsoleLoggerSettings } from './console-logger-settings';
 
 @injectable()
-export class Logger implements ILogger {
-  private initialized: boolean;
-
+export class ConsoleLogger implements ILogger {
   private name?: string;
 
-  public constructor(@inject(LOGGING_TYPES.ILoggerSettings)
-  private readonly settings: ILoggerSettings) {
-    this.initialized = false;
-    this.name = undefined;
+  private initialized = false;
+
+  public constructor(@inject(ConsoleLoggerSettingsSymbol)
+  private readonly settings: ConsoleLoggerSettings) {
   }
 
   private log(level: LogLevel, message: string, method: (message: string) => void) {
-    if (level < this.settings.logLevel) {
+    if (level < this.settings.level) {
       return;
     }
 

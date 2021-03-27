@@ -19,14 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { ContainerModule } from 'inversify';
+import type { interfaces } from 'inversify';
 import { Cache } from './cache';
 import type { ICache } from './icache';
-import { CACHING_TYPES } from './types';
+import { ICacheSymbol } from './symbols';
 
-const cachingModule = new ContainerModule((bind) => {
-  bind<ICache>(CACHING_TYPES.ICache).to(Cache);
-});
+function addCache(container: interfaces.Container): void {
+  container.bind<ICache>(ICacheSymbol).to(Cache);
+}
 
-export { CACHING_TYPES, cachingModule };
+export { ICacheSymbol, addCache };
 export type { ICache };

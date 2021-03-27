@@ -20,10 +20,9 @@
  * SOFTWARE.
  */
 import { injectable } from 'inversify';
-import type { ILoggerSettings } from './ilogger-settings';
-import type { LogLevel } from './log-level';
+import { LogLevel } from './log-level';
 
 @injectable()
-export class LoggerSettings implements ILoggerSettings {
-  public constructor(public readonly logLevel: LogLevel) {}
+export abstract class LoggerSettings {
+  constructor(public readonly level: LogLevel) { }
 }

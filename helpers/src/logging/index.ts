@@ -19,19 +19,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { ContainerModule } from 'inversify';
-import { Logger } from './logger';
+import type { interfaces } from 'inversify';
+import { ConsoleLogger } from './console-logger';
+import { ConsoleLoggerSettings } from './console-logger-settings';
 import type { ILogger } from './ilogger';
 import { LogLevel } from './log-level';
-import { LOGGING_TYPES } from './types';
-import type { ILoggerSettings } from './ilogger-settings';
-import { LoggerSettings } from './logger-settings';
+import { ConsoleLoggerSettingsSymbol, ILoggerSymbol } from './symbols';
 
-const loggingModule = new ContainerModule((bind) => {
-  bind<ILogger>(LOGGING_TYPES.ILogger).to(Logger);
-});
-
+function addConsoleLogger(container: interfaces.Container, settings: ConsoleLoggerSettings): void {
+  container.bind<ILogger>(ILoggerSymbol).to(ConsoleLogger);
+  container.bind<ConsoleLoggerSettings>(ConsoleLoggerSettingsSymbol).toConstantValue(settings);
+}
 export {
-  LOGGING_TYPES, LoggerSettings, LogLevel, loggingModule,
+  ILoggerSymbol, ConsoleLoggerSettings, LogLevel, addConsoleLogger,
 };
-export type { ILogger, ILoggerSettings };
+export type { ILogger };

@@ -19,9 +19,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-const LOGGING_TYPES = {
-  ILogger: Symbol('ILogger'),
-  ILoggerSettings: Symbol('ILoggerSettings'),
-};
-
-export { LOGGING_TYPES };
+export const ICacheSymbol = Symbol('ICache');
