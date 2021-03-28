@@ -21,16 +21,19 @@
  */
 import type { interfaces } from 'inversify';
 import { ConsoleLogger } from './console-logger';
-import { ConsoleLoggerSettings } from './console-logger-settings';
+import type { IConsoleLoggerSettings } from './iconsole-logger-settings';
 import type { ILogger } from './ilogger';
 import { LogLevel } from './log-level';
-import { ConsoleLoggerSettingsSymbol, ILoggerSymbol } from './symbols';
+import { IConsoleLoggerSettingsSymbol, ILoggerSymbol } from './symbols';
 
-function addConsoleLogger(container: interfaces.Container, settings: ConsoleLoggerSettings): void {
+export function addConsoleLogger(container: interfaces.Container,
+  settings: IConsoleLoggerSettings): void {
   container.bind<ILogger>(ILoggerSymbol).to(ConsoleLogger);
-  container.bind<ConsoleLoggerSettings>(ConsoleLoggerSettingsSymbol).toConstantValue(settings);
+  container.bind<IConsoleLoggerSettings>(IConsoleLoggerSettingsSymbol).toConstantValue(settings);
 }
-export {
-  ILoggerSymbol, ConsoleLoggerSettings, LogLevel, addConsoleLogger,
+
+export const TYPES = {
+  ILogger: ILoggerSymbol,
 };
-export type { ILogger };
+
+export type { IConsoleLoggerSettings, ILogger, LogLevel };

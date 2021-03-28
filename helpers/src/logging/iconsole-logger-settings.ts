@@ -19,10 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { injectable } from 'inversify';
-import { LogLevel } from './log-level';
+import type { ILoggerSettings } from './ilogger-settings';
 
-@injectable()
-export abstract class LoggerSettings {
-  constructor(public readonly level: LogLevel) { }
-}
+export type IConsoleLoggerSettings = ILoggerSettings;

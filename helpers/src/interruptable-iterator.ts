@@ -47,7 +47,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   private iterationStarted?: number;
 
-  public constructor(private readonly logger: ILogger, protected readonly cache: ICache) {
+  public constructor(protected readonly logger: ILogger, protected readonly cache: ICache) {
     this.initialized = Date.now() + 5 * 1000;
     this.iterationTimes = [];
 
@@ -113,6 +113,6 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
     this.logger.information('Restarting iteration');
 
     // ! Implement triggers.
-    this.cache.delAll();
+    this.cache.clear();
   }
 }

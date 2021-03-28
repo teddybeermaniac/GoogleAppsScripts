@@ -19,5 +19,5 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const ConsoleLoggerSettingsSymbol = Symbol('ConsoleLoggerSettings');
+export const IConsoleLoggerSettingsSymbol = Symbol('IConsoleLoggerSettings');
 export const ILoggerSymbol = Symbol('ILogger');

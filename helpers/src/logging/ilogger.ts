@@ -24,5 +24,5 @@ export interface ILogger {
   debug(message: string): void;
   information(message: string): void;
   warning(message: string): void;
-  error(message: string): void;
+  error(message: string, error?: Error): void;
 }

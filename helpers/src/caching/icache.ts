@@ -24,5 +24,5 @@ export interface ICache {
   get<T>(key: string, value: T): T;
   set<T>(key: string, value: T): void;
   del(key: string): void;
-  delAll(): void;
+  clear(): void;
 }

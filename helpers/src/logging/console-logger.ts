@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 import { inject, injectable } from 'inversify';
-import { ConsoleLoggerSettingsSymbol } from './symbols';
+import { IConsoleLoggerSettingsSymbol } from './symbols';
 import type { ILogger } from './ilogger';
 import { LogLevel } from './log-level';
-import type { ConsoleLoggerSettings } from './console-logger-settings';
+import type { IConsoleLoggerSettings } from './iconsole-logger-settings';
 
 @injectable()
 export class ConsoleLogger implements ILogger {
@@ -31,8 +31,8 @@ export class ConsoleLogger implements ILogger {
 
   private initialized = false;
 
-  public constructor(@inject(ConsoleLoggerSettingsSymbol)
-  private readonly settings: ConsoleLoggerSettings) {
+  public constructor(@inject(IConsoleLoggerSettingsSymbol)
+  private readonly settings: IConsoleLoggerSettings) {
   }
 
   private log(level: LogLevel, message: string, method: (message: string) => void) {
@@ -59,7 +59,7 @@ export class ConsoleLogger implements ILogger {
 
   public information(message: string): void {
     // eslint-disable-next-line no-console
-    this.log(LogLevel.Info, message, console.info);
+    this.log(LogLevel.Information, message, console.info);
   }
 
   public warning(message: string): void {
@@ -67,8 +67,10 @@ export class ConsoleLogger implements ILogger {
     this.log(LogLevel.Warning, message, console.warn);
   }
 
-  public error(message: string): void {
-    // eslint-disable-next-line no-console
-    this.log(LogLevel.Error, message, console.error);
+  public error(message: string, error?: Error): void {
+    this.log(LogLevel.Error, error
+      ? `${message}; ${error.name}: ${error.message}\n${error.stack ?? ''}`
+      // eslint-disable-next-line no-console
+      : message, console.error);
   }
 }
