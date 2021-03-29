@@ -19,9 +19,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
+import type { IExportedMethod } from './iexported-method';
+import { exportedMethodsSymbol } from './symbols';
 
-export * from './caching';
-export * from './exporting';
-export * from './interruptable-iterator';
-export * from './logging';
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function exportMethod<T extends Object>(asIs?: boolean):
+(target: T, propertyKey: string) => void {
+  return (target: T, propertyKey: string): void => {
+    const exportedMethod = {
+      name: propertyKey,
+      asIs: asIs ?? false,
+    };
+
+    const exportedMethods = <IExportedMethod[]>Reflect
+      .getMetadata(exportedMethodsSymbol, target.constructor);
+    if (exportedMethods) {
+      exportedMethods.push(exportedMethod);
+    } else {
+      Reflect.defineMetadata(exportedMethodsSymbol, [exportedMethod], target.constructor);
+    }
+  };
+}

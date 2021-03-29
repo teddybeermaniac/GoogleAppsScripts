@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 import { inject, injectable } from 'inversify';
-import { ILogger, ILoggerSymbol } from '../logging';
+import { ILogger, LOGGING_TYPES } from '../logging';
 import type { ICache } from './icache';
 
 @injectable()
@@ -33,7 +33,7 @@ export class Cache implements ICache {
 
   private initialized = false;
 
-  public constructor(@inject(ILoggerSymbol) private readonly logger: ILogger) {
+  public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {
   }
 
   private get cache(): GoogleAppsScript.Cache.Cache {

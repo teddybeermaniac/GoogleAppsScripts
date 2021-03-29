@@ -28,7 +28,7 @@ export function addCache(container: interfaces.Container): void {
   container.bind<ICache>(ICacheSymbol).to(Cache);
 }
 
-export const TYPES = {
+export const CACHING_TYPES = {
   ICache: ICacheSymbol,
 };
 

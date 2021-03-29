@@ -1,0 +1,51 @@
+/*
+ * Copyright © 2021 Michał Przybyś <michal@przybys.eu>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+import type { interfaces } from 'inversify';
+import { exportMethod } from './export-method';
+import { ExportedMethodProvider } from './exported-method-provider';
+import type { IExportedMethodProvider } from './iexported-method-provider';
+import { exportedMethodContainerSymbol, exportedMethodContainerSymbolSymbol, IExportedMethodProviderSymbol } from './symbols';
+
+export function addMethodContainer<T>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  container: interfaces.Container, constructor: new (...args: any[]) => T, symbol: symbol,
+): void {
+  Reflect.defineMetadata(exportedMethodContainerSymbolSymbol, symbol, constructor);
+  container.bind<interfaces.Newable<T>>(exportedMethodContainerSymbol).toConstructor(constructor);
+  container.bind<T>(symbol).to(constructor);
+}
+
+export function addMethodProvider(container: interfaces.Container): void {
+  container.bind(ExportedMethodProvider).toSelf();
+  container.bind<IExportedMethodProvider>(IExportedMethodProviderSymbol)
+    .toService(ExportedMethodProvider);
+  container.bind<IExportedMethodProvider>('__ROLLUP_EXPORTED_METHOD_PROVIDER__')
+    .toService(ExportedMethodProvider);
+}
+
+export const EXPORTING_TYPES = {
+  IExportedMethodProvider: IExportedMethodProviderSymbol,
+};
+
+export type { IExportedMethodProvider };
+
+export { exportMethod };

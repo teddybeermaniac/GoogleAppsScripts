@@ -32,8 +32,10 @@ export function addConsoleLogger(container: interfaces.Container,
   container.bind<IConsoleLoggerSettings>(IConsoleLoggerSettingsSymbol).toConstantValue(settings);
 }
 
-export const TYPES = {
+export const LOGGING_TYPES = {
   ILogger: ILoggerSymbol,
 };
 
-export type { IConsoleLoggerSettings, ILogger, LogLevel };
+export type { IConsoleLoggerSettings, ILogger };
+
+export { LogLevel };

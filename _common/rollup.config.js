@@ -7,9 +7,18 @@ function googleAppsScript() {
   return {
     name: 'google-apps-script',
     renderChunk: (code, chunk, options) => {
-      return `${code}\n${chunk.exports.map(name => {
-        return `function ${name}() {\n    ${options.name}.${name}();\n}`
-      }).join('\n')}`;
+      const eval2 = eval;
+      const provider = eval2(`${code}; ${options.name}.container`).get('__ROLLUP_EXPORTED_METHOD_PROVIDER__');
+
+      const methodsCode = provider.getSymbols().flatMap((symbol) => {
+        return provider.getExportedMethods(symbol).map((method) => {
+          const exportedMethod = provider.getMethodExportedName(symbol, method);
+
+          return `function ${exportedMethod}() {\n  ${options.name}.container.get(Symbol.for('${Symbol.keyFor(symbol)}')).${method}();\n}`;
+        })
+      }).join('\n\n');
+
+      return `${code}\n\n${methodsCode}`;
     }
   }
 }

@@ -19,9 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
-
-export * from './caching';
-export * from './exporting';
-export * from './interruptable-iterator';
-export * from './logging';
+export interface IExportedMethodProvider {
+  getSymbols(): symbol[];
+  getExportedMethods(symbol: symbol): string[];
+  getMethodExportedName(symbol: symbol, name: string): string;
+}
