@@ -27,22 +27,14 @@ import type { ICache } from './icache';
 export class Cache implements ICache {
   private readonly ALL_KEYS_KEY = '__ALL_KEYS__';
 
-  private _cache?: GoogleAppsScript.Cache.Cache;
+  private cache: GoogleAppsScript.Cache.Cache;
 
   private prefix?: string;
 
   private initialized = false;
 
   public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {
-  }
-
-  private get cache(): GoogleAppsScript.Cache.Cache {
-    if (!this._cache) {
-      this.logger.debug('Initializing user cache');
-      this._cache = CacheService.getUserCache();
-    }
-
-    return this._cache;
+    this.cache = CacheService.getUserCache();
   }
 
   private getKey(key: string): string {
@@ -57,7 +49,8 @@ export class Cache implements ICache {
     this.logger.initialize(Cache.name);
     this.prefix = prefix;
     this.initialized = true;
-    this.logger.debug('Initialized');
+    this.logger.debug(`Initialized ${this.prefix
+      ? `with a '${this.prefix}' prefix` : 'without a prefix'}`);
   }
 
   public get<T>(key: string, value: T): T {
