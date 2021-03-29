@@ -20,28 +20,18 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
-import { exportMethod } from './export-method';
-import { ExportedMethodProvider } from './exported-method-provider';
-import { ExportingBuilder } from './exporting-builder';
-import type { IExportedMethodProvider } from './iexported-method-provider';
-import { IExportedMethodProviderSymbol } from './symbols';
+import { exportedMethodContainerSymbol, exportedMethodContainerSymbolSymbol } from './symbols';
 
-export function addExporting(container: interfaces.Container,
-  build: (builder: ExportingBuilder) => void): void {
-  const builder = new ExportingBuilder(container);
-  build(builder);
+export class ExportingBuilder {
+  constructor(private readonly container: interfaces.Container) { }
 
-  container.bind(ExportedMethodProvider).toSelf().inSingletonScope();
-  container.bind<IExportedMethodProvider>(IExportedMethodProviderSymbol)
-    .toService(ExportedMethodProvider);
-  container.bind<IExportedMethodProvider>('__ROLLUP_EXPORTED_METHOD_PROVIDER__')
-    .toService(ExportedMethodProvider);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public addContainer<T>(constructor: new (...args: any[]) => T, symbol: symbol): ExportingBuilder {
+    Reflect.defineMetadata(exportedMethodContainerSymbolSymbol, symbol, constructor);
+    this.container.bind<interfaces.Newable<T>>(exportedMethodContainerSymbol)
+      .toConstructor(constructor);
+    this.container.bind<T>(symbol).to(constructor);
+
+    return this;
+  }
 }
-
-export const EXPORTING_TYPES = {
-  IExportedMethodProvider: IExportedMethodProviderSymbol,
-};
-
-export type { IExportedMethodProvider };
-
-export { exportMethod };
