@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 export enum LogLevel {
+  Trace,
   Debug,
   Information,
   Warning,

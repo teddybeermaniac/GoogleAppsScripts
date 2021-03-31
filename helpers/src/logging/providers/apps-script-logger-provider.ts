@@ -22,14 +22,14 @@
 /* eslint-disable no-console */
 import { inject, injectable, optional } from 'inversify';
 import { LogLevel } from '../log-level';
-import type { ILoggerProvider } from '../ilogger-provider';
-import { IConsoleLoggerProviderSettingsSymbol } from '../symbols';
-import type { IConsoleLoggerProviderSettings } from './iconsole-logger-provider-settings';
+import type { ILoggerProvider } from './ilogger-provider';
+import { IAppsScriptLoggerProviderSettingsSymbol } from '../symbols';
+import type { IAppsScriptLoggerProviderSettings } from './iapps-script-logger-provider-settings';
 
 @injectable()
-export class ConsoleLoggerProvider implements ILoggerProvider {
-  constructor(@inject(IConsoleLoggerProviderSettingsSymbol) @optional()
-  private readonly settings: IConsoleLoggerProviderSettings) { }
+export class AppsScriptLoggerProvider implements ILoggerProvider {
+  constructor(@inject(IAppsScriptLoggerProviderSettingsSymbol) @optional()
+  private readonly settings: IAppsScriptLoggerProviderSettings) { }
 
   public log(level: LogLevel, message: string, name?: string, error?: Error): void {
     if (this.settings && this.settings.level !== undefined && level < this.settings.level) {
@@ -39,6 +39,7 @@ export class ConsoleLoggerProvider implements ILoggerProvider {
     let method: (message: string) => void;
     // eslint-disable-next-line default-case
     switch (level) {
+      case LogLevel.Trace:
       case LogLevel.Debug:
         method = console.log;
         break;

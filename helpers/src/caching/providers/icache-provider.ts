@@ -19,6 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ILoggerProviderSettings } from './ilogger-provider-settings';
-
-export type IConsoleLoggerProviderSettings = ILoggerProviderSettings;
+export interface ICacheProvider {
+  get(key: string, prefix?: string): string | null;
+  set(key: string, value: string, prefix?: string, ttl?: number): void;
+  del(key: string, prefix?: string): void;
+  clear(prefix?: string): void;
+}

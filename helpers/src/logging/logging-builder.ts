@@ -21,12 +21,14 @@
  */
 import type { interfaces } from 'inversify';
 import type { ILoggerSettings } from './ilogger-settings';
-import type { ILoggerProvider } from './ilogger-provider';
-import { ConsoleLoggerProvider } from './providers/console-logger-provider';
-import type { IConsoleLoggerProviderSettings } from './providers/iconsole-logger-provider-settings';
-import { IConsoleLoggerProviderSettingsSymbol, ILoggerSettingsSymbol, ILoggerProviderSymbol } from './symbols';
+import type { ILoggerProvider } from './providers/ilogger-provider';
+import { AppsScriptLoggerProvider } from './providers/apps-script-logger-provider';
+import type { IAppsScriptLoggerProviderSettings } from './providers/iapps-script-logger-provider-settings';
+import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerSettingsSymbol, ILoggerProviderSymbol } from './symbols';
 
 export class LoggingBuilder {
+  private appScriptProvider = false;
+
   constructor(private readonly container: interfaces.Container) { }
 
   public addSettings(settings: ILoggerSettings): LoggingBuilder {
@@ -35,13 +37,19 @@ export class LoggingBuilder {
     return this;
   }
 
-  public addConsoleProvider(settings?: IConsoleLoggerProviderSettings): LoggingBuilder {
+  public addAppsScriptProvider(settings?: IAppsScriptLoggerProviderSettings): LoggingBuilder {
+    if (this.appScriptProvider) {
+      throw new Error('AppsScript logger provider already added');
+    }
+
     if (settings) {
-      this.container.bind<IConsoleLoggerProviderSettings>(IConsoleLoggerProviderSettingsSymbol)
+      this.container
+        .bind<IAppsScriptLoggerProviderSettings>(IAppsScriptLoggerProviderSettingsSymbol)
         .toConstantValue(settings);
     }
-    this.container.bind<ILoggerProvider>(ILoggerProviderSymbol).to(ConsoleLoggerProvider)
+    this.container.bind<ILoggerProvider>(ILoggerProviderSymbol).to(AppsScriptLoggerProvider)
       .inSingletonScope();
+    this.appScriptProvider = true;
 
     return this;
   }

@@ -19,5 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const ICacheSymbol = Symbol('ICache');
-export const ICacheProviderSymbol = Symbol('ICacheProvider');
+import type { LogLevel } from '../log-level';
+
+export interface ILoggerProvider {
+  log(level: LogLevel, message: string, name?: string, error?: Error): void;
+}

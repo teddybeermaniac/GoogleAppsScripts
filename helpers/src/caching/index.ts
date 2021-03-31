@@ -21,10 +21,15 @@
  */
 import type { interfaces } from 'inversify';
 import { Cache } from './cache';
+import { CachingBuilder } from './caching-builder';
 import type { ICache } from './icache';
 import { ICacheSymbol } from './symbols';
 
-export function addCaching(container: interfaces.Container): void {
+export function addCaching(container: interfaces.Container,
+  build: (builder: CachingBuilder) => void): void {
+  const builder = new CachingBuilder(container);
+  build(builder);
+
   container.bind<ICache>(ICacheSymbol).to(Cache).inTransientScope();
 }
 

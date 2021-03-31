@@ -19,5 +19,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const ICacheSymbol = Symbol('ICache');
-export const ICacheProviderSymbol = Symbol('ICacheProvider');
+import type { interfaces } from 'inversify';
+import { AppsScriptCacheProvider } from './providers/apps-script-cache-provider';
+import type { ICacheProvider } from './providers/icache-provider';
+import { ICacheProviderSymbol } from './symbols';
+
+export class CachingBuilder {
+  private provider = false;
+
+  constructor(private readonly container: interfaces.Container) { }
+
+  public addAppsScriptProvider(): CachingBuilder {
+    if (this.provider) {
+      throw new Error('A caching provider already added');
+    }
+
+    this.container.bind<ICacheProvider>(ICacheProviderSymbol).to(AppsScriptCacheProvider)
+      .inSingletonScope();
+    this.provider = true;
+
+    return this;
+  }
+}

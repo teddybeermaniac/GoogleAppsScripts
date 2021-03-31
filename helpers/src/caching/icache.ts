@@ -22,7 +22,7 @@
 export interface ICache {
   initialize(prefix?: string): void;
   get<T>(key: string, value: T): T;
-  set<T>(key: string, value: T): void;
+  set<T>(key: string, value: T, ttl?: number): void;
   del(key: string): void;
   clear(): void;
 }

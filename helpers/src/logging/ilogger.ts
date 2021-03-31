@@ -21,6 +21,7 @@
  */
 export interface ILogger {
   initialize(name: string): void;
+  trace(name: string): void;
   debug(message: string): void;
   information(message: string): void;
   warning(message: string): void;

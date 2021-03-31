@@ -26,7 +26,7 @@ import { ILoggerSettingsSymbol, ILoggerProviderSymbol } from './symbols';
 import type { ILogger } from './ilogger';
 import { LogLevel } from './log-level';
 import type { ILoggerSettings } from './ilogger-settings';
-import type { ILoggerProvider } from './ilogger-provider';
+import type { ILoggerProvider } from './providers/ilogger-provider';
 
 @injectable()
 export class Logger implements ILogger {
@@ -61,6 +61,10 @@ export class Logger implements ILogger {
 
     this.name = name;
     this.initialized = true;
+  }
+
+  public trace(message: string): void {
+    this.log(LogLevel.Trace, message);
   }
 
   public debug(message: string): void {

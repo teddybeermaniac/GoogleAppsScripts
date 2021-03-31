@@ -22,23 +22,18 @@
 import { inject, injectable } from 'inversify';
 import { ILogger, LOGGING_TYPES } from '../logging';
 import type { ICache } from './icache';
+import type { ICacheProvider } from './providers/icache-provider';
+import { ICacheProviderSymbol } from './symbols';
 
 @injectable()
 export class Cache implements ICache {
-  private readonly ALL_KEYS_KEY = '__ALL_KEYS__';
-
-  private cache: GoogleAppsScript.Cache.Cache;
-
   private prefix?: string;
 
   private initialized = false;
 
-  public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {
-    this.cache = CacheService.getUserCache();
-  }
-
-  private getKey(key: string): string {
-    return this.prefix ? `${this.prefix}_${key}` : key;
+  public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
+    @inject(ICacheProviderSymbol) private readonly provider: ICacheProvider) {
+    this.logger.initialize(Cache.name);
   }
 
   public initialize(prefix?: string): void {
@@ -46,16 +41,16 @@ export class Cache implements ICache {
       throw new Error('Already initialized');
     }
 
-    this.logger.initialize(Cache.name);
     this.prefix = prefix;
     this.initialized = true;
-    this.logger.information(`Initialized ${this.prefix
-      ? `with a '${this.prefix}' prefix` : 'without a prefix'}`);
+    this.logger.debug(
+      `Initialized${this.prefix ? ` with a '${this.prefix}' prefix` : ' without a prefix'}`,
+    );
   }
 
   public get<T>(key: string, value: T): T {
-    this.logger.debug(`Getting key '${key}' from cache`);
-    const json = this.cache.get(this.getKey(key));
+    this.logger.debug(`Getting cache key '${key}'`);
+    const json = this.provider.get(key, this.prefix);
     if (json === null) {
       this.logger.debug(`Key '${key}' not found in cache`);
       return value;
@@ -65,38 +60,21 @@ export class Cache implements ICache {
     return <T>JSON.parse(json);
   }
 
-  public set<T>(key: string, value: T): void {
-    if (key !== this.ALL_KEYS_KEY) {
-      const allKeys = this.get<string[]>(this.ALL_KEYS_KEY, []);
-      if (allKeys.indexOf(key) === -1) {
-        allKeys.push(key);
-
-        this.set(this.ALL_KEYS_KEY, allKeys);
-      }
-    }
-
+  public set<T>(key: string, value: T, ttl?: number): void {
     const json = JSON.stringify(value);
-    this.logger.debug(`Setting key '${key}' in cache to value '${json}'`);
-    this.cache.put(this.getKey(key), json);
+    this.logger.debug(
+      `Setting cache key '${key}'${ttl !== undefined ? ` with a TTL of ${ttl}s` : ''} to value '${json}'`,
+    );
+    this.provider.set(key, json, this.prefix);
   }
 
   public del(key: string): void {
     this.logger.debug(`Deleting key '${key}' from cache`);
-    this.cache.remove(this.getKey(key));
-
-    const allKeys = this.get<string[]>(this.ALL_KEYS_KEY, []);
-    const keyIndex = allKeys.indexOf(key);
-    if (keyIndex !== -1) {
-      allKeys.splice(keyIndex, 1);
-      this.set(this.ALL_KEYS_KEY, allKeys);
-    }
+    this.provider.del(key, this.prefix);
   }
 
   public clear(): void {
-    let allKeys = this.get<string[]>(this.ALL_KEYS_KEY, []);
-    allKeys = [...allKeys, this.ALL_KEYS_KEY];
-
-    this.logger.debug(`Deleting keys '${allKeys.join('\', \'')}' from cache`);
-    this.cache.removeAll(allKeys.map((key) => this.getKey(key)));
+    this.logger.debug('Clearing the cache');
+    this.provider.clear(this.prefix);
   }
 }
