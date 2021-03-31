@@ -19,31 +19,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { inject, injectable } from 'inversify';
-import { IConsoleLoggerSettingsSymbol } from './symbols';
+import {
+  inject, injectable, multiInject, optional,
+} from 'inversify';
+import { ILoggerSettingsSymbol, ILoggerProviderSymbol } from './symbols';
 import type { ILogger } from './ilogger';
 import { LogLevel } from './log-level';
-import type { IConsoleLoggerSettings } from './iconsole-logger-settings';
+import type { ILoggerSettings } from './ilogger-settings';
+import type { ILoggerProvider } from './ilogger-provider';
 
 @injectable()
-export class ConsoleLogger implements ILogger {
+export class Logger implements ILogger {
   private name?: string;
 
   private initialized = false;
 
-  public constructor(@inject(IConsoleLoggerSettingsSymbol)
-  private readonly settings: IConsoleLoggerSettings) {
+  public constructor(@inject(ILoggerSettingsSymbol) @optional()
+  private readonly settings: ILoggerSettings,
+  @multiInject(ILoggerProviderSymbol) private readonly providers: ILoggerProvider[]) {
   }
 
-  private log(level: LogLevel, message: string, method: (message: string) => void) {
-    if (level < this.settings.level) {
+  private log(level: LogLevel, message: string, error?: Error) {
+    if (this.settings && this.settings.level !== undefined && level < this.settings.level) {
       return;
     }
 
-    method(this.name ? `[${this.name}] ${message}` : message);
+    this.providers.forEach((provider) => {
+      try {
+        provider.log(level, message, this.name, error);
+      } catch (providerError) {
+        // eslint-disable-next-line no-console
+        console.error(providerError);
+      }
+    });
   }
 
-  initialize(name: string): void {
+  public initialize(name: string): void {
     if (this.initialized) {
       throw new Error('Already initialized');
     }
@@ -53,24 +64,18 @@ export class ConsoleLogger implements ILogger {
   }
 
   public debug(message: string): void {
-    // eslint-disable-next-line no-console
-    this.log(LogLevel.Debug, message, console.log);
+    this.log(LogLevel.Debug, message);
   }
 
   public information(message: string): void {
-    // eslint-disable-next-line no-console
-    this.log(LogLevel.Information, message, console.info);
+    this.log(LogLevel.Information, message);
   }
 
   public warning(message: string): void {
-    // eslint-disable-next-line no-console
-    this.log(LogLevel.Warning, message, console.warn);
+    this.log(LogLevel.Warning, message);
   }
 
   public error(message: string, error?: Error): void {
-    this.log(LogLevel.Error, error
-      ? `${message}; ${error.name}: ${error.message}\n${error.stack ?? ''}`
-      // eslint-disable-next-line no-console
-      : message, console.error);
+    this.log(LogLevel.Error, message, error);
   }
 }

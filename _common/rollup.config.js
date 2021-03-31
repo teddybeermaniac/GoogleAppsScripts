@@ -8,8 +8,14 @@ function googleAppsScript() {
     name: 'google-apps-script',
     renderChunk: (code, chunk, options) => {
       const eval2 = eval;
-      const provider = eval2(`${code}; ${options.name}.container`).get('__ROLLUP_EXPORTED_METHOD_PROVIDER__');
+      const container = eval2(`${code}; ${options.name}.container`);
+      if (!container) {
+        console.warn('Warning! \'container\' variable not exported!');
 
+        return code;
+      }
+
+      const provider = container.get('__ROLLUP_EXPORTED_METHOD_PROVIDER__');
       const methodsCode = provider.getSymbols().flatMap((symbol) => {
         return provider.getExportedMethods(symbol).map((method) => {
           const exportedMethod = provider.getMethodExportedName(symbol, method);

@@ -19,7 +19,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const IConsoleLoggerProviderSettingsSymbol = Symbol('IConsoleLoggerProviderSettings');
-export const ILoggerSymbol = Symbol('ILogger');
-export const ILoggerSettingsSymbol = Symbol('ILoggerSettings');
-export const ILoggerProviderSymbol = Symbol('ILoggerProvider');
+import type { interfaces } from 'inversify';
+import type { ILoggerSettings } from './ilogger-settings';
+import type { ILoggerProvider } from './ilogger-provider';
+import { ConsoleLoggerProvider } from './providers/console-logger-provider';
+import type { IConsoleLoggerProviderSettings } from './providers/iconsole-logger-provider-settings';
+import { IConsoleLoggerProviderSettingsSymbol, ILoggerSettingsSymbol, ILoggerProviderSymbol } from './symbols';
+
+export class LoggingBuilder {
+  constructor(private readonly container: interfaces.Container) { }
+
+  public addSettings(settings: ILoggerSettings): LoggingBuilder {
+    this.container.bind<ILoggerSettings>(ILoggerSettingsSymbol).toConstantValue(settings);
+
+    return this;
+  }
+
+  public addConsoleProvider(settings?: IConsoleLoggerProviderSettings): LoggingBuilder {
+    if (settings) {
+      this.container.bind<IConsoleLoggerProviderSettings>(IConsoleLoggerProviderSettingsSymbol)
+        .toConstantValue(settings);
+    }
+    this.container.bind<ILoggerProvider>(ILoggerProviderSymbol).to(ConsoleLoggerProvider)
+      .inSingletonScope();
+
+    return this;
+  }
+}

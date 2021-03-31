@@ -49,7 +49,7 @@ export class Cache implements ICache {
     this.logger.initialize(Cache.name);
     this.prefix = prefix;
     this.initialized = true;
-    this.logger.debug(`Initialized ${this.prefix
+    this.logger.information(`Initialized ${this.prefix
       ? `with a '${this.prefix}' prefix` : 'without a prefix'}`);
   }
 

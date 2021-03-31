@@ -19,7 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const IConsoleLoggerProviderSettingsSymbol = Symbol('IConsoleLoggerProviderSettings');
-export const ILoggerSymbol = Symbol('ILogger');
-export const ILoggerSettingsSymbol = Symbol('ILoggerSettings');
-export const ILoggerProviderSymbol = Symbol('ILoggerProvider');
+import type { LogLevel } from './log-level';
+
+export interface ILoggerProvider {
+  log(level: LogLevel, message: string, name?: string, error?: Error): void;
+}

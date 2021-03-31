@@ -30,7 +30,7 @@ export class ExportingBuilder {
     Reflect.defineMetadata(exportedMethodContainerSymbolSymbol, symbol, constructor);
     this.container.bind<interfaces.Newable<T>>(exportedMethodContainerSymbol)
       .toConstructor(constructor);
-    this.container.bind<T>(symbol).to(constructor);
+    this.container.bind<T>(symbol).to(constructor).inTransientScope();
 
     return this;
   }

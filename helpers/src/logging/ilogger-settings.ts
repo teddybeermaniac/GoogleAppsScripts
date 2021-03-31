@@ -19,8 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { LogLevel } from './log-level';
+import type { ILoggerProviderSettings } from './providers/ilogger-provider-settings';
 
-export interface ILoggerSettings {
-  level: LogLevel;
-}
+export type ILoggerSettings = ILoggerProviderSettings;
