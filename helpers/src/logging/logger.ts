@@ -30,7 +30,7 @@ import type { ILoggerProvider } from './providers/ilogger-provider';
 
 @injectable()
 export class Logger implements ILogger {
-  private name?: string;
+  private name: string | undefined;
 
   private initialized = false;
 
@@ -39,14 +39,14 @@ export class Logger implements ILogger {
   @multiInject(ILoggerProviderSymbol) private readonly providers: ILoggerProvider[]) {
   }
 
-  private log(level: LogLevel, message: string, error?: Error) {
+  private log(level: LogLevel, message: string, error: Error | undefined) {
     if (this.settings && this.settings.level !== undefined && level < this.settings.level) {
       return;
     }
 
     this.providers.forEach((provider) => {
       try {
-        provider.log(level, message, this.name, error);
+        provider.log(this.name, level, message, error);
       } catch (providerError) {
         // eslint-disable-next-line no-console
         console.error(providerError);
@@ -64,19 +64,19 @@ export class Logger implements ILogger {
   }
 
   public trace(message: string): void {
-    this.log(LogLevel.Trace, message);
+    this.log(LogLevel.Trace, message, undefined);
   }
 
   public debug(message: string): void {
-    this.log(LogLevel.Debug, message);
+    this.log(LogLevel.Debug, message, undefined);
   }
 
   public information(message: string): void {
-    this.log(LogLevel.Information, message);
+    this.log(LogLevel.Information, message, undefined);
   }
 
   public warning(message: string): void {
-    this.log(LogLevel.Warning, message);
+    this.log(LogLevel.Warning, message, undefined);
   }
 
   public error(message: string, error?: Error): void {

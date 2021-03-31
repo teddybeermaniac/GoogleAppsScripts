@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 export interface ICacheProvider {
-  get(key: string, prefix?: string): string | null;
-  set(key: string, value: string, prefix?: string, ttl?: number): void;
-  del(key: string, prefix?: string): void;
-  clear(prefix?: string): void;
+  get(prefix: string | undefined, key: string): string | null;
+  set(prefix: string | undefined, key: string, value: string, ttl: number | undefined): void;
+  del(prefix: string | undefined, key: string): void;
+  clear(prefix: string | undefined): void;
 }

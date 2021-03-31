@@ -31,7 +31,8 @@ export class AppsScriptLoggerProvider implements ILoggerProvider {
   constructor(@inject(IAppsScriptLoggerProviderSettingsSymbol) @optional()
   private readonly settings: IAppsScriptLoggerProviderSettings) { }
 
-  public log(level: LogLevel, message: string, name?: string, error?: Error): void {
+  public log(name: string | undefined, level: LogLevel, message: string, error: Error | undefined):
+  void {
     if (this.settings && this.settings.level !== undefined && level < this.settings.level) {
       return;
     }

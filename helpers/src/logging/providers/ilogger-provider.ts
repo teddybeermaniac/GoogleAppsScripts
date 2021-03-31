@@ -22,5 +22,5 @@
 import type { LogLevel } from '../log-level';
 
 export interface ILoggerProvider {
-  log(level: LogLevel, message: string, name?: string, error?: Error): void;
+  log(name: string | undefined, level: LogLevel, message: string, error: Error | undefined): void;
 }

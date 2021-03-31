@@ -29,7 +29,7 @@ export class AppsScriptCacheProvider implements ICacheProvider {
 
   private readonly cache: GoogleAppsScript.Cache.Cache;
 
-  private static getKey(key: string, prefix?: string): string {
+  private static getKey(prefix: string | undefined, key: string): string {
     return prefix ? `${prefix}_${key}` : key;
   }
 
@@ -38,22 +38,28 @@ export class AppsScriptCacheProvider implements ICacheProvider {
     this.logger.initialize(AppsScriptCacheProvider.name);
   }
 
-  public get(key: string, prefix?: string): string | null {
-    this.logger.trace(
-      `Getting cache key '${key}'${prefix ? ` with a prefix ${prefix}` : ''}`,
-    );
+  private getAllKeys(prefix: string | undefined): string[] {
+    const allKeysJson = this.get(prefix, AppsScriptCacheProvider.ALL_KEYS_KEY);
 
-    return this.cache.get(AppsScriptCacheProvider.getKey(key, prefix));
+    return allKeysJson ? <string[]>JSON.parse(allKeysJson) : [];
   }
 
-  public set(key: string, value: string, prefix?: string, ttl?: number): void {
+  public get(prefix: string | undefined, key: string): string | null {
+    this.logger.trace(
+      `Getting cache key '${key}'${prefix ? ` with a prefix '${prefix}'` : ''}`,
+    );
+
+    return this.cache.get(AppsScriptCacheProvider.getKey(prefix, key));
+  }
+
+  public set(prefix: string | undefined, key: string, value: string, ttl: number | undefined):
+  void {
     if (key !== AppsScriptCacheProvider.ALL_KEYS_KEY) {
-      const allKeysJson = this.get(AppsScriptCacheProvider.ALL_KEYS_KEY, prefix);
-      const allKeys = allKeysJson ? <string[]>JSON.parse(allKeysJson) : [];
+      const allKeys = this.getAllKeys(prefix);
       if (allKeys.indexOf(key) === -1) {
         allKeys.push(key);
 
-        this.set(AppsScriptCacheProvider.ALL_KEYS_KEY, JSON.stringify(allKeys), prefix);
+        this.set(prefix, AppsScriptCacheProvider.ALL_KEYS_KEY, JSON.stringify(allKeys), undefined);
       }
     }
 
@@ -61,33 +67,31 @@ export class AppsScriptCacheProvider implements ICacheProvider {
       `Setting cache key '${key}'${prefix ? ` with a prefix '${prefix}'` : ''}${ttl !== undefined ? ` with a TTL of ${ttl}` : ''} to a value of '${value}'`,
     );
     if (ttl !== undefined) {
-      this.cache.put(AppsScriptCacheProvider.getKey(key, prefix), value, ttl);
+      this.cache.put(AppsScriptCacheProvider.getKey(prefix, key), value, ttl);
     } else {
-      this.cache.put(AppsScriptCacheProvider.getKey(key, prefix), value);
+      this.cache.put(AppsScriptCacheProvider.getKey(prefix, key), value);
     }
   }
 
-  public del(key: string, prefix?: string): void {
+  public del(prefix: string | undefined, key: string): void {
     this.logger.trace(`Deleting cache key '${key}'${prefix ? ` with a prefix '${prefix}'` : ''}`);
-    this.cache.remove(AppsScriptCacheProvider.getKey(key, prefix));
+    this.cache.remove(AppsScriptCacheProvider.getKey(prefix, key));
 
-    const allKeysJson = this.get(AppsScriptCacheProvider.ALL_KEYS_KEY, prefix);
-    const allKeys = allKeysJson ? <string[]>JSON.parse(allKeysJson) : [];
+    const allKeys = this.getAllKeys(prefix);
     const keyIndex = allKeys.indexOf(key);
     if (keyIndex !== -1) {
       allKeys.splice(keyIndex, 1);
-      this.set(AppsScriptCacheProvider.ALL_KEYS_KEY, JSON.stringify(allKeys), prefix);
+      this.set(prefix, AppsScriptCacheProvider.ALL_KEYS_KEY, JSON.stringify(allKeys), undefined);
     }
   }
 
-  public clear(prefix?: string): void {
-    const allKeysJson = this.get(AppsScriptCacheProvider.ALL_KEYS_KEY, prefix);
-    let allKeys = allKeysJson ? <string[]>JSON.parse(allKeysJson) : [];
+  public clear(prefix: string | undefined): void {
+    let allKeys = this.getAllKeys(prefix);
     allKeys = [...allKeys, AppsScriptCacheProvider.ALL_KEYS_KEY];
 
     this.logger.trace(
       `Deleting cache keys '${allKeys.join('\', \'')}'${prefix ? ` with a prefix '${prefix}'` : ''}`,
     );
-    this.cache.removeAll(allKeys.map((key) => AppsScriptCacheProvider.getKey(key, prefix)));
+    this.cache.removeAll(allKeys.map((key) => AppsScriptCacheProvider.getKey(prefix, key)));
   }
 }

@@ -56,7 +56,8 @@ export class ExportedMethodProvider implements IExportedMethodProvider {
           this.exportedMethods[symbolKey]!.push(method.name);
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.methodExportedNames[symbolKey]![method.name] = method.asIs
-            ? method.name : `zzz_${symbolKey}_${method.name}`;
+            ? method.name
+            : `zzz_${symbolKey}_${method.name}`;
         });
     });
   }

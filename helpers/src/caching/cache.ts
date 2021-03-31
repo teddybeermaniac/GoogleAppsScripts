@@ -27,7 +27,7 @@ import { ICacheProviderSymbol } from './symbols';
 
 @injectable()
 export class Cache implements ICache {
-  private prefix?: string;
+  private prefix: string | undefined;
 
   private initialized = false;
 
@@ -50,7 +50,7 @@ export class Cache implements ICache {
 
   public get<T>(key: string, value: T): T {
     this.logger.debug(`Getting cache key '${key}'`);
-    const json = this.provider.get(key, this.prefix);
+    const json = this.provider.get(this.prefix, key);
     if (json === null) {
       this.logger.debug(`Key '${key}' not found in cache`);
       return value;
@@ -65,12 +65,12 @@ export class Cache implements ICache {
     this.logger.debug(
       `Setting cache key '${key}'${ttl !== undefined ? ` with a TTL of ${ttl}s` : ''} to value '${json}'`,
     );
-    this.provider.set(key, json, this.prefix);
+    this.provider.set(this.prefix, key, json, ttl);
   }
 
   public del(key: string): void {
     this.logger.debug(`Deleting key '${key}' from cache`);
-    this.provider.del(key, this.prefix);
+    this.provider.del(this.prefix, key);
   }
 
   public clear(): void {
