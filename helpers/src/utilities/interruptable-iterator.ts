@@ -31,8 +31,6 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   private static readonly ITERATION_TIME_SAFETY_BUFFER = 1.5;
 
-  private static readonly ITERATION_FINISHED_KEY = 'iterationFinished';
-
   private static readonly ITERATION_TOKEN_KEY = 'iterationToken';
 
   private readonly started: number = Date.now();
@@ -93,12 +91,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
       this.logger.debug('Next step');
       iterationToken = this.next(iterationToken);
 
-      if (iterationToken === null) {
-        this.cache.set(InterruptableIterator.ITERATION_FINISHED_KEY, true);
-        this.cache.del(InterruptableIterator.ITERATION_TOKEN_KEY);
-      } else {
-        this.cache.set(InterruptableIterator.ITERATION_TOKEN_KEY, iterationToken);
-      }
+      this.cache.set(InterruptableIterator.ITERATION_TOKEN_KEY, iterationToken);
     } while (iterationToken !== null);
   }
 
@@ -107,12 +100,9 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
     // ! Implement triggers.
     this.cache.clear();
-    this.cache.set(InterruptableIterator.ITERATION_FINISHED_KEY, false);
   }
 
   public isFinished(): boolean {
-    const finished = this.cache.get<boolean>(InterruptableIterator.ITERATION_FINISHED_KEY);
-
-    return finished === null ? true : finished;
+    return this.cache.get<boolean>(InterruptableIterator.ITERATION_TOKEN_KEY) === null;
   }
 }
