@@ -19,30 +19,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { interfaces } from 'inversify';
-import { exportMethod } from './export-method';
-import { ExportingBuilder } from './exporting-builder';
-import type { IExportedMethodProvider } from './iexported-method-provider';
-import { IExportedMethodProviderSymbol } from './symbols';
-import { ExportedMethodProvider } from './exported-method-provider';
-import { RollupExportedMethodProvider } from './rollup-exported-method-provider';
-import { getSymbol } from '../utilities/get-symbol';
-
-export function add(container: interfaces.Container,
-  build: (builder: ExportingBuilder) => void): void {
-  const builder = new ExportingBuilder(container);
-  build(builder);
-
-  container.bind<IExportedMethodProvider>(getSymbol(ExportedMethodProvider))
-    .to(ExportedMethodProvider).inSingletonScope();
-  container.bind<IExportedMethodProvider>('__ROLLUP_EXPORTED_METHOD_PROVIDER__')
-    .to(RollupExportedMethodProvider).inSingletonScope();
-}
-
-export const TYPES = {
-  IExportedMethodProvider: IExportedMethodProviderSymbol,
-};
-
-export type { IExportedMethodProvider };
-
-export { exportMethod };
+export const BindSymbolSymbol = Symbol('BindSymbol');

@@ -21,11 +21,13 @@
  */
 import { inject, injectable } from 'inversify';
 import * as logging from '../logging';
+import { bindSymbol } from '../utilities/bind-symbol';
 import type { ICache } from './icache';
 import type { ICacheProvider } from './providers/icache-provider';
-import { ICacheProviderSymbol } from './symbols';
+import { ICacheProviderSymbol, ICacheSymbol } from './symbols';
 
 @injectable()
+@bindSymbol(ICacheSymbol)
 export class Cache implements ICache {
   private prefix: string | undefined;
 

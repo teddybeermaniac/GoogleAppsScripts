@@ -21,9 +21,12 @@
  */
 import { inject, injectable } from 'inversify';
 import * as logging from '../../logging';
+import { bindSymbol } from '../../utilities/bind-symbol';
+import { ICacheProviderSymbol } from '../symbols';
 import type { ICacheProvider } from './icache-provider';
 
 @injectable()
+@bindSymbol(ICacheProviderSymbol)
 export class AppsScriptCacheProvider implements ICacheProvider {
   private static readonly ALL_KEYS_KEY = '__ALL_KEYS__';
 

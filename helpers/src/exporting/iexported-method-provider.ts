@@ -19,9 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { IExportedMethod } from './iexported-method';
-
 export interface IExportedMethodProvider {
-  getExportedMethods(): IExportedMethod[];
+  getExportedMethods(): string[];
   callExportedMethod(exportedName: string): void;
 }

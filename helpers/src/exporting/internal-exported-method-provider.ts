@@ -23,11 +23,13 @@ import { injectable, interfaces } from 'inversify';
 import type * as logging from '../logging';
 import type { IExportedMethod } from './iexported-method';
 import type { IExportedMethodProvider } from './iexported-method-provider';
-import { exportedMethodContainerSymbolSymbol, exportedMethodsSymbol } from './symbols';
+import { exportedMethodsSymbol } from './symbols';
+import { getSymbol } from '../utilities/get-symbol';
 
 @injectable()
 export class InternalExportedMethodProvider implements IExportedMethodProvider {
-  private readonly exportedMethods: (IExportedMethod & { symbol: symbol })[] = [];
+  private readonly exportedMethods:
+  (IExportedMethod & { exportedName: string, symbol: symbol })[] = [];
 
   constructor(private readonly container: interfaces.Container,
     private readonly logger: logging.ILogger | undefined) { }
@@ -44,20 +46,19 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
         `Found ${methods.length} exported methods on container '${constructor.name}'`,
       );
 
-      const symbol = <symbol>Reflect
-        .getMetadata(exportedMethodContainerSymbolSymbol, constructor);
       methods.forEach((method) => {
-        this.exportedMethods.push({ ...method, symbol });
+        const exportedName = method.asIs ? method.name : `zzz_${constructor.name}_${method.name}`;
+        this.exportedMethods.push({ ...method, exportedName, symbol: getSymbol(constructor) });
 
         this.logger?.debug(
-          `Method '${method.name}' from '${constructor.name}' is exported as '${method.exportedName}'`,
+          `Method '${method.name}' from '${constructor.name}' is exported as '${exportedName}'`,
         );
       });
     });
   }
 
-  public getExportedMethods(): IExportedMethod[] {
-    return [...this.exportedMethods];
+  public getExportedMethods(): string[] {
+    return this.exportedMethods.map((method) => method.exportedName);
   }
 
   public callExportedMethod(exportedName: string): void {

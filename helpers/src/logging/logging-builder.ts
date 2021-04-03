@@ -24,7 +24,8 @@ import type { ILoggerSettings } from './ilogger-settings';
 import type { ILoggerProvider } from './providers/ilogger-provider';
 import { AppsScriptLoggerProvider } from './providers/apps-script-logger-provider';
 import type { IAppsScriptLoggerProviderSettings } from './providers/iapps-script-logger-provider-settings';
-import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerSettingsSymbol, ILoggerProviderSymbol } from './symbols';
+import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerSettingsSymbol } from './symbols';
+import { getSymbol } from '../utilities/get-symbol';
 
 export class LoggingBuilder {
   private appScriptProvider = false;
@@ -47,8 +48,8 @@ export class LoggingBuilder {
         .bind<IAppsScriptLoggerProviderSettings>(IAppsScriptLoggerProviderSettingsSymbol)
         .toConstantValue(settings);
     }
-    this.container.bind<ILoggerProvider>(ILoggerProviderSymbol).to(AppsScriptLoggerProvider)
-      .inSingletonScope();
+    this.container.bind<ILoggerProvider>(getSymbol(AppsScriptLoggerProvider))
+      .to(AppsScriptLoggerProvider).inSingletonScope();
     this.appScriptProvider = true;
 
     return this;

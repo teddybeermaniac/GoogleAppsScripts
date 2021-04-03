@@ -21,5 +21,4 @@
  */
 export const IExportedMethodProviderSymbol = Symbol.for('IExportedMethodProvider');
 export const exportedMethodContainerSymbol = Symbol('exportedMethodContainer');
-export const exportedMethodContainerSymbolSymbol = Symbol('exportedMethodContainerSymbol');
 export const exportedMethodsSymbol = Symbol('exportMethods');

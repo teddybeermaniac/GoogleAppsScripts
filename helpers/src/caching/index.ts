@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+import { getSymbol } from '../utilities/get-symbol';
 import { Cache } from './cache';
 import { CachingBuilder } from './caching-builder';
 import type { ICache } from './icache';
@@ -30,7 +31,7 @@ export function add(container: interfaces.Container,
   const builder = new CachingBuilder(container);
   build(builder);
 
-  container.bind<ICache>(ICacheSymbol).to(Cache).inTransientScope();
+  container.bind<ICache>(getSymbol(Cache)).to(Cache).inTransientScope();
 }
 
 export const TYPES = {

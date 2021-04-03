@@ -20,13 +20,12 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
-import { exportedMethodContainerSymbol, exportedMethodContainerSymbolSymbol } from './symbols';
+import { exportedMethodContainerSymbol } from './symbols';
 
 export class ExportingBuilder {
   constructor(private readonly container: interfaces.Container) { }
 
-  public addContainer<T>(constructor: interfaces.Newable<T>, symbol: symbol): ExportingBuilder {
-    Reflect.defineMetadata(exportedMethodContainerSymbolSymbol, symbol, constructor);
+  public addContainer<T>(constructor: interfaces.Newable<T>): ExportingBuilder {
     this.container.bind<interfaces.Newable<T>>(exportedMethodContainerSymbol)
       .toConstructor(constructor);
 

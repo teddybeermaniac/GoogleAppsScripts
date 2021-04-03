@@ -24,10 +24,12 @@ import {
 } from 'inversify';
 import * as logging from '../logging';
 import { ContainerSymbol } from '../symbols';
+import { bindSymbol } from '../utilities/bind-symbol';
 import { InternalExportedMethodProvider } from './internal-exported-method-provider';
-import { exportedMethodContainerSymbol } from './symbols';
+import { exportedMethodContainerSymbol, IExportedMethodProviderSymbol } from './symbols';
 
 @injectable()
+@bindSymbol(IExportedMethodProviderSymbol)
 export class ExportedMethodProvider extends InternalExportedMethodProvider {
   constructor(@inject(ContainerSymbol) container: interfaces.Container,
     // eslint-disable-next-line @typescript-eslint/ban-types

@@ -29,9 +29,7 @@ export function exportMethod<T extends Object>(asIs?: boolean):
   return (target: T, propertyKey: string, _?: TypedPropertyDescriptor<(() => void)>): void => {
     const exportedMethod = {
       name: propertyKey,
-      exportedName: asIs
-        ? propertyKey
-        : `zzz_${target.constructor.name}_${propertyKey}`,
+      asIs: asIs || false,
     };
 
     const exportedMethods = <IExportedMethod[]>Reflect

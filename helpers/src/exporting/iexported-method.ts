@@ -21,5 +21,5 @@
  */
 export interface IExportedMethod {
   name: string;
-  exportedName: string;
+  asIs: boolean;
 }

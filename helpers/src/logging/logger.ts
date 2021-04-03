@@ -22,13 +22,15 @@
 import {
   inject, injectable, multiInject, optional,
 } from 'inversify';
-import { ILoggerSettingsSymbol, ILoggerProviderSymbol } from './symbols';
+import { ILoggerSettingsSymbol, ILoggerProviderSymbol, ILoggerSymbol } from './symbols';
 import type { ILogger } from './ilogger';
 import { LogLevel } from './log-level';
 import type { ILoggerSettings } from './ilogger-settings';
 import type { ILoggerProvider } from './providers/ilogger-provider';
+import { bindSymbol } from '../utilities/bind-symbol';
 
 @injectable()
+@bindSymbol(ILoggerSymbol)
 export class Logger implements ILogger {
   private name: string | undefined;
 

@@ -19,15 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { interfaces } from 'inversify';
+import { addInterruptableIterator } from './add-interruptable-iterator';
+import { bindSymbol } from './bind-symbol';
+import { getSymbol } from './get-symbol';
 import type { IInterruptableIterator } from './iinterruptable-iterator';
 import { InterruptableIterator } from './interruptable-iterator';
 
-export function addInterruptableIterator<TToken, TIterator extends InterruptableIterator<TToken>>(
-  container: interfaces.Container, constructor: interfaces.Newable<TIterator>, symbol: symbol,
-): void {
-  container.bind(symbol).to(constructor).inSingletonScope();
-}
-
+export {
+  addInterruptableIterator, bindSymbol, getSymbol, InterruptableIterator,
+};
 export type { IInterruptableIterator };
-export { InterruptableIterator };

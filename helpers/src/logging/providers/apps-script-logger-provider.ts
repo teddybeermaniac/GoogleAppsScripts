@@ -23,10 +23,12 @@
 import { inject, injectable, optional } from 'inversify';
 import { LogLevel } from '../log-level';
 import type { ILoggerProvider } from './ilogger-provider';
-import { IAppsScriptLoggerProviderSettingsSymbol } from '../symbols';
+import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../symbols';
 import type { IAppsScriptLoggerProviderSettings } from './iapps-script-logger-provider-settings';
+import { bindSymbol } from '../../utilities/bind-symbol';
 
 @injectable()
+@bindSymbol(ILoggerProviderSymbol)
 export class AppsScriptLoggerProvider implements ILoggerProvider {
   constructor(@inject(IAppsScriptLoggerProviderSettingsSymbol) @optional()
   private readonly settings: IAppsScriptLoggerProviderSettings) { }
