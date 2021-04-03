@@ -20,8 +20,21 @@
  * SOFTWARE.
  */
 import 'core-js';
+import { Container, interfaces } from 'inversify';
+import { ContainerSymbol } from './symbols';
 
-export * from './caching';
-export * from './exporting';
-export * from './interruptable-iterator';
-export * from './logging';
+import * as caching from './caching';
+import * as exporting from './exporting';
+import * as logging from './logging';
+import * as interruptable_iterator from './interruptable-iterator';
+
+export function createContainer(): interfaces.Container {
+  const container = new Container();
+  container.bind<interfaces.Container>(ContainerSymbol).toConstantValue(container);
+
+  return container;
+}
+
+export {
+  caching, exporting, logging, interruptable_iterator,
+};

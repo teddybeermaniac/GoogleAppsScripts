@@ -24,11 +24,14 @@ import { exportedMethodsSymbol } from './symbols';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function exportMethod<T extends Object>(asIs?: boolean):
-(target: T, propertyKey: string) => void {
-  return (target: T, propertyKey: string): void => {
+(target: T, propertyKey: string, _?: TypedPropertyDescriptor<(() => void)>) => void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return (target: T, propertyKey: string, _?: TypedPropertyDescriptor<(() => void)>): void => {
     const exportedMethod = {
       name: propertyKey,
-      asIs: asIs ?? false,
+      exportedName: asIs
+        ? propertyKey
+        : `zzz_${target.constructor.name}_${propertyKey}`,
     };
 
     const exportedMethods = <IExportedMethod[]>Reflect

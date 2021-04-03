@@ -21,21 +21,21 @@
  */
 import type { interfaces } from 'inversify';
 import { exportMethod } from './export-method';
-import { ExportedMethodProvider } from './exported-method-provider';
 import { ExportingBuilder } from './exporting-builder';
 import type { IExportedMethodProvider } from './iexported-method-provider';
 import { IExportedMethodProviderSymbol } from './symbols';
+import { ExportedMethodProvider } from './exported-method-provider';
+import { RollupExportedMethodProvider } from './rollup-exported-method-provider';
 
 export function addExporting(container: interfaces.Container,
   build: (builder: ExportingBuilder) => void): void {
   const builder = new ExportingBuilder(container);
   build(builder);
 
-  container.bind(ExportedMethodProvider).toSelf().inSingletonScope();
-  container.bind<IExportedMethodProvider>(IExportedMethodProviderSymbol)
-    .toService(ExportedMethodProvider);
+  container.bind<IExportedMethodProvider>(IExportedMethodProviderSymbol).to(ExportedMethodProvider)
+    .inSingletonScope();
   container.bind<IExportedMethodProvider>('__ROLLUP_EXPORTED_METHOD_PROVIDER__')
-    .toService(ExportedMethodProvider);
+    .to(RollupExportedMethodProvider).inSingletonScope();
 }
 
 export const EXPORTING_TYPES = {

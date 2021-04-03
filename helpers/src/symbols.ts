@@ -19,7 +19,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const IExportedMethodProviderSymbol = Symbol.for('IExportedMethodProvider');
-export const exportedMethodContainerSymbol = Symbol('exportedMethodContainer');
-export const exportedMethodContainerSymbolSymbol = Symbol('exportedMethodContainerSymbol');
-export const exportedMethodsSymbol = Symbol('exportMethods');
+export const ContainerSymbol = Symbol('Container');

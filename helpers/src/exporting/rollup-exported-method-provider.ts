@@ -19,7 +19,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const IExportedMethodProviderSymbol = Symbol.for('IExportedMethodProvider');
-export const exportedMethodContainerSymbol = Symbol('exportedMethodContainer');
-export const exportedMethodContainerSymbolSymbol = Symbol('exportedMethodContainerSymbol');
-export const exportedMethodsSymbol = Symbol('exportMethods');
+import {
+  inject, injectable, interfaces, multiInject,
+} from 'inversify';
+import { ContainerSymbol } from '../symbols';
+import { InternalExportedMethodProvider } from './internal-exported-method-provider';
+import { exportedMethodContainerSymbol } from './symbols';
+
+@injectable()
+export class RollupExportedMethodProvider extends InternalExportedMethodProvider {
+  constructor(@inject(ContainerSymbol) container: interfaces.Container,
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    @multiInject(exportedMethodContainerSymbol) constructors: interfaces.Newable<Object>[]) {
+    super(container, undefined);
+    this.prepare(constructors);
+  }
+}
