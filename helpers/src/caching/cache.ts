@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 import { inject, injectable } from 'inversify';
-import { ILogger, LOGGING_TYPES } from '../logging';
+import * as logging from '../logging';
 import type { ICache } from './icache';
 import type { ICacheProvider } from './providers/icache-provider';
 import { ICacheProviderSymbol } from './symbols';
@@ -31,7 +31,7 @@ export class Cache implements ICache {
 
   private initialized = false;
 
-  public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
+  public constructor(@inject(logging.TYPES.ILogger) private readonly logger: logging.ILogger,
     @inject(ICacheProviderSymbol) private readonly provider: ICacheProvider) {
     this.logger.initialize(Cache.name);
   }
@@ -48,12 +48,14 @@ export class Cache implements ICache {
     );
   }
 
-  public get<T>(key: string, value: T): T {
+  public get<T>(key: string): T | null;
+  public get<T>(key: string, value: T): T;
+  public get<T>(key: string, value?: T): T | null {
     this.logger.debug(`Getting cache key '${key}'`);
     const json = this.provider.get(this.prefix, key);
     if (json === null) {
       this.logger.debug(`Key '${key}' not found in cache`);
-      return value;
+      return value !== undefined ? value : null;
     }
 
     this.logger.debug(`Key '${key}' found in cache with value '${json}'`);

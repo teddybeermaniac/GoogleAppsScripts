@@ -26,7 +26,7 @@ import { LogLevel } from './log-level';
 import { ILoggerSymbol } from './symbols';
 import { LoggingBuilder } from './logging-builder';
 
-export function addLogging(container: interfaces.Container,
+export function add(container: interfaces.Container,
   build: (builder: LoggingBuilder) => void): void {
   const builder = new LoggingBuilder(container);
   build(builder);
@@ -34,7 +34,7 @@ export function addLogging(container: interfaces.Container,
   container.bind<ILogger>(ILoggerSymbol).to(Logger).inTransientScope();
 }
 
-export const LOGGING_TYPES = {
+export const TYPES = {
   ILogger: ILoggerSymbol,
 };
 

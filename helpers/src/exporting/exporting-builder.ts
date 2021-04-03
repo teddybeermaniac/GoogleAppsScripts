@@ -25,12 +25,10 @@ import { exportedMethodContainerSymbol, exportedMethodContainerSymbolSymbol } fr
 export class ExportingBuilder {
   constructor(private readonly container: interfaces.Container) { }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public addContainer<T>(constructor: new (...args: any[]) => T, symbol: symbol): ExportingBuilder {
+  public addContainer<T>(constructor: interfaces.Newable<T>, symbol: symbol): ExportingBuilder {
     Reflect.defineMetadata(exportedMethodContainerSymbolSymbol, symbol, constructor);
     this.container.bind<interfaces.Newable<T>>(exportedMethodContainerSymbol)
       .toConstructor(constructor);
-    this.container.bind<T>(symbol).to(constructor).inTransientScope();
 
     return this;
   }

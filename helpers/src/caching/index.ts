@@ -25,7 +25,7 @@ import { CachingBuilder } from './caching-builder';
 import type { ICache } from './icache';
 import { ICacheSymbol } from './symbols';
 
-export function addCaching(container: interfaces.Container,
+export function add(container: interfaces.Container,
   build: (builder: CachingBuilder) => void): void {
   const builder = new CachingBuilder(container);
   build(builder);
@@ -33,7 +33,7 @@ export function addCaching(container: interfaces.Container,
   container.bind<ICache>(ICacheSymbol).to(Cache).inTransientScope();
 }
 
-export const CACHING_TYPES = {
+export const TYPES = {
   ICache: ICacheSymbol,
 };
 

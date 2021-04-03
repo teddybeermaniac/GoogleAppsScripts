@@ -26,7 +26,7 @@ import { ContainerSymbol } from './symbols';
 import * as caching from './caching';
 import * as exporting from './exporting';
 import * as logging from './logging';
-import * as interruptable_iterator from './interruptable-iterator';
+import * as utilities from './utilities';
 
 export function createContainer(): interfaces.Container {
   const container = new Container();
@@ -36,5 +36,5 @@ export function createContainer(): interfaces.Container {
 }
 
 export {
-  caching, exporting, logging, interruptable_iterator,
+  caching, exporting, logging, utilities,
 };

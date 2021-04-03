@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 import { inject, injectable } from 'inversify';
-import { ILogger, LOGGING_TYPES } from '../../logging';
+import * as logging from '../../logging';
 import type { ICacheProvider } from './icache-provider';
 
 @injectable()
@@ -33,7 +33,7 @@ export class AppsScriptCacheProvider implements ICacheProvider {
     return prefix ? `${prefix}_${key}` : key;
   }
 
-  public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {
+  public constructor(@inject(logging.TYPES.ILogger) private readonly logger: logging.ILogger) {
     this.cache = CacheService.getUserCache();
     this.logger.initialize(AppsScriptCacheProvider.name);
   }

@@ -21,6 +21,7 @@
  */
 export interface ICache {
   initialize(prefix?: string): void;
+  get<T>(key: string): T | null;
   get<T>(key: string, value: T): T;
   set<T>(key: string, value: T, ttl?: number): void;
   del(key: string): void;

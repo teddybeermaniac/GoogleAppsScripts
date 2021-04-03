@@ -19,8 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { injectable, interfaces, unmanaged } from 'inversify';
-import type { ILogger } from '../logging';
+import { injectable, interfaces } from 'inversify';
+import type * as logging from '../logging';
 import type { IExportedMethod } from './iexported-method';
 import type { IExportedMethodProvider } from './iexported-method-provider';
 import { exportedMethodContainerSymbolSymbol, exportedMethodsSymbol } from './symbols';
@@ -29,8 +29,8 @@ import { exportedMethodContainerSymbolSymbol, exportedMethodsSymbol } from './sy
 export class InternalExportedMethodProvider implements IExportedMethodProvider {
   private readonly exportedMethods: (IExportedMethod & { symbol: symbol })[] = [];
 
-  constructor(@unmanaged() private readonly container: interfaces.Container,
-    @unmanaged() private readonly logger: ILogger | undefined) { }
+  constructor(private readonly container: interfaces.Container,
+    private readonly logger: logging.ILogger | undefined) { }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   protected prepare(constructors: interfaces.Newable<Object>[]): void {
@@ -49,7 +49,7 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
       methods.forEach((method) => {
         this.exportedMethods.push({ ...method, symbol });
 
-        this.logger?.trace(
+        this.logger?.debug(
           `Method '${method.name}' from '${constructor.name}' is exported as '${method.exportedName}'`,
         );
       });
@@ -61,7 +61,7 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
   }
 
   public callExportedMethod(exportedName: string): void {
-    this.logger?.trace(`Calling exported method '${exportedName}'`);
+    this.logger?.debug(`Calling exported method '${exportedName}'`);
 
     const exportedMethod = this.exportedMethods
       .filter((method) => method.exportedName === exportedName)[0];
