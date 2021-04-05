@@ -21,5 +21,6 @@
  */
 export interface IExportedMethodProvider {
   getExportedMethods(): string[];
+  getExportedMethodName(symbol: symbol, name: string): string;
   callExportedMethod(exportedName: string): void;
 }

@@ -22,11 +22,12 @@
 import {
   inject, injectable, interfaces, multiInject,
 } from 'inversify';
-import { TYPES as UTILITIES_TYPES } from '../utilities';
+import { bindSymbol, TYPES as UTILITIES_TYPES } from '../utilities';
 import { InternalExportedMethodProvider } from './internal-exported-method-provider';
-import { exportedMethodContainerSymbol } from './symbols';
+import { exportedMethodContainerSymbol, RollupExportedMethodProviderSymbol } from './symbols';
 
 @injectable()
+@bindSymbol(RollupExportedMethodProviderSymbol)
 export class RollupExportedMethodProvider extends InternalExportedMethodProvider {
   constructor(@inject(UTILITIES_TYPES.Container) container: interfaces.Container,
     // eslint-disable-next-line @typescript-eslint/ban-types

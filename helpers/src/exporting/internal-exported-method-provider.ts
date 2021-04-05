@@ -60,6 +60,18 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
     return this.exportedMethods.map((method) => method.exportedName);
   }
 
+  public getExportedMethodName(symbol: symbol, name: string): string {
+    const exportedMethod = this.exportedMethods
+      .filter((method) => method.symbol === symbol && method.name === name)[0];
+    if (!exportedMethod) {
+      throw new Error(`Method '${name}' was not exported${symbol.description
+        ? ` from '${symbol.description}'`
+        : ''}`);
+    }
+
+    return exportedMethod.exportedName;
+  }
+
   public callExportedMethod(exportedName: string): void {
     this.logger?.debug(`Calling exported method '${exportedName}'`);
 

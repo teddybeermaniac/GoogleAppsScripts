@@ -19,12 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { interfaces } from 'inversify';
-import { getSymbol } from '../utilities';
-import type { InterruptableIterator } from './interruptable-iterator';
+import type { IInitializable } from '../utilities';
 
-export function addInterruptableIterator<TToken, TIterator extends InterruptableIterator<TToken>>(
-  container: interfaces.Container, constructor: interfaces.Newable<TIterator>,
-): void {
-  container.bind(getSymbol(constructor)).to(constructor).inSingletonScope();
+export interface ITriggerManager extends IInitializable {
+  addEveryMinutes(method: () => void, minutes: number, replace?: boolean): void;
+  addEveryHours(method: () => void, hours: number, replace?: boolean): void;
+  addEveryDays(method: () => void, days: number, replace?: boolean): void;
+  exists(method: () => void): boolean;
+  remove(method: () => void): void;
 }

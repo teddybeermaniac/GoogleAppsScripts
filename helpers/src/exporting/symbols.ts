@@ -20,5 +20,6 @@
  * SOFTWARE.
  */
 export const IExportedMethodProviderSymbol = Symbol.for('IExportedMethodProvider');
+export const RollupExportedMethodProviderSymbol = Symbol.for('__ROLLUP_EXPORTED_METHOD_PROVIDER__');
 export const exportedMethodContainerSymbol = Symbol('exportedMethodContainer');
 export const exportedMethodsSymbol = Symbol('exportMethods');

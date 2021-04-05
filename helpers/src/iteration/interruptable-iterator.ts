@@ -24,24 +24,32 @@ import type { ICache } from '../caching';
 import { exportMethod } from '../exporting';
 import type { ILogger } from '../logging';
 import type { IInterruptableIterator } from './iinterruptable-iterator';
+import type { ITriggerManager } from '../triggering';
 
 @injectable()
-export abstract class InterruptableIterator<T> implements IInterruptableIterator {
-  private static readonly MAXIMUM_RUNTIME = 6 * 60 * 1000;
+export abstract class InterruptableIterator<T> implements IInterruptableIterator<T> {
+  private static readonly TRIGGER_MINUTES = 1;
+
+  private static readonly MAXIMUM_RUNTIME_SECONDS = 6 * 60;
 
   private static readonly ITERATION_TIME_SAFETY_BUFFER = 1.5;
 
+  private static readonly RUNNING_KEY = 'running';
+
   private static readonly ITERATION_TOKEN_KEY = 'iterationToken';
+
+  private static readonly ITERATION_INITIAL_TOKEN_KEY = 'iterationInitialToken';
 
   private readonly started: number = Date.now();
 
-  private iterationsTime = 0;
+  private runTime = 0;
 
   private iterations = 0;
 
   private iterationStarted?: number;
 
-  public constructor(protected readonly logger: ILogger, protected readonly cache: ICache) { }
+  public constructor(protected readonly logger: ILogger, protected readonly cache: ICache,
+    private readonly triggerManager: ITriggerManager) { }
 
   protected abstract next(iterationToken: T | null): T | null;
 
@@ -51,14 +59,15 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
     if (iterationStarted) {
       const iterationTime = Date.now() - iterationStarted;
 
-      this.iterationsTime += iterationTime;
+      this.runTime += iterationTime;
       this.iterations += 1;
       this.logger.debug(`Iteration took ${iterationTime}ms`);
     }
 
     if (this.iterations > 0) {
-      const averageTime = this.iterationsTime / this.iterations;
-      const leftTime = InterruptableIterator.MAXIMUM_RUNTIME - (Date.now() - this.started);
+      const averageTime = this.runTime / this.iterations;
+      const leftTime = InterruptableIterator.MAXIMUM_RUNTIME_SECONDS * 1000
+        - (Date.now() - this.started);
       this.logger.debug(`Average iteration time ${averageTime}ms; time left ${leftTime}ms`);
 
       if (averageTime * InterruptableIterator.ITERATION_TIME_SAFETY_BUFFER > leftTime) {
@@ -71,15 +80,29 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   @exportMethod()
   public continue(): void {
-    this.logger.information('Continuing iteration');
-
-    if (this.isFinished()) {
-      this.logger.information('Nothing to do; exiting');
+    if (this.isRunning()) {
+      this.logger.information('Iteration currently running; exiting');
       return;
     }
 
+    if (this.isFinished()) {
+      this.logger.information('Iteration already ended; exiting');
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      this.triggerManager.remove(this.continue);
+
+      return;
+    }
+
+    this.logger.information('Continuing iteration');
+    this.cache.set(InterruptableIterator.RUNNING_KEY, true,
+      InterruptableIterator.MAXIMUM_RUNTIME_SECONDS);
     let iterationToken = this.cache.get<T>(InterruptableIterator.ITERATION_TOKEN_KEY);
-    do {
+    if (iterationToken === null) {
+      this.cache.get<T>(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY);
+      this.cache.del(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY);
+    }
+
+    while (iterationToken !== null) {
       if (!this.shouldContinue()) {
         this.logger.information('Not enough time left; exiting');
 
@@ -90,17 +113,49 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
       iterationToken = this.next(iterationToken);
 
       this.cache.set(InterruptableIterator.ITERATION_TOKEN_KEY, iterationToken);
-    } while (iterationToken !== null);
+    }
+
+    this.cache.set(InterruptableIterator.RUNNING_KEY, false);
+    if (iterationToken === null) {
+      this.logger.information('Iteration ended; exiting');
+      this.cache.clear();
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      this.triggerManager.remove(this.continue);
+    }
   }
 
-  public start(): void {
-    this.logger.information('Starting iteration');
+  public tryStart(iterationToken?: T): boolean {
+    if (this.isRunning()) {
+      this.logger.information('Iteration currently running');
+      return false;
+    }
 
-    // ! Implement triggers.
+    this.logger.information('Starting iteration; registering trigger');
     this.cache.clear();
+    if (iterationToken !== undefined) {
+      this.cache.set(InterruptableIterator.ITERATION_TOKEN_KEY, iterationToken,
+        InterruptableIterator.TRIGGER_MINUTES * 60 * 2);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    this.triggerManager.addEveryMinutes(this.continue, InterruptableIterator.TRIGGER_MINUTES);
+
+    return true;
+  }
+
+  public start(iterationToken?: T): void {
+    if (!this.tryStart(iterationToken)) {
+      throw new Error('Iteration currently running');
+    }
+  }
+
+  public isRunning(): boolean {
+    return this.cache.get<boolean>(InterruptableIterator.RUNNING_KEY, false);
   }
 
   public isFinished(): boolean {
-    return this.cache.get<boolean>(InterruptableIterator.ITERATION_TOKEN_KEY) === null;
+    return !this.isRunning()
+      && this.cache.get<T>(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY) === null
+      && this.cache.get<T>(InterruptableIterator.ITERATION_TOKEN_KEY) === null;
   }
 }

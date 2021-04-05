@@ -35,7 +35,7 @@ export function add(container: interfaces.Container,
 
   container.bind<IExportedMethodProvider>(getSymbol(ExportedMethodProvider))
     .to(ExportedMethodProvider).inSingletonScope();
-  container.bind<IExportedMethodProvider>('__ROLLUP_EXPORTED_METHOD_PROVIDER__')
+  container.bind<IExportedMethodProvider>(getSymbol(RollupExportedMethodProvider))
     .to(RollupExportedMethodProvider).inSingletonScope();
 }
 

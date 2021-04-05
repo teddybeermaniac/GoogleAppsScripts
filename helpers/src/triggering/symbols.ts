@@ -19,24 +19,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
-import { Container, interfaces } from 'inversify';
-import { TYPES as UTILITIES_TYPES } from './utilities';
-
-import * as caching from './caching';
-import * as exporting from './exporting';
-import * as iteration from './iteration';
-import * as logging from './logging';
-import * as triggering from './triggering';
-import * as utilities from './utilities';
-
-export function createContainer(): interfaces.Container {
-  const container = new Container();
-  container.bind<interfaces.Container>(UTILITIES_TYPES.Container).toConstantValue(container);
-
-  return container;
-}
-
-export {
-  caching, exporting, iteration, logging, triggering, utilities,
-};
+export const ITriggerManagerSymbol = Symbol('ITriggerManager');
