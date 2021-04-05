@@ -20,12 +20,13 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+
+import { getSymbol } from '../utilities';
 import type { ILoggerSettings } from './ilogger-settings';
-import type { ILoggerProvider } from './providers/ilogger-provider';
 import { AppsScriptLoggerProvider } from './providers/apps-script-logger-provider';
 import type { IAppsScriptLoggerProviderSettings } from './providers/iapps-script-logger-provider-settings';
+import type { ILoggerProvider } from './providers/ilogger-provider';
 import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerSettingsSymbol } from './symbols';
-import { getSymbol } from '../utilities';
 
 export class LoggingBuilder {
   private appScriptProvider = false;

@@ -20,11 +20,12 @@
  * SOFTWARE.
  */
 import { injectable } from 'inversify';
+
 import type { ICache } from '../caching';
 import { exportMethod } from '../exporting';
 import type { ILogger } from '../logging';
-import type { IInterruptableIterator } from './iinterruptable-iterator';
 import type { ITriggerManager } from '../triggering';
+import type { IInterruptableIterator } from './iinterruptable-iterator';
 
 @injectable()
 export abstract class InterruptableIterator<T> implements IInterruptableIterator<T> {

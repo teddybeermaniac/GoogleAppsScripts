@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+
 import { getSymbol } from '../utilities';
 import { AppsScriptCacheProvider } from './providers/apps-script-cache-provider';
 import type { ICacheProvider } from './providers/icache-provider';

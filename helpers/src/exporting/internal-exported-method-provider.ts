@@ -20,11 +20,12 @@
  * SOFTWARE.
  */
 import { injectable, interfaces } from 'inversify';
+
 import type { ILogger } from '../logging';
+import { getSymbol } from '../utilities';
 import type { IExportedMethod } from './iexported-method';
 import type { IExportedMethodProvider } from './iexported-method-provider';
 import { exportedMethodsSymbol } from './symbols';
-import { getSymbol } from '../utilities';
 
 @injectable()
 export class InternalExportedMethodProvider implements IExportedMethodProvider {

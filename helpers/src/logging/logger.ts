@@ -22,12 +22,13 @@
 import {
   inject, injectable, interfaces, multiInject, optional,
 } from 'inversify';
-import { ILoggerSettingsSymbol, ILoggerProviderSymbol, ILoggerSymbol } from './symbols';
-import type { ILogger } from './ilogger';
-import { LogLevel } from './log-level';
-import type { ILoggerSettings } from './ilogger-settings';
-import type { ILoggerProvider } from './providers/ilogger-provider';
+
 import { bindSymbol, getOwnerType } from '../utilities';
+import type { ILogger } from './ilogger';
+import type { ILoggerSettings } from './ilogger-settings';
+import { LogLevel } from './log-level';
+import type { ILoggerProvider } from './providers/ilogger-provider';
+import { ILoggerProviderSymbol, ILoggerSettingsSymbol, ILoggerSymbol } from './symbols';
 
 @injectable()
 @bindSymbol(ILoggerSymbol)

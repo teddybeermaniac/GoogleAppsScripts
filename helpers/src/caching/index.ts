@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+
 import { getSymbol, onInitializableActivation } from '../utilities';
 import { Cache } from './cache';
 import { CachingBuilder } from './caching-builder';
@@ -39,4 +40,6 @@ export const TYPES = {
   ICache: ICacheSymbol,
 };
 
-export type { ICache };
+export type {
+  ICache,
+};

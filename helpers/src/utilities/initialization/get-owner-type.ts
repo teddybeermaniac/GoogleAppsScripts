@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+
 import { getSymbol } from '../binding/get-symbol';
 
 export function getOwnerType<T>(context: interfaces.Context, constructor: interfaces.Newable<T>):

@@ -20,12 +20,13 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
-import { Logger } from './logger';
+
+import { getSymbol, onInitializableActivation } from '../utilities';
 import type { ILogger } from './ilogger';
 import { LogLevel } from './log-level';
-import { ILoggerSymbol } from './symbols';
+import { Logger } from './logger';
 import { LoggingBuilder } from './logging-builder';
-import { getSymbol, onInitializableActivation } from '../utilities';
+import { ILoggerSymbol } from './symbols';
 
 export function add(container: interfaces.Container,
   build: (builder: LoggingBuilder) => void): void {
@@ -40,6 +41,10 @@ export const TYPES = {
   ILogger: ILoggerSymbol,
 };
 
-export type { ILogger };
+export type {
+  ILogger,
+};
 
-export { LogLevel };
+export {
+  LogLevel,
+};

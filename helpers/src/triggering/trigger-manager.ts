@@ -20,10 +20,11 @@
  * SOFTWARE.
  */
 import { inject, injectable, interfaces } from 'inversify';
-import type { ITriggerManager } from './itrigger-manager';
+
 import { IExportedMethodProvider, TYPES as EXPORTING_TYPES } from '../exporting';
 import { ILogger, TYPES as LOGGING_TYPES } from '../logging';
 import { bindSymbol, getOwnerType, getSymbol } from '../utilities';
+import type { ITriggerManager } from './itrigger-manager';
 import { ITriggerManagerSymbol } from './symbols';
 
 @injectable()

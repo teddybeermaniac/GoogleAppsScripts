@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 import { bindSymbol } from './binding/bind-symbol';
-import { getOwnerType } from './initialization/get-owner-type';
 import { getSymbol } from './binding/get-symbol';
+import { getOwnerType } from './initialization/get-owner-type';
 import type { IInitializable } from './initialization/iinitializable';
 import { onInitializableActivation } from './initialization/on-initializable-activation';
 import { ContainerSymbol } from './symbols';
@@ -30,8 +30,13 @@ export const TYPES = {
   Container: ContainerSymbol,
 };
 
-export {
-  bindSymbol, getOwnerType, getSymbol, onInitializableActivation,
+export type {
+  IInitializable,
 };
 
-export type { IInitializable };
+export {
+  bindSymbol,
+  getOwnerType,
+  getSymbol,
+  onInitializableActivation,
+};

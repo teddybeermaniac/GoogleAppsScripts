@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+
 import { getSymbol } from '../utilities';
 import type { IInterruptableIterator } from './iinterruptable-iterator';
 import { InterruptableIterator } from './interruptable-iterator';
@@ -30,5 +31,10 @@ export function addInterruptableIterator<TToken, TIterator extends Interruptable
   container.bind(getSymbol(constructor)).to(constructor).inSingletonScope();
 }
 
-export { InterruptableIterator };
-export type { IInterruptableIterator };
+export type {
+  IInterruptableIterator,
+};
+
+export {
+  InterruptableIterator,
+};

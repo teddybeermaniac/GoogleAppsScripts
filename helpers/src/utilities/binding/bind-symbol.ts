@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+
 import { BindSymbolSymbol } from '../symbols';
 
 export function bindSymbol<T>(symbol: symbol): (constructor: interfaces.Newable<T>) => void {

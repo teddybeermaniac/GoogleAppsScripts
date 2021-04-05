@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import { inject, injectable } from 'inversify';
+
 import { ILogger, TYPES as LOGGING_TYPES } from '../../logging';
 import { bindSymbol } from '../../utilities';
 import { ICacheProviderSymbol } from '../symbols';
