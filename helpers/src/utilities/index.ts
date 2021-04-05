@@ -24,8 +24,14 @@ import { getOwnerType } from './get-owner-type';
 import { getSymbol } from './get-symbol';
 import type { IInitializable } from './iinitializable';
 import { onInitializableActivation } from './on-initializable-activation';
+import { ContainerSymbol } from './symbols';
+
+export const TYPES = {
+  Container: ContainerSymbol,
+};
 
 export {
   bindSymbol, getOwnerType, getSymbol, onInitializableActivation,
 };
+
 export type { IInitializable };

@@ -21,7 +21,7 @@
  */
 import 'core-js';
 import { Container, interfaces } from 'inversify';
-import { ContainerSymbol } from './symbols';
+import { TYPES as UTILITIES_TYPES } from './utilities';
 
 import * as caching from './caching';
 import * as exporting from './exporting';
@@ -31,7 +31,7 @@ import * as utilities from './utilities';
 
 export function createContainer(): interfaces.Container {
   const container = new Container();
-  container.bind<interfaces.Container>(ContainerSymbol).toConstantValue(container);
+  container.bind<interfaces.Container>(UTILITIES_TYPES.Container).toConstantValue(container);
 
   return container;
 }

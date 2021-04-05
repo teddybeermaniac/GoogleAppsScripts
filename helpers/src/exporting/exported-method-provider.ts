@@ -23,15 +23,14 @@ import {
   inject, injectable, interfaces, multiInject,
 } from 'inversify';
 import { ILogger, TYPES as LOGGING_TYPES } from '../logging';
-import { ContainerSymbol } from '../symbols';
-import { bindSymbol } from '../utilities';
+import { bindSymbol, TYPES as UTILITIES_TYPES } from '../utilities';
 import { InternalExportedMethodProvider } from './internal-exported-method-provider';
 import { exportedMethodContainerSymbol, IExportedMethodProviderSymbol } from './symbols';
 
 @injectable()
 @bindSymbol(IExportedMethodProviderSymbol)
 export class ExportedMethodProvider extends InternalExportedMethodProvider {
-  constructor(@inject(ContainerSymbol) container: interfaces.Container,
+  constructor(@inject(UTILITIES_TYPES.Container) container: interfaces.Container,
     // eslint-disable-next-line @typescript-eslint/ban-types
     @multiInject(exportedMethodContainerSymbol) constructors: interfaces.Newable<Object>[],
     @inject(LOGGING_TYPES.ILogger) logger: ILogger) {

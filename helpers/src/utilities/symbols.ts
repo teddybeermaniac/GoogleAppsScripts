@@ -20,3 +20,4 @@
  * SOFTWARE.
  */
 export const BindSymbolSymbol = Symbol('BindSymbol');
+export const ContainerSymbol = Symbol('Container');
