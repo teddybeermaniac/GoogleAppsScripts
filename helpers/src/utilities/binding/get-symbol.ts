@@ -20,10 +20,8 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
-import { BindSymbolSymbol } from './symbols';
+import { BindSymbolSymbol } from '../symbols';
 
-export function bindSymbol<T>(symbol: symbol): (constructor: interfaces.Newable<T>) => void {
-  return (constructor: interfaces.Newable<T>) => {
-    Reflect.defineMetadata(BindSymbolSymbol, symbol, constructor);
-  };
+export function getSymbol<T>(constructor: interfaces.Newable<T>): symbol {
+  return <symbol>Reflect.getMetadata(BindSymbolSymbol, constructor);
 }

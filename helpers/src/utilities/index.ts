@@ -19,11 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bindSymbol } from './bind-symbol';
-import { getOwnerType } from './get-owner-type';
-import { getSymbol } from './get-symbol';
-import type { IInitializable } from './iinitializable';
-import { onInitializableActivation } from './on-initializable-activation';
+import { bindSymbol } from './binding/bind-symbol';
+import { getOwnerType } from './initialization/get-owner-type';
+import { getSymbol } from './binding/get-symbol';
+import type { IInitializable } from './initialization/iinitializable';
+import { onInitializableActivation } from './initialization/on-initializable-activation';
 import { ContainerSymbol } from './symbols';
 
 export const TYPES = {

@@ -20,8 +20,29 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
-import { BindSymbolSymbol } from './symbols';
+import { getSymbol } from '../binding/get-symbol';
 
-export function getSymbol<T>(constructor: interfaces.Newable<T>): symbol {
-  return <symbol>Reflect.getMetadata(BindSymbolSymbol, constructor);
+export function getOwnerType<T>(context: interfaces.Context, constructor: interfaces.Newable<T>):
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interfaces.Newable<any> {
+  const symbol = getSymbol(constructor);
+  let request = context.currentRequest;
+  let found = false;
+  while (!found) {
+    if (request.serviceIdentifier === symbol) {
+      found = true;
+    }
+
+    if (request.parentRequest) {
+      request = request.parentRequest;
+    } else {
+      throw new Error('Unknown error');
+    }
+  }
+
+  if (!request.bindings[0]?.implementationType) {
+    throw new Error('Unknown error');
+  }
+
+  return request.bindings[0].implementationType;
 }
