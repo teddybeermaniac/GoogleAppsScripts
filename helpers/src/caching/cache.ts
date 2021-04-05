@@ -70,6 +70,15 @@ export class Cache implements ICache {
     return <T>JSON.parse(json);
   }
 
+  public pop<T>(key: string): T | null;
+  public pop<T>(key: string, value: T): T;
+  public pop<T>(key: string, value?: T): T | null {
+    const result = this.get(key, value) ?? null;
+    this.del(key);
+
+    return result;
+  }
+
   public set<T>(key: string, value: T, ttl?: number): void {
     const json = JSON.stringify(value);
     this.logger.debug(

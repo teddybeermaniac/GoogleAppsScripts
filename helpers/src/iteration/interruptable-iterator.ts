@@ -98,8 +98,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
       InterruptableIterator.MAXIMUM_RUNTIME_SECONDS);
     let iterationToken = this.cache.get<T>(InterruptableIterator.ITERATION_TOKEN_KEY);
     if (iterationToken === null) {
-      this.cache.get<T>(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY);
-      this.cache.del(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY);
+      iterationToken = this.cache.pop<T>(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY);
     }
 
     while (iterationToken !== null) {

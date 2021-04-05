@@ -24,6 +24,8 @@ import type { IInitializable } from '../utilities';
 export interface ICache extends IInitializable {
   get<T>(key: string): T | null;
   get<T>(key: string, value: T): T;
+  pop<T>(key: string): T | null;
+  pop<T>(key: string, value: T): T;
   set<T>(key: string, value: T, ttl?: number): void;
   del(key: string): void;
   clear(): void;
