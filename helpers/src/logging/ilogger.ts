@@ -19,8 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface ILogger {
-  initialize(name: string): void;
+import type { IInitializable } from '../utilities';
+
+export interface ILogger extends IInitializable {
   trace(name: string): void;
   debug(message: string): void;
   information(message: string): void;

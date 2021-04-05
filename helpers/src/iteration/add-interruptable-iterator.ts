@@ -20,23 +20,11 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
-import { getSymbol, onInitializableActivation } from '../utilities';
-import { Cache } from './cache';
-import { CachingBuilder } from './caching-builder';
-import type { ICache } from './icache';
-import { ICacheSymbol } from './symbols';
+import { getSymbol } from '../utilities';
+import type { InterruptableIterator } from './interruptable-iterator';
 
-export function add(container: interfaces.Container,
-  build: (builder: CachingBuilder) => void): void {
-  const builder = new CachingBuilder(container);
-  build(builder);
-
-  container.bind<ICache>(getSymbol(Cache)).to(Cache).inTransientScope()
-    .onActivation(onInitializableActivation);
+export function addInterruptableIterator<TToken, TIterator extends InterruptableIterator<TToken>>(
+  container: interfaces.Container, constructor: interfaces.Newable<TIterator>,
+): void {
+  container.bind(getSymbol(constructor)).to(constructor).inSingletonScope();
 }
-
-export const TYPES = {
-  ICache: ICacheSymbol,
-};
-
-export type { ICache };

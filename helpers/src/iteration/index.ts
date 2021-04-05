@@ -19,24 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { interfaces } from 'inversify';
-import { getSymbol, onInitializableActivation } from '../utilities';
-import { Cache } from './cache';
-import { CachingBuilder } from './caching-builder';
-import type { ICache } from './icache';
-import { ICacheSymbol } from './symbols';
+import { addInterruptableIterator } from './add-interruptable-iterator';
+import type { IInterruptableIterator } from './iinterruptable-iterator';
+import { InterruptableIterator } from './interruptable-iterator';
 
-export function add(container: interfaces.Container,
-  build: (builder: CachingBuilder) => void): void {
-  const builder = new CachingBuilder(container);
-  build(builder);
-
-  container.bind<ICache>(getSymbol(Cache)).to(Cache).inTransientScope()
-    .onActivation(onInitializableActivation);
-}
-
-export const TYPES = {
-  ICache: ICacheSymbol,
-};
-
-export type { ICache };
+export { addInterruptableIterator, InterruptableIterator };
+export type { IInterruptableIterator };

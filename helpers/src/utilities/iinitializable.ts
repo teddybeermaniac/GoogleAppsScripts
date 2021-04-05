@@ -20,23 +20,7 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
-import { getSymbol, onInitializableActivation } from '../utilities';
-import { Cache } from './cache';
-import { CachingBuilder } from './caching-builder';
-import type { ICache } from './icache';
-import { ICacheSymbol } from './symbols';
 
-export function add(container: interfaces.Container,
-  build: (builder: CachingBuilder) => void): void {
-  const builder = new CachingBuilder(container);
-  build(builder);
-
-  container.bind<ICache>(getSymbol(Cache)).to(Cache).inTransientScope()
-    .onActivation(onInitializableActivation);
+export interface IInitializable {
+  initialize(context: interfaces.Context): void;
 }
-
-export const TYPES = {
-  ICache: ICacheSymbol,
-};
-
-export type { ICache };

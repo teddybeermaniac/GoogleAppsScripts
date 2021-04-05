@@ -22,9 +22,9 @@
 import {
   inject, injectable, interfaces, multiInject,
 } from 'inversify';
-import * as logging from '../logging';
+import { ILogger, TYPES as LOGGING_TYPES } from '../logging';
 import { ContainerSymbol } from '../symbols';
-import { bindSymbol } from '../utilities/bind-symbol';
+import { bindSymbol } from '../utilities';
 import { InternalExportedMethodProvider } from './internal-exported-method-provider';
 import { exportedMethodContainerSymbol, IExportedMethodProviderSymbol } from './symbols';
 
@@ -34,7 +34,7 @@ export class ExportedMethodProvider extends InternalExportedMethodProvider {
   constructor(@inject(ContainerSymbol) container: interfaces.Container,
     // eslint-disable-next-line @typescript-eslint/ban-types
     @multiInject(exportedMethodContainerSymbol) constructors: interfaces.Newable<Object>[],
-    @inject(logging.TYPES.ILogger) logger: logging.ILogger) {
+    @inject(LOGGING_TYPES.ILogger) logger: ILogger) {
     super(container, logger);
     this.prepare(constructors);
   }

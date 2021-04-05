@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { inject, injectable } from 'inversify';
-import * as logging from '../logging';
-import { bindSymbol } from '../utilities/bind-symbol';
+import { inject, injectable, interfaces } from 'inversify';
+import { ILogger, TYPES as LOGGING_TYPES } from '../logging';
+import { bindSymbol, getOwnerType } from '../utilities';
 import type { ICache } from './icache';
 import type { ICacheProvider } from './providers/icache-provider';
 import { ICacheProviderSymbol, ICacheSymbol } from './symbols';
@@ -29,25 +29,31 @@ import { ICacheProviderSymbol, ICacheSymbol } from './symbols';
 @injectable()
 @bindSymbol(ICacheSymbol)
 export class Cache implements ICache {
-  private prefix: string | undefined;
+  private _prefix: string | undefined;
 
   private initialized = false;
 
-  public constructor(@inject(logging.TYPES.ILogger) private readonly logger: logging.ILogger,
+  public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(ICacheProviderSymbol) private readonly provider: ICacheProvider) {
-    this.logger.initialize(Cache.name);
   }
 
-  public initialize(prefix?: string): void {
+  private get prefix(): string {
+    if (!this.initialized || this._prefix === undefined) {
+      throw new Error('Not initialized');
+    }
+
+    return this._prefix;
+  }
+
+  public initialize(context: interfaces.Context): void {
     if (this.initialized) {
       throw new Error('Already initialized');
     }
 
-    this.prefix = prefix;
+    const owner = getOwnerType(context, Cache);
+    this._prefix = owner.name;
     this.initialized = true;
-    this.logger.debug(
-      `Initialized${this.prefix ? ` with a '${this.prefix}' prefix` : ' without a prefix'}`,
-    );
+    this.logger.debug(`Initialized with a '${this.prefix}' prefix`);
   }
 
   public get<T>(key: string): T | null;

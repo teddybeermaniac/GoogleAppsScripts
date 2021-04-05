@@ -25,14 +25,15 @@ import type { ILogger } from './ilogger';
 import { LogLevel } from './log-level';
 import { ILoggerSymbol } from './symbols';
 import { LoggingBuilder } from './logging-builder';
-import { getSymbol } from '../utilities/get-symbol';
+import { getSymbol, onInitializableActivation } from '../utilities';
 
 export function add(container: interfaces.Container,
   build: (builder: LoggingBuilder) => void): void {
   const builder = new LoggingBuilder(container);
   build(builder);
 
-  container.bind<ILogger>(getSymbol(Logger)).to(Logger).inTransientScope();
+  container.bind<ILogger>(getSymbol(Logger)).to(Logger).inTransientScope()
+    .onActivation(onInitializableActivation);
 }
 
 export const TYPES = {

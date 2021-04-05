@@ -20,25 +20,33 @@
  * SOFTWARE.
  */
 import {
-  inject, injectable, multiInject, optional,
+  inject, injectable, interfaces, multiInject, optional,
 } from 'inversify';
 import { ILoggerSettingsSymbol, ILoggerProviderSymbol, ILoggerSymbol } from './symbols';
 import type { ILogger } from './ilogger';
 import { LogLevel } from './log-level';
 import type { ILoggerSettings } from './ilogger-settings';
 import type { ILoggerProvider } from './providers/ilogger-provider';
-import { bindSymbol } from '../utilities/bind-symbol';
+import { bindSymbol, getOwnerType } from '../utilities';
 
 @injectable()
 @bindSymbol(ILoggerSymbol)
 export class Logger implements ILogger {
-  private name: string | undefined;
+  private _name: string | undefined;
 
   private initialized = false;
 
   public constructor(@inject(ILoggerSettingsSymbol) @optional()
   private readonly settings: ILoggerSettings,
   @multiInject(ILoggerProviderSymbol) private readonly providers: ILoggerProvider[]) {
+  }
+
+  private get name(): string {
+    if (!this.initialized || this._name === undefined) {
+      throw new Error('Not initialized');
+    }
+
+    return this._name;
   }
 
   private log(level: LogLevel, message: string, error: Error | undefined) {
@@ -56,12 +64,13 @@ export class Logger implements ILogger {
     });
   }
 
-  public initialize(name: string): void {
+  public initialize(context: interfaces.Context): void {
     if (this.initialized) {
       throw new Error('Already initialized');
     }
 
-    this.name = name;
+    const owner = getOwnerType(context, Logger);
+    this._name = owner.name;
     this.initialized = true;
   }
 

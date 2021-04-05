@@ -25,7 +25,7 @@ import { LogLevel } from '../log-level';
 import type { ILoggerProvider } from './ilogger-provider';
 import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../symbols';
 import type { IAppsScriptLoggerProviderSettings } from './iapps-script-logger-provider-settings';
-import { bindSymbol } from '../../utilities/bind-symbol';
+import { bindSymbol } from '../../utilities';
 
 @injectable()
 @bindSymbol(ILoggerProviderSymbol)
@@ -33,7 +33,7 @@ export class AppsScriptLoggerProvider implements ILoggerProvider {
   constructor(@inject(IAppsScriptLoggerProviderSettingsSymbol) @optional()
   private readonly settings: IAppsScriptLoggerProviderSettings) { }
 
-  public log(name: string | undefined, level: LogLevel, message: string, error: Error | undefined):
+  public log(name: string, level: LogLevel, message: string, error: Error | undefined):
   void {
     if (this.settings && this.settings.level !== undefined && level < this.settings.level) {
       return;
@@ -57,11 +57,9 @@ export class AppsScriptLoggerProvider implements ILoggerProvider {
         break;
     }
 
-    const fullMessage = (name ? `[${name}] ` : '')
-      + message
-      + (level === LogLevel.Error && error
-        ? `; ${error.name}: ${error.message}${error.stack ? `; ${error.stack}` : ''}`
-        : '');
+    const fullMessage = `[${name}] ${message}${level === LogLevel.Error && error
+      ? `; ${error.name}: ${error.message}${error.stack ? `; ${error.stack}` : ''}`
+      : ''}`;
 
     method(fullMessage);
   }

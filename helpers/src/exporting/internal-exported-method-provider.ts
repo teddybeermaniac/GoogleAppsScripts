@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 import { injectable, interfaces } from 'inversify';
-import type * as logging from '../logging';
+import type { ILogger } from '../logging';
 import type { IExportedMethod } from './iexported-method';
 import type { IExportedMethodProvider } from './iexported-method-provider';
 import { exportedMethodsSymbol } from './symbols';
-import { getSymbol } from '../utilities/get-symbol';
+import { getSymbol } from '../utilities';
 
 @injectable()
 export class InternalExportedMethodProvider implements IExportedMethodProvider {
@@ -32,11 +32,10 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
   (IExportedMethod & { exportedName: string, symbol: symbol })[] = [];
 
   constructor(private readonly container: interfaces.Container,
-    private readonly logger: logging.ILogger | undefined) { }
+    private readonly logger: ILogger | undefined) { }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   protected prepare(constructors: interfaces.Newable<Object>[]): void {
-    this.logger?.initialize(InternalExportedMethodProvider.name);
     this.logger?.trace(`Found ${constructors.length} exported method containers`);
     constructors.forEach((constructor) => {
       this.logger?.trace(`Processing '${constructor.name}'`);

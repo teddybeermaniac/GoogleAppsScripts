@@ -19,8 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface ICache {
-  initialize(prefix?: string): void;
+import type { IInitializable } from '../utilities';
+
+export interface ICache extends IInitializable {
   get<T>(key: string): T | null;
   get<T>(key: string, value: T): T;
   set<T>(key: string, value: T, ttl?: number): void;

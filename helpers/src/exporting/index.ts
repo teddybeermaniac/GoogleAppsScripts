@@ -26,7 +26,7 @@ import type { IExportedMethodProvider } from './iexported-method-provider';
 import { IExportedMethodProviderSymbol } from './symbols';
 import { ExportedMethodProvider } from './exported-method-provider';
 import { RollupExportedMethodProvider } from './rollup-exported-method-provider';
-import { getSymbol } from '../utilities/get-symbol';
+import { getSymbol } from '../utilities';
 
 export function add(container: interfaces.Container,
   build: (builder: ExportingBuilder) => void): void {

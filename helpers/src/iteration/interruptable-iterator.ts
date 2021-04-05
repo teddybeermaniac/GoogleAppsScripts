@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 import { injectable } from 'inversify';
-import * as caching from '../caching';
-import * as exporting from '../exporting';
-import * as logging from '../logging';
+import type { ICache } from '../caching';
+import { exportMethod } from '../exporting';
+import type { ILogger } from '../logging';
 import type { IInterruptableIterator } from './iinterruptable-iterator';
 
 @injectable()
@@ -41,9 +41,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   private iterationStarted?: number;
 
-  public constructor(protected readonly logger: logging.ILogger,
-    protected readonly cache: caching.ICache) {
-  }
+  public constructor(protected readonly logger: ILogger, protected readonly cache: ICache) { }
 
   protected abstract next(iterationToken: T | null): T | null;
 
@@ -71,7 +69,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
     return true;
   }
 
-  @exporting.exportMethod()
+  @exportMethod()
   public continue(): void {
     this.logger.information('Continuing iteration');
 

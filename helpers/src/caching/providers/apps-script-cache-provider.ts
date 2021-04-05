@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 import { inject, injectable } from 'inversify';
-import * as logging from '../../logging';
-import { bindSymbol } from '../../utilities/bind-symbol';
+import { ILogger, TYPES as LOGGING_TYPES } from '../../logging';
+import { bindSymbol } from '../../utilities';
 import { ICacheProviderSymbol } from '../symbols';
 import type { ICacheProvider } from './icache-provider';
 
@@ -32,30 +32,29 @@ export class AppsScriptCacheProvider implements ICacheProvider {
 
   private readonly cache: GoogleAppsScript.Cache.Cache;
 
-  private static getKey(prefix: string | undefined, key: string): string {
-    return prefix ? `${prefix}_${key}` : key;
+  private static getKey(prefix: string, key: string): string {
+    return `${prefix}_${key}`;
   }
 
-  public constructor(@inject(logging.TYPES.ILogger) private readonly logger: logging.ILogger) {
+  public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {
     this.cache = CacheService.getUserCache();
-    this.logger.initialize(AppsScriptCacheProvider.name);
   }
 
-  private getAllKeys(prefix: string | undefined): string[] {
+  private getAllKeys(prefix: string): string[] {
     const allKeysJson = this.get(prefix, AppsScriptCacheProvider.ALL_KEYS_KEY);
 
     return allKeysJson ? <string[]>JSON.parse(allKeysJson) : [];
   }
 
-  public get(prefix: string | undefined, key: string): string | null {
+  public get(prefix: string, key: string): string | null {
     this.logger.trace(
-      `Getting cache key '${key}'${prefix ? ` with a prefix '${prefix}'` : ''}`,
+      `Getting cache key '${key}' with a prefix '${prefix}'`,
     );
 
     return this.cache.get(AppsScriptCacheProvider.getKey(prefix, key));
   }
 
-  public set(prefix: string | undefined, key: string, value: string, ttl: number | undefined):
+  public set(prefix: string, key: string, value: string, ttl: number | undefined):
   void {
     if (key !== AppsScriptCacheProvider.ALL_KEYS_KEY) {
       const allKeys = this.getAllKeys(prefix);
@@ -67,7 +66,7 @@ export class AppsScriptCacheProvider implements ICacheProvider {
     }
 
     this.logger.trace(
-      `Setting cache key '${key}'${prefix ? ` with a prefix '${prefix}'` : ''}${ttl !== undefined ? ` with a TTL of ${ttl}` : ''} to a value of '${value}'`,
+      `Setting cache key '${key}' with a prefix '${prefix}'${ttl !== undefined ? ` with a TTL of ${ttl}` : ''} to a value of '${value}'`,
     );
     if (ttl !== undefined) {
       this.cache.put(AppsScriptCacheProvider.getKey(prefix, key), value, ttl);
@@ -76,8 +75,8 @@ export class AppsScriptCacheProvider implements ICacheProvider {
     }
   }
 
-  public del(prefix: string | undefined, key: string): void {
-    this.logger.trace(`Deleting cache key '${key}'${prefix ? ` with a prefix '${prefix}'` : ''}`);
+  public del(prefix: string, key: string): void {
+    this.logger.trace(`Deleting cache key '${key}' with a prefix '${prefix}'`);
     this.cache.remove(AppsScriptCacheProvider.getKey(prefix, key));
 
     const allKeys = this.getAllKeys(prefix);
@@ -88,12 +87,12 @@ export class AppsScriptCacheProvider implements ICacheProvider {
     }
   }
 
-  public clear(prefix: string | undefined): void {
+  public clear(prefix: string): void {
     let allKeys = this.getAllKeys(prefix);
     allKeys = [...allKeys, AppsScriptCacheProvider.ALL_KEYS_KEY];
 
     this.logger.trace(
-      `Deleting cache keys '${allKeys.join('\', \'')}'${prefix ? ` with a prefix '${prefix}'` : ''}`,
+      `Deleting cache keys '${allKeys.join('\', \'')}' with a prefix '${prefix}'`,
     );
     this.cache.removeAll(allKeys.map((key) => AppsScriptCacheProvider.getKey(prefix, key)));
   }

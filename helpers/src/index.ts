@@ -25,6 +25,7 @@ import { ContainerSymbol } from './symbols';
 
 import * as caching from './caching';
 import * as exporting from './exporting';
+import * as iteration from './iteration';
 import * as logging from './logging';
 import * as utilities from './utilities';
 
@@ -36,5 +37,5 @@ export function createContainer(): interfaces.Container {
 }
 
 export {
-  caching, exporting, logging, utilities,
+  caching, exporting, iteration, logging, utilities,
 };
