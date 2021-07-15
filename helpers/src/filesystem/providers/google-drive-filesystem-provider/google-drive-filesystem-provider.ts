@@ -24,7 +24,7 @@ import { inject, injectable } from 'inversify';
 import { SimpleIterator } from '../../../iteration/simple-iterator';
 import { ILogger, TYPES as LOGGING_TYPES } from '../../../logging';
 import { bindSymbol } from '../../../utilities';
-import type { Item } from '../../item';
+import type { IItem } from '../../iitem';
 import { IFilesystemProviderSymbol } from '../../symbols';
 import type { IFilesystemProvider } from '../ifilesystem-provider';
 import { GoogleDriveFile } from './google-drive-file';
@@ -34,14 +34,18 @@ import { GoogleDriveShortcut } from './google-drive-shortcut';
 @injectable()
 @bindSymbol(IFilesystemProviderSymbol)
 export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
+  private readonly FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
+
+  private readonly SHORTCUT_MIME_TYPE = 'application/vnd.google-apps.shortcut';
+
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {
   }
 
   private getPathFromId(id: string): string {
-    this.logger.trace(`Getting path for item with id ${id}`);
+    this.logger.trace(`Getting path for item with id '${id}'`);
     const rootFolder = DriveApp.getRootFolder();
     if (id === rootFolder.getId()) {
-      this.logger.trace(`Item with id ${id} is the root folder`);
+      this.logger.trace(`Item with id '${id}' is the root folder`);
       return '/';
     }
 
@@ -52,11 +56,7 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     };
     item = DriveApp.getFileById(id);
     if (item === null) {
-      item = DriveApp.getFolderById(id);
-    }
-
-    if (item === null) {
-      throw new Error(`Item with id ${id} does not exist`);
+      throw new Error(`Item with id '${id}' does not exist`);
     }
 
     let path = `/${item.getName()}`;
@@ -74,8 +74,8 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     return path;
   }
 
-  private getIdFromPath(path: string, folder: boolean): string {
-    this.logger.trace(`Getting id for item with path ${path}`);
+  private getIdFromPath(path: string, folder?: boolean): string {
+    this.logger.trace(`Getting id for item with path '${path}'`);
     const segments = path.split('/').slice(1);
     let segmentFolder = DriveApp.getRootFolder();
     for (let i = 0; i < segments.length; i += 1) {
@@ -84,47 +84,54 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       childIterator = segmentFolder.getFoldersByName(segments[i]!);
       if (!childIterator.hasNext()) {
-        if (i < segments.length - 1 || folder) {
-          throw new Error(`Path ${path} is not valid`);
+        if (i < segments.length - 1 || folder === true) {
+          throw new Error(`Path '${path}' is not valid`);
         }
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         childIterator = segmentFolder.getFilesByName(segments[i]!);
         if (childIterator.hasNext()) {
-          return (childIterator as GoogleAppsScript.Drive.FileIterator)
-            .next()
-            .getId();
+          const segmentFile = (childIterator as GoogleAppsScript.Drive.FileIterator)
+            .next();
+          if (childIterator.hasNext()) {
+            throw new Error(`Duplicate item '${segmentFolder.getName()}' in path '${path}'`);
+          }
+
+          return segmentFile.getId();
         }
-      } else if (i === segments.length - 1 && !folder) {
-        throw new Error(`Path ${path} is not valid`);
+      } else if (i === segments.length - 1 && folder === false) {
+        throw new Error(`Path '${path}' is not valid`);
       }
 
       segmentFolder = (childIterator as GoogleAppsScript.Drive.FolderIterator).next();
+      if (childIterator.hasNext()) {
+        throw new Error(`Duplicate item '${segmentFolder.getName()}' in path '${path}'`);
+      }
     }
 
     return segmentFolder.getId();
   }
 
-  public list(path: string): Item[] {
-    this.logger.debug(`Listing path ${path}`);
+  public list(path: string): IItem[] {
+    this.logger.trace(`Listing path '${path}'`);
     const rootFolder = DriveApp.getFolderById(this.getIdFromPath(path, true));
     if (rootFolder === null) {
-      throw new Error(`Path ${path} is not valid`);
+      throw new Error(`Path '${path}' is not valid`);
     }
 
-    const items: Item[] = [];
+    const items: IItem[] = [];
     this.logger.trace('Getting folders');
     new SimpleIterator(rootFolder.getFolders())
       .forEach((folder) => items.push(new GoogleDriveFolder(folder, `${path}${folder.getName()}`)));
     this.logger.trace('Getting files and shortcuts');
     new SimpleIterator(rootFolder.getFiles())
       .forEach((file) => {
-        const targetId = file.getTargetId();
-        if (targetId === null) {
+        if (file.getMimeType() === this.SHORTCUT_MIME_TYPE) {
           items.push(new GoogleDriveFile(file, `${path}/${file.getName()}`));
         } else {
           items.push(new GoogleDriveShortcut(file, `${path}/${file.getName()}`,
-            this.getPathFromId(targetId)));
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.getPathFromId(file.getTargetId()!)));
         }
       });
     items.sort((a, b) => {
@@ -136,5 +143,23 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     });
 
     return items;
+  }
+
+  public stat(path: string): IItem {
+    this.logger.trace(`Stat'ing path '${path}'`);
+    const id = this.getIdFromPath(path);
+
+    const file = DriveApp.getFileById(id);
+    const mimeType = file.getMimeType();
+    if (mimeType === this.FOLDER_MIME_TYPE) {
+      const folder = DriveApp.getFolderById(id);
+
+      return new GoogleDriveFolder(folder, path);
+    } if (mimeType === this.SHORTCUT_MIME_TYPE) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return new GoogleDriveShortcut(file, path, this.getPathFromId(file.getTargetId()!));
+    }
+
+    return new GoogleDriveFile(file, path);
   }
 }

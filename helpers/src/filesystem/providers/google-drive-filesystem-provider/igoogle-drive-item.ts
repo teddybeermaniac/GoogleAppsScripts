@@ -19,6 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IGoogleDriveItem {
+import type { IItem } from '../../iitem';
+
+export interface IGoogleDriveItem extends IItem {
   readonly id: string;
 }

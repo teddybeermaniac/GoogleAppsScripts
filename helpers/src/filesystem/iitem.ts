@@ -25,4 +25,9 @@ export interface IItem {
   readonly type: ItemType;
   readonly path: string;
   readonly name: string;
+  readonly creationDate: Date;
+  readonly modificationDate: Date;
+  readonly owner: string;
+  readonly readers: string[];
+  readonly editors: string[];
 }

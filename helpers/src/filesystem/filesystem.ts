@@ -24,7 +24,7 @@ import { inject, injectable } from 'inversify';
 import { ILogger, TYPES as LOGGING_TYPES } from '../logging';
 import { bindSymbol } from '../utilities';
 import type { IFilesystem } from './ifilesystem';
-import type { Item } from './item';
+import type { IItem } from './iitem';
 import type { IFilesystemProvider } from './providers/ifilesystem-provider';
 import { IFilesystemProviderSymbol, IFilesystemSymbol } from './symbols';
 
@@ -46,9 +46,13 @@ export class Filesystem implements IFilesystem {
     return sanitizedPath;
   }
 
-  public list(path: string): Item[] {
-    this.logger.debug(`Listing path ${path}`);
-
+  public list(path: string): IItem[] {
+    this.logger.debug(`Listing path '${path}'`);
     return this.provider.list(Filesystem.sanitizePath(path));
+  }
+
+  public stat(path: string): IItem {
+    this.logger.debug(`Stat'ing path '${path}'`);
+    return this.provider.stat(Filesystem.sanitizePath(path));
   }
 }

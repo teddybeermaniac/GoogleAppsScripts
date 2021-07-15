@@ -19,31 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { Shortcut } from '../../shortcut';
-import type { IGoogleDriveItem } from './igoogle-drive-item';
+import type { IShortcut } from '../../ishortcut';
+import { ItemType } from '../../item-type';
+import { GoogleDriveItem } from './google-drive-item';
 
-export class GoogleDriveShortcut extends Shortcut implements IGoogleDriveItem {
-  private _id?: string;
-
-  private _name?: string;
-
+export class GoogleDriveShortcut extends GoogleDriveItem implements IShortcut {
   private _targetId?: string;
-
-  public get id(): string {
-    if (this._id === undefined) {
-      this._id = this.file.getId();
-    }
-
-    return this._id;
-  }
-
-  public get name(): string {
-    if (this._name === undefined) {
-      this._name = this.file.getName();
-    }
-
-    return this._name;
-  }
 
   public get targetId(): string {
     if (this._targetId === undefined) {
@@ -55,7 +36,7 @@ export class GoogleDriveShortcut extends Shortcut implements IGoogleDriveItem {
   }
 
   public constructor(private readonly file: GoogleAppsScript.Drive.File, path: string,
-    target: string) {
-    super(path, target);
+    public readonly target: string) {
+    super(file, ItemType.Shortcut, path);
   }
 }

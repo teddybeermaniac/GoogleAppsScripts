@@ -19,8 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { Item } from '../item';
+import type { IItem } from '../iitem';
 
 export interface IFilesystemProvider {
-  list(path: string): Item[];
+  list(path: string): IItem[];
+  stat(path: string): IItem;
 }

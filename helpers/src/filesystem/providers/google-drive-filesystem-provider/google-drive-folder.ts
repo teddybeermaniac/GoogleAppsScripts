@@ -19,31 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { Folder } from '../../folder';
-import type { IGoogleDriveItem } from './igoogle-drive-item';
+import type { IFolder } from '../../ifolder';
+import { ItemType } from '../../item-type';
+import { GoogleDriveItem } from './google-drive-item';
 
-export class GoogleDriveFolder extends Folder implements IGoogleDriveItem {
-  private _id?: string;
-
-  private _name?: string;
-
-  public get id(): string {
-    if (this._id === undefined) {
-      this._id = this.folder.getId();
-    }
-
-    return this._id;
-  }
-
-  public get name(): string {
-    if (this._name === undefined) {
-      this._name = this.folder.getName();
-    }
-
-    return this._name;
-  }
-
-  public constructor(private readonly folder: GoogleAppsScript.Drive.Folder, path: string) {
-    super(path);
+export class GoogleDriveFolder extends GoogleDriveItem implements IFolder {
+  public constructor(folder: GoogleAppsScript.Drive.Folder, path: string) {
+    super(folder, ItemType.Folder, path);
   }
 }
