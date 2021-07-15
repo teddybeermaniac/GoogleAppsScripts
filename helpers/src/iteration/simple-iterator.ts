@@ -19,32 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { interfaces } from 'inversify';
+export class SimpleIterator<TItem> {
+  public constructor(private iterator: { hasNext: () => boolean; next: () => TItem }) {
+  }
 
-import { getSymbol, onInitializableActivation } from '../utilities';
-import type { ILogger } from './ilogger';
-import { LogLevel } from './log-level';
-import { Logger } from './logger';
-import { LoggingBuilder } from './logging-builder';
-import { ILoggerSymbol } from './symbols';
+  public forEach(callback: (item: TItem) => void): void {
+    while (this.iterator.hasNext()) {
+      callback(this.iterator.next());
+    }
+  }
 
-export function add(container: interfaces.Container, build: (builder: LoggingBuilder) => void)
-  : void {
-  const builder = new LoggingBuilder(container);
-  build(builder);
+  public toArray(): TItem[] {
+    const items: TItem[] = [];
+    this.forEach((item) => items.push(item));
 
-  container.bind<ILogger>(getSymbol(Logger)).to(Logger).inTransientScope()
-    .onActivation(onInitializableActivation);
+    return items;
+  }
 }
-
-export const TYPES = {
-  ILogger: ILoggerSymbol,
-};
-
-export type {
-  ILogger,
-};
-
-export {
-  LogLevel,
-};
