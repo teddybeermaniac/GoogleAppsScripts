@@ -21,29 +21,24 @@
  */
 import type { interfaces } from 'inversify';
 
-import { getSymbol } from '../binding/get-symbol';
+import { getSymbol } from '../utilities';
+import { GoogleDriveFilesystemProvider } from './providers/google-drive-filesystem-provider/google-drive-filesystem-provider';
+import type { IFilesystemProvider } from './providers/ifilesystem-provider';
 
-export function getOwnerType<T>(context: interfaces.Context, constructor: interfaces.Newable<T>):
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interfaces.Newable<any> {
-  const symbol = getSymbol(constructor);
-  let request = context.currentRequest;
-  let found = false;
-  while (!found) {
-    if (request.serviceIdentifier === symbol) {
-      found = true;
+export class FilesystemBuilder {
+  private provider = false;
+
+  constructor(private readonly container: interfaces.Container) { }
+
+  public addGoogleDriveProvider(): FilesystemBuilder {
+    if (this.provider) {
+      throw new Error('A filesystem provider was already added');
     }
 
-    if (request.parentRequest) {
-      request = request.parentRequest;
-    } else {
-      throw new Error('Unknown error');
-    }
-  }
+    this.container.bind<IFilesystemProvider>(getSymbol(GoogleDriveFilesystemProvider))
+      .to(GoogleDriveFilesystemProvider).inSingletonScope();
+    this.provider = true;
 
-  if (request.bindings[0] === undefined || request.bindings[0].implementationType === null) {
-    throw new Error('Unknown error');
+    return this;
   }
-
-  return request.bindings[0].implementationType;
 }

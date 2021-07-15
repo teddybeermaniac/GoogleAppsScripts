@@ -19,31 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { interfaces } from 'inversify';
+import type { ItemType } from './item-type';
 
-import { getSymbol } from '../binding/get-symbol';
-
-export function getOwnerType<T>(context: interfaces.Context, constructor: interfaces.Newable<T>):
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interfaces.Newable<any> {
-  const symbol = getSymbol(constructor);
-  let request = context.currentRequest;
-  let found = false;
-  while (!found) {
-    if (request.serviceIdentifier === symbol) {
-      found = true;
-    }
-
-    if (request.parentRequest) {
-      request = request.parentRequest;
-    } else {
-      throw new Error('Unknown error');
-    }
-  }
-
-  if (request.bindings[0] === undefined || request.bindings[0].implementationType === null) {
-    throw new Error('Unknown error');
-  }
-
-  return request.bindings[0].implementationType;
+export interface IItem {
+  readonly type: ItemType;
+  readonly path: string;
+  readonly name: string;
 }

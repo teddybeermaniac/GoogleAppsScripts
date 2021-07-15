@@ -139,7 +139,7 @@ export class TriggerManger implements ITriggerManager {
       ? ` from '${this.symbol.description}'`
       : ''}`);
     const existingTrigger = this.getExistingTrigger(method);
-    if (!existingTrigger) {
+    if (existingTrigger === null) {
       this.logger.warning(`Trigger for method '${method.name}'${this.symbol.description
         ? ` from '${this.symbol.description}'`
         : ''} doesn't exist`);

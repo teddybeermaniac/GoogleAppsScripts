@@ -19,31 +19,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { interfaces } from 'inversify';
+import { Shortcut } from '../../shortcut';
+import type { IGoogleDriveItem } from './igoogle-drive-item';
 
-import { getSymbol } from '../binding/get-symbol';
+export class GoogleDriveShortcut extends Shortcut implements IGoogleDriveItem {
+  private _id?: string;
 
-export function getOwnerType<T>(context: interfaces.Context, constructor: interfaces.Newable<T>):
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interfaces.Newable<any> {
-  const symbol = getSymbol(constructor);
-  let request = context.currentRequest;
-  let found = false;
-  while (!found) {
-    if (request.serviceIdentifier === symbol) {
-      found = true;
+  private _name?: string;
+
+  private _targetId?: string;
+
+  public get id(): string {
+    if (this._id === undefined) {
+      this._id = this.file.getId();
     }
 
-    if (request.parentRequest) {
-      request = request.parentRequest;
-    } else {
-      throw new Error('Unknown error');
+    return this._id;
+  }
+
+  public get name(): string {
+    if (this._name === undefined) {
+      this._name = this.file.getName();
     }
+
+    return this._name;
   }
 
-  if (request.bindings[0] === undefined || request.bindings[0].implementationType === null) {
-    throw new Error('Unknown error');
+  public get targetId(): string {
+    if (this._targetId === undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this._targetId = this.file.getTargetId()!;
+    }
+
+    return this._targetId;
   }
 
-  return request.bindings[0].implementationType;
+  public constructor(private readonly file: GoogleAppsScript.Drive.File, path: string,
+    target: string) {
+    super(path, target);
+  }
 }

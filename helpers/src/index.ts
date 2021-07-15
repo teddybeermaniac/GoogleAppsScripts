@@ -25,6 +25,7 @@ import { Container, interfaces } from 'inversify';
 
 import * as caching from './caching';
 import * as exporting from './exporting';
+import * as filesystem from './filesystem';
 import * as iteration from './iteration';
 import * as logging from './logging';
 import * as storage from './storage';
@@ -42,6 +43,7 @@ export function createContainer(): interfaces.Container {
 export {
   caching,
   exporting,
+  filesystem,
   iteration,
   logging,
   storage,

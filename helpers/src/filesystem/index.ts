@@ -21,29 +21,24 @@
  */
 import type { interfaces } from 'inversify';
 
-import { getSymbol } from '../binding/get-symbol';
+import { getSymbol } from '../utilities';
+import { Filesystem } from './filesystem';
+import { FilesystemBuilder } from './filesystem-builder';
+import type { IFilesystem } from './ifilesystem';
+import { IFilesystemSymbol } from './symbols';
 
-export function getOwnerType<T>(context: interfaces.Context, constructor: interfaces.Newable<T>):
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-interfaces.Newable<any> {
-  const symbol = getSymbol(constructor);
-  let request = context.currentRequest;
-  let found = false;
-  while (!found) {
-    if (request.serviceIdentifier === symbol) {
-      found = true;
-    }
+export function add(container: interfaces.Container, build: (builder: FilesystemBuilder) => void)
+  : void {
+  const builder = new FilesystemBuilder(container);
+  build(builder);
 
-    if (request.parentRequest) {
-      request = request.parentRequest;
-    } else {
-      throw new Error('Unknown error');
-    }
-  }
-
-  if (request.bindings[0] === undefined || request.bindings[0].implementationType === null) {
-    throw new Error('Unknown error');
-  }
-
-  return request.bindings[0].implementationType;
+  container.bind<IFilesystem>(getSymbol(Filesystem)).to(Filesystem).inTransientScope();
 }
+
+export const TYPES = {
+  IFilesystem: IFilesystemSymbol,
+};
+
+export type {
+  IFilesystem,
+};

@@ -64,7 +64,7 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
   public getExportedMethodName(symbol: symbol, name: string): string {
     const exportedMethod = this.exportedMethods
       .filter((method) => method.symbol === symbol && method.name === name)[0];
-    if (!exportedMethod) {
+    if (exportedMethod === undefined) {
       throw new Error(`Method '${name}' was not exported${symbol.description
         ? ` from '${symbol.description}'`
         : ''}`);
@@ -78,7 +78,7 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
 
     const exportedMethod = this.exportedMethods
       .filter((method) => method.exportedName === exportedName)[0];
-    if (!exportedMethod) {
+    if (exportedMethod === undefined) {
       throw new Error(`Method '${exportedName}' was not exported`);
     }
 
