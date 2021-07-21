@@ -22,6 +22,7 @@
 import type { ItemType } from './item-type';
 
 export interface IItem {
+  readonly id: string;
   readonly type: ItemType;
   readonly path: string;
   readonly name: string;

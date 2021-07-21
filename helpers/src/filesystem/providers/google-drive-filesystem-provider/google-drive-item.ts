@@ -19,8 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type { IItem } from '../../iitem';
 import type { ItemType } from '../../item-type';
-import type { IGoogleDriveItem } from './igoogle-drive-item';
 
 type Item = {
   getId: () => string;
@@ -32,7 +32,7 @@ type Item = {
   getEditors: () => GoogleAppsScript.Drive.User[];
 };
 
-export class GoogleDriveItem implements IGoogleDriveItem {
+export class GoogleDriveItem implements IItem {
   private _id?: string;
 
   private _name?: string;
