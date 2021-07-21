@@ -26,6 +26,7 @@ import * as errors from './errors';
 import { Filesystem } from './filesystem';
 import { FilesystemBuilder } from './filesystem-builder';
 import type { IFilesystem } from './ifilesystem';
+import { ProviderType } from './providers/provider-type';
 import { IFilesystemSymbol } from './symbols';
 
 export function add(container: interfaces.Container, build: (builder: FilesystemBuilder) => void)
@@ -46,4 +47,5 @@ export type {
 
 export {
   errors,
+  ProviderType,
 };

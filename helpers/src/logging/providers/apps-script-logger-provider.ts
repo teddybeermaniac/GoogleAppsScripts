@@ -27,10 +27,16 @@ import { LogLevel } from '../log-level';
 import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../symbols';
 import type { IAppsScriptLoggerProviderSettings } from './iapps-script-logger-provider-settings';
 import type { ILoggerProvider } from './ilogger-provider';
+import { ProviderType } from './provider-type';
 
 @injectable()
 @bindSymbol(ILoggerProviderSymbol)
 export class AppsScriptLoggerProvider implements ILoggerProvider {
+  // eslint-disable-next-line class-methods-use-this
+  public get type(): ProviderType {
+    return ProviderType.Google;
+  }
+
   constructor(@inject(IAppsScriptLoggerProviderSettingsSymbol) @optional()
   private readonly settings: IAppsScriptLoggerProviderSettings) { }
 

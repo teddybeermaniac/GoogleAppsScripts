@@ -25,6 +25,7 @@ import { ILogger, TYPES as LOGGING_TYPES } from '../../logging';
 import { bindSymbol } from '../../utilities';
 import { ICacheProviderSymbol } from '../symbols';
 import type { ICacheProvider } from './icache-provider';
+import { ProviderType } from './provider-type';
 
 @injectable()
 @bindSymbol(ICacheProviderSymbol)
@@ -35,6 +36,11 @@ export class AppsScriptCacheProvider implements ICacheProvider {
 
   private static getKey(prefix: string, key: string): string {
     return `${prefix}_${key}`;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  public get type(): ProviderType {
+    return ProviderType.Google;
   }
 
   public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {

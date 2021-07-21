@@ -19,7 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type { ProviderType } from './provider-type';
+
 export interface ICacheProvider {
+  readonly type: ProviderType;
   get(prefix: string, key: string): string | null;
   set(prefix: string, key: string, value: string, ttl: number | undefined): void;
   del(prefix: string, key: string): void;

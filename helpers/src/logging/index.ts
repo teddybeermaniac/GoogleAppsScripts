@@ -26,6 +26,7 @@ import type { ILogger } from './ilogger';
 import { LogLevel } from './log-level';
 import { Logger } from './logger';
 import { LoggingBuilder } from './logging-builder';
+import { ProviderType } from './providers/provider-type';
 import { ILoggerSymbol } from './symbols';
 
 export function add(container: interfaces.Container, build: (builder: LoggingBuilder) => void)
@@ -47,4 +48,5 @@ export type {
 
 export {
   LogLevel,
+  ProviderType,
 };

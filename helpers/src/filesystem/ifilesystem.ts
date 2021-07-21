@@ -20,8 +20,10 @@
  * SOFTWARE.
  */
 import type { IItem } from './iitem';
+import type { ProviderType } from './providers/provider-type';
 
 export interface IFilesystem {
+  readonly providerType: ProviderType;
   list(path: string): IItem[];
   stat(path: string): IItem | null;
 }

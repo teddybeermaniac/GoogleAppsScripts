@@ -26,11 +26,16 @@ import { bindSymbol } from '../utilities';
 import type { IFilesystem } from './ifilesystem';
 import type { IItem } from './iitem';
 import type { IFilesystemProvider } from './providers/ifilesystem-provider';
+import type { ProviderType } from './providers/provider-type';
 import { IFilesystemProviderSymbol, IFilesystemSymbol } from './symbols';
 
 @injectable()
 @bindSymbol(IFilesystemSymbol)
 export class Filesystem implements IFilesystem {
+  public get providerType(): ProviderType {
+    return this.provider.type;
+  }
+
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(IFilesystemProviderSymbol) private readonly provider: IFilesystemProvider) { }
 

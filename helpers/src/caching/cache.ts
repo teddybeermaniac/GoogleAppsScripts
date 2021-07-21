@@ -25,6 +25,7 @@ import { ILogger, TYPES as LOGGING_TYPES } from '../logging';
 import { bindSymbol, errors as utilities_errors, getOwnerType } from '../utilities';
 import type { ICache } from './icache';
 import type { ICacheProvider } from './providers/icache-provider';
+import type { ProviderType } from './providers/provider-type';
 import { ICacheProviderSymbol, ICacheSymbol } from './symbols';
 
 @injectable()
@@ -33,6 +34,10 @@ export class Cache implements ICache {
   private _prefix: string | undefined;
 
   private initialized = false;
+
+  public get providerType(): ProviderType {
+    return this.provider.type;
+  }
 
   public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(ICacheProviderSymbol) private readonly provider: ICacheProvider) {

@@ -28,6 +28,7 @@ import type { ILogger } from './ilogger';
 import type { ILoggerSettings } from './ilogger-settings';
 import { LogLevel } from './log-level';
 import type { ILoggerProvider } from './providers/ilogger-provider';
+import type { ProviderType } from './providers/provider-type';
 import { ILoggerProviderSymbol, ILoggerSettingsSymbol, ILoggerSymbol } from './symbols';
 
 @injectable()
@@ -36,6 +37,10 @@ export class Logger implements ILogger {
   private _name: string | undefined;
 
   private initialized = false;
+
+  public get providerTypes(): ProviderType[] {
+    return this.providers.map((provider) => provider.type);
+  }
 
   public constructor(@inject(ILoggerSettingsSymbol) @optional()
   private readonly settings: ILoggerSettings,

@@ -19,10 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { LogLevel } from '../log-level';
-import type { ProviderType } from './provider-type';
-
-export interface ILoggerProvider {
-  readonly type: ProviderType;
-  log(name: string, level: LogLevel, message: string, error: Error | undefined): void;
+export enum ProviderType {
+  Google,
 }

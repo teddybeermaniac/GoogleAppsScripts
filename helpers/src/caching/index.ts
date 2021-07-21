@@ -25,6 +25,7 @@ import { getSymbol, onInitializableActivation } from '../utilities';
 import { Cache } from './cache';
 import { CachingBuilder } from './caching-builder';
 import type { ICache } from './icache';
+import { ProviderType } from './providers/provider-type';
 import { ICacheSymbol } from './symbols';
 
 export function add(container: interfaces.Container,
@@ -42,4 +43,8 @@ export const TYPES = {
 
 export type {
   ICache,
+};
+
+export {
+  ProviderType,
 };

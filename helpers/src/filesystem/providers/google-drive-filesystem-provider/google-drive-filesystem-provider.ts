@@ -30,6 +30,7 @@ import {
 import type { IItem } from '../../iitem';
 import { IFilesystemProviderSymbol } from '../../symbols';
 import type { IFilesystemProvider } from '../ifilesystem-provider';
+import { ProviderType } from '../provider-type';
 import { GoogleDriveFile } from './google-drive-file';
 import { GoogleDriveFolder } from './google-drive-folder';
 import { GoogleDriveShortcut } from './google-drive-shortcut';
@@ -40,6 +41,11 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
   private readonly FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
 
   private readonly SHORTCUT_MIME_TYPE = 'application/vnd.google-apps.shortcut';
+
+  // eslint-disable-next-line class-methods-use-this
+  public get type(): ProviderType {
+    return ProviderType.Google;
+  }
 
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {
   }
