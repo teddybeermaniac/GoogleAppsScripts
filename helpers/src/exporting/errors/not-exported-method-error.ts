@@ -19,27 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { interfaces } from 'inversify';
+import { ExportingError } from './exporting-error';
 
-import { getSymbol, onInitializableActivation } from '../utilities';
-import * as errors from './errors';
-import type { ITriggerManager } from './itrigger-manager';
-import { ITriggerManagerSymbol } from './symbols';
-import { TriggerManger } from './trigger-manager';
-
-export function add(container: interfaces.Container): void {
-  container.bind<ITriggerManager>(getSymbol(TriggerManger)).to(TriggerManger).inTransientScope()
-    .onActivation(onInitializableActivation);
+export class NotExportedMethodError extends ExportingError {
+  constructor(public readonly method: string, public readonly container?: string) {
+    super(`Method '${method}' was not exported${container ? ` from '${container}'` : ''}`);
+  }
 }
-
-export const TYPES = {
-  ITriggerManager: ITriggerManagerSymbol,
-};
-
-export type {
-  ITriggerManager,
-};
-
-export {
-  errors,
-};

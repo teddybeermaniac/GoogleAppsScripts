@@ -23,6 +23,7 @@ import { injectable, interfaces } from 'inversify';
 
 import type { ILogger } from '../logging';
 import { getSymbol } from '../utilities';
+import { NotExportedMethodError } from './errors';
 import type { IExportedMethod } from './iexported-method';
 import type { IExportedMethodProvider } from './iexported-method-provider';
 import { exportedMethodsSymbol } from './symbols';
@@ -65,9 +66,7 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
     const exportedMethod = this.exportedMethods
       .filter((method) => method.symbol === symbol && method.name === name)[0];
     if (exportedMethod === undefined) {
-      throw new Error(`Method '${name}' was not exported${symbol.description
-        ? ` from '${symbol.description}'`
-        : ''}`);
+      throw new NotExportedMethodError(name, symbol.description);
     }
 
     return exportedMethod.exportedName;
@@ -79,7 +78,7 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
     const exportedMethod = this.exportedMethods
       .filter((method) => method.exportedName === exportedName)[0];
     if (exportedMethod === undefined) {
-      throw new Error(`Method '${exportedName}' was not exported`);
+      throw new NotExportedMethodError(exportedName);
     }
 
     // eslint-disable-next-line max-len

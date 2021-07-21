@@ -19,27 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { interfaces } from 'inversify';
-
-import { getSymbol, onInitializableActivation } from '../utilities';
-import * as errors from './errors';
-import type { ITriggerManager } from './itrigger-manager';
-import { ITriggerManagerSymbol } from './symbols';
-import { TriggerManger } from './trigger-manager';
-
-export function add(container: interfaces.Container): void {
-  container.bind<ITriggerManager>(getSymbol(TriggerManger)).to(TriggerManger).inTransientScope()
-    .onActivation(onInitializableActivation);
+export class BuilderError extends Error {
+  constructor(public readonly name: string, message: string) {
+    super(`${name} builder error: ${message}`);
+  }
 }
-
-export const TYPES = {
-  ITriggerManager: ITriggerManagerSymbol,
-};
-
-export type {
-  ITriggerManager,
-};
-
-export {
-  errors,
-};

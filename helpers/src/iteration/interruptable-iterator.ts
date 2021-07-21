@@ -25,6 +25,7 @@ import type { ICache } from '../caching';
 import { exportMethod } from '../exporting';
 import type { ILogger } from '../logging';
 import type { ITriggerManager } from '../triggering';
+import { AlreadyRunningIterationError } from './errors';
 import type { IInterruptableIterator } from './iinterruptable-iterator';
 
 @injectable()
@@ -145,7 +146,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   public start(iterationToken?: T): void {
     if (!this.tryStart(iterationToken)) {
-      throw new Error('Iteration currently running');
+      throw new AlreadyRunningIterationError();
     }
   }
 

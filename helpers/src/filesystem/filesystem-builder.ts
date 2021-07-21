@@ -21,7 +21,7 @@
  */
 import type { interfaces } from 'inversify';
 
-import { getSymbol } from '../utilities';
+import { errors as utilities_errors, getSymbol } from '../utilities';
 import { GoogleDriveFilesystemProvider } from './providers/google-drive-filesystem-provider/google-drive-filesystem-provider';
 import type { IFilesystemProvider } from './providers/ifilesystem-provider';
 
@@ -32,7 +32,7 @@ export class FilesystemBuilder {
 
   public addGoogleDriveProvider(): FilesystemBuilder {
     if (this.provider) {
-      throw new Error('A filesystem provider was already added');
+      throw new utilities_errors.BuilderError('FilesystemBuilder', 'A filesystem provider was already added');
     }
 
     this.container.bind<IFilesystemProvider>(getSymbol(GoogleDriveFilesystemProvider))

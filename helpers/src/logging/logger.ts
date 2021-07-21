@@ -23,7 +23,7 @@ import {
   inject, injectable, interfaces, multiInject, optional,
 } from 'inversify';
 
-import { bindSymbol, getOwnerType } from '../utilities';
+import { bindSymbol, errors as utilities_errors, getOwnerType } from '../utilities';
 import type { ILogger } from './ilogger';
 import type { ILoggerSettings } from './ilogger-settings';
 import { LogLevel } from './log-level';
@@ -44,7 +44,7 @@ export class Logger implements ILogger {
 
   private get name(): string {
     if (!this.initialized || this._name === undefined) {
-      throw new Error('Not initialized');
+      throw new utilities_errors.InitializationError('Not initialized');
     }
 
     return this._name;
@@ -67,7 +67,7 @@ export class Logger implements ILogger {
 
   public initialize(context: interfaces.Context): void {
     if (this.initialized) {
-      throw new Error('Already initialized');
+      throw new utilities_errors.InitializationError('Already initialized');
     }
 
     const owner = getOwnerType(context, Logger);

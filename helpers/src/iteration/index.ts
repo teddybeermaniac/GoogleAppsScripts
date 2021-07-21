@@ -22,6 +22,7 @@
 import type { interfaces } from 'inversify';
 
 import { getSymbol } from '../utilities';
+import * as errors from './errors';
 import type { IInterruptableIterator } from './iinterruptable-iterator';
 import { InterruptableIterator } from './interruptable-iterator';
 
@@ -36,5 +37,6 @@ export type {
 };
 
 export {
+  errors,
   InterruptableIterator,
 };

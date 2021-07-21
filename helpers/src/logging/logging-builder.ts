@@ -21,7 +21,7 @@
  */
 import type { interfaces } from 'inversify';
 
-import { getSymbol } from '../utilities';
+import { errors as utilities_errors, getSymbol } from '../utilities';
 import type { ILoggerSettings } from './ilogger-settings';
 import { AppsScriptLoggerProvider } from './providers/apps-script-logger-provider';
 import type { IAppsScriptLoggerProviderSettings } from './providers/iapps-script-logger-provider-settings';
@@ -41,7 +41,7 @@ export class LoggingBuilder {
 
   public addAppsScriptProvider(settings?: IAppsScriptLoggerProviderSettings): LoggingBuilder {
     if (this.appScriptProvider) {
-      throw new Error('AppsScript logger provider already added');
+      throw new utilities_errors.BuilderError('LoggingBuilder', 'AppsScript logger provider already added');
     }
 
     if (settings) {

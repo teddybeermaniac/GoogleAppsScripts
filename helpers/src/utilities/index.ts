@@ -21,6 +21,7 @@
  */
 import { bindSymbol } from './binding/bind-symbol';
 import { getSymbol } from './binding/get-symbol';
+import * as errors from './errors';
 import { getOwnerType } from './initialization/get-owner-type';
 import type { IInitializable } from './initialization/iinitializable';
 import { onInitializableActivation } from './initialization/on-initializable-activation';
@@ -36,6 +37,7 @@ export type {
 
 export {
   bindSymbol,
+  errors,
   getOwnerType,
   getSymbol,
   onInitializableActivation,

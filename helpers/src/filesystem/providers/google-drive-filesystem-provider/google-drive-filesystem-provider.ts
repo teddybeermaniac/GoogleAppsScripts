@@ -24,6 +24,9 @@ import { inject, injectable } from 'inversify';
 import { SimpleIterator } from '../../../iteration/simple-iterator';
 import { ILogger, TYPES as LOGGING_TYPES } from '../../../logging';
 import { bindSymbol } from '../../../utilities';
+import {
+  DuplicatePathError, FilesystemError, InvalidPathError, NotFoundPathError,
+} from '../../errors';
 import type { IItem } from '../../iitem';
 import { IFilesystemProviderSymbol } from '../../symbols';
 import type { IFilesystemProvider } from '../ifilesystem-provider';
@@ -56,7 +59,7 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     };
     item = DriveApp.getFileById(id);
     if (item === null) {
-      throw new Error(`Item with id '${id}' does not exist`);
+      throw new FilesystemError(`Item with id '${id}' does not exist`);
     }
 
     let path = `/${item.getName()}`;
@@ -84,28 +87,35 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       childIterator = segmentFolder.getFoldersByName(segments[i]!);
       if (!childIterator.hasNext()) {
-        if (i < segments.length - 1 || folder === true) {
-          throw new Error(`Path '${path}' is not valid`);
+        if (i < segments.length - 1) {
+          throw new NotFoundPathError(path);
         }
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         childIterator = segmentFolder.getFilesByName(segments[i]!);
-        if (childIterator.hasNext()) {
-          const segmentFile = (childIterator as GoogleAppsScript.Drive.FileIterator)
-            .next();
-          if (childIterator.hasNext()) {
-            throw new Error(`Duplicate item '${segmentFolder.getName()}' in path '${path}'`);
-          }
-
-          return segmentFile.getId();
+        if (!childIterator.hasNext()) {
+          throw new NotFoundPathError(path);
         }
-      } else if (i === segments.length - 1 && folder === false) {
-        throw new Error(`Path '${path}' is not valid`);
+        if (folder === true) {
+          throw new InvalidPathError(path);
+        }
+
+        const segmentFile = (childIterator as GoogleAppsScript.Drive.FileIterator)
+          .next();
+        if (childIterator.hasNext()) {
+          throw new DuplicatePathError(path, segmentFile.getName());
+        }
+
+        return segmentFile.getId();
+      }
+
+      if (i === segments.length - 1 && folder === false) {
+        throw new InvalidPathError(path);
       }
 
       segmentFolder = (childIterator as GoogleAppsScript.Drive.FolderIterator).next();
       if (childIterator.hasNext()) {
-        throw new Error(`Duplicate item '${segmentFolder.getName()}' in path '${path}'`);
+        throw new DuplicatePathError(path, segmentFolder.getName());
       }
     }
 
@@ -116,7 +126,7 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     this.logger.trace(`Listing path '${path}'`);
     const rootFolder = DriveApp.getFolderById(this.getIdFromPath(path, true));
     if (rootFolder === null) {
-      throw new Error(`Path '${path}' is not valid`);
+      throw new InvalidPathError(path);
     }
 
     const items: IItem[] = [];
@@ -145,9 +155,18 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     return items;
   }
 
-  public stat(path: string): IItem {
+  public stat(path: string): IItem | null {
     this.logger.trace(`Stat'ing path '${path}'`);
-    const id = this.getIdFromPath(path);
+    let id: string;
+    try {
+      id = this.getIdFromPath(path);
+    } catch (error) {
+      if (error instanceof NotFoundPathError) {
+        return null;
+      }
+
+      throw error;
+    }
 
     const file = DriveApp.getFileById(id);
     const mimeType = file.getMimeType();

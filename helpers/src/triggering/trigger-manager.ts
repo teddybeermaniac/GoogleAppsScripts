@@ -23,7 +23,10 @@ import { inject, injectable, interfaces } from 'inversify';
 
 import { IExportedMethodProvider, TYPES as EXPORTING_TYPES } from '../exporting';
 import { ILogger, TYPES as LOGGING_TYPES } from '../logging';
-import { bindSymbol, getOwnerType, getSymbol } from '../utilities';
+import {
+  bindSymbol, errors as utilities_errors, getOwnerType, getSymbol,
+} from '../utilities';
+import { AlreadyExistsTriggerError, TriggeringError } from './errors';
 import type { ITriggerManager } from './itrigger-manager';
 import { ITriggerManagerSymbol } from './symbols';
 
@@ -42,7 +45,7 @@ export class TriggerManger implements ITriggerManager {
 
   private get symbol(): symbol {
     if (!this.initialized || this._symbol === undefined) {
-      throw new Error('Not initialized');
+      throw new utilities_errors.InitializationError('Not initialized');
     }
 
     return this._symbol;
@@ -68,9 +71,7 @@ export class TriggerManger implements ITriggerManager {
         this.remove(method);
       }
 
-      throw new Error(`Trigger for method '${method.name}'${this.symbol.description
-        ? ` from '${this.symbol.description}'`
-        : ''} already exists`);
+      throw new AlreadyExistsTriggerError(method.name, this.symbol.description);
     }
 
     const exportedName = this.exportedMethodProvider
@@ -84,7 +85,7 @@ export class TriggerManger implements ITriggerManager {
 
   public initialize(context: interfaces.Context): void {
     if (this.initialized) {
-      throw new Error('Already initialized');
+      throw new utilities_errors.InitializationError('Already initialized');
     }
 
     const owner = getOwnerType(context, TriggerManger);
@@ -94,7 +95,7 @@ export class TriggerManger implements ITriggerManager {
 
   public addEveryMinutes(method: () => void, minutes: number, replace?: boolean): void {
     if (!TriggerManger.ALLOWED_MINUTES.includes(minutes)) {
-      throw new Error(`Invalid minutes ${minutes}, only ${TriggerManger.ALLOWED_MINUTES.join(', ')} allowed`);
+      throw new TriggeringError(`Invalid minutes ${minutes}, only ${TriggerManger.ALLOWED_MINUTES.join(', ')} allowed`);
     }
 
     this.build(method, (builder) => {

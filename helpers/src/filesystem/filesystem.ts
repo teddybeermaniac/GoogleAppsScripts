@@ -51,7 +51,7 @@ export class Filesystem implements IFilesystem {
     return this.provider.list(Filesystem.sanitizePath(path));
   }
 
-  public stat(path: string): IItem {
+  public stat(path: string): IItem | null {
     this.logger.debug(`Stat'ing path '${path}'`);
     return this.provider.stat(Filesystem.sanitizePath(path));
   }

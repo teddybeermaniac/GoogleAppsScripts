@@ -22,6 +22,7 @@
 import type { interfaces } from 'inversify';
 
 import { getSymbol } from '../utilities';
+import * as errors from './errors';
 import { exportMethod } from './export-method';
 import { ExportedMethodProvider } from './exported-method-provider';
 import { ExportingBuilder } from './exporting-builder';
@@ -49,5 +50,6 @@ export type {
 };
 
 export {
+  errors,
   exportMethod,
 };

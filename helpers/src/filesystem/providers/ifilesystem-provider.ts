@@ -23,5 +23,5 @@ import type { IItem } from '../iitem';
 
 export interface IFilesystemProvider {
   list(path: string): IItem[];
-  stat(path: string): IItem;
+  stat(path: string): IItem | null;
 }

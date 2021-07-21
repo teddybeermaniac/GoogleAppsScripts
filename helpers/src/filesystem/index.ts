@@ -22,6 +22,7 @@
 import type { interfaces } from 'inversify';
 
 import { getSymbol } from '../utilities';
+import * as errors from './errors';
 import { Filesystem } from './filesystem';
 import { FilesystemBuilder } from './filesystem-builder';
 import type { IFilesystem } from './ifilesystem';
@@ -41,4 +42,8 @@ export const TYPES = {
 
 export type {
   IFilesystem,
+};
+
+export {
+  errors,
 };
