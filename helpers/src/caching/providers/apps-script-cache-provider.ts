@@ -40,7 +40,7 @@ export class AppsScriptCacheProvider implements ICacheProvider {
 
   // eslint-disable-next-line class-methods-use-this
   public get type(): ProviderType {
-    return ProviderType.Google;
+    return ProviderType.GoogleAppsScript;
   }
 
   public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {

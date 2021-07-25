@@ -20,5 +20,5 @@
  * SOFTWARE.
  */
 export enum ProviderType {
-  Google,
+  GoogleDrive,
 }

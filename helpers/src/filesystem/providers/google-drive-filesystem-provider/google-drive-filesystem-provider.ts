@@ -44,7 +44,7 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
 
   // eslint-disable-next-line class-methods-use-this
   public get type(): ProviderType {
-    return ProviderType.Google;
+    return ProviderType.GoogleDrive;
   }
 
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {

@@ -34,7 +34,7 @@ import { ProviderType } from './provider-type';
 export class AppsScriptLoggerProvider implements ILoggerProvider {
   // eslint-disable-next-line class-methods-use-this
   public get type(): ProviderType {
-    return ProviderType.Google;
+    return ProviderType.GoogleAppsScript;
   }
 
   constructor(@inject(IAppsScriptLoggerProviderSettingsSymbol) @optional()
