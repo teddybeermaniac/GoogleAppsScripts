@@ -28,7 +28,6 @@ import * as exporting from './exporting';
 import * as filesystem from './filesystem';
 import * as iteration from './iteration';
 import * as logging from './logging';
-import * as storage from './storage';
 import * as triggering from './triggering';
 import * as utilities from './utilities';
 import { TYPES as UTILITIES_TYPES } from './utilities';
@@ -46,7 +45,6 @@ export {
   filesystem,
   iteration,
   logging,
-  storage,
   triggering,
   utilities,
 };

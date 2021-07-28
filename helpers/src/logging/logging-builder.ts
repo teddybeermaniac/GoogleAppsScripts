@@ -23,8 +23,8 @@ import type { interfaces } from 'inversify';
 
 import { errors as utilities_errors, getSymbol } from '../utilities';
 import type { ILoggerSettings } from './ilogger-settings';
-import { AppsScriptLoggerProvider } from './providers/apps-script-logger-provider';
-import type { IAppsScriptLoggerProviderSettings } from './providers/iapps-script-logger-provider-settings';
+import { AppsScriptLoggerProvider } from './providers/apps-script-logger-provider/apps-script-logger-provider';
+import type { IAppsScriptLoggerProviderSettings } from './providers/apps-script-logger-provider/iapps-script-logger-provider-settings';
 import type { ILoggerProvider } from './providers/ilogger-provider';
 import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerSettingsSymbol } from './symbols';
 

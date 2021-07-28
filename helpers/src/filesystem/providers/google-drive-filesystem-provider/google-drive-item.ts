@@ -103,6 +103,6 @@ export class GoogleDriveItem implements IItem {
     return this._editors;
   }
 
-  public constructor(private readonly item: Item, public readonly type: ItemType,
+  constructor(private readonly item: Item, public readonly type: ItemType,
     public readonly path: string) { }
 }

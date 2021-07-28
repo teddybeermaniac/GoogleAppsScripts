@@ -47,8 +47,7 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     return ProviderType.GoogleDrive;
   }
 
-  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {
-  }
+  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) { }
 
   private getPathFromId(id: string): string {
     this.logger.trace(`Getting path for item with id '${id}'`);

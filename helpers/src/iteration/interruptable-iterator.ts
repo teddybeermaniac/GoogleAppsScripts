@@ -50,7 +50,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   private iterationStarted?: number;
 
-  public constructor(protected readonly logger: ILogger, protected readonly cache: ICache,
+  constructor(protected readonly logger: ILogger, protected readonly cache: ICache,
     private readonly triggerManager: ITriggerManager) { }
 
   protected abstract next(iterationToken: T | null): T | null;

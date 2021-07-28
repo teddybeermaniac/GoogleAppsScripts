@@ -35,7 +35,7 @@ export class GoogleDriveShortcut extends GoogleDriveItem implements IShortcut {
     return this._targetId;
   }
 
-  public constructor(private readonly file: GoogleAppsScript.Drive.File, path: string,
+  constructor(private readonly file: GoogleAppsScript.Drive.File, path: string,
     public readonly target: string) {
     super(file, ItemType.Shortcut, path);
   }

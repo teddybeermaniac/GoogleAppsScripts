@@ -21,11 +21,11 @@
  */
 import { inject, injectable } from 'inversify';
 
-import { ILogger, TYPES as LOGGING_TYPES } from '../../logging';
-import { bindSymbol } from '../../utilities';
-import { ICacheProviderSymbol } from '../symbols';
-import type { ICacheProvider } from './icache-provider';
-import { ProviderType } from './provider-type';
+import { ILogger, TYPES as LOGGING_TYPES } from '../../../logging';
+import { bindSymbol } from '../../../utilities';
+import { ICacheProviderSymbol } from '../../symbols';
+import type { ICacheProvider } from '../icache-provider';
+import { ProviderType } from '../provider-type';
 
 @injectable()
 @bindSymbol(ICacheProviderSymbol)
@@ -43,7 +43,7 @@ export class AppsScriptCacheProvider implements ICacheProvider {
     return ProviderType.GoogleAppsScript;
   }
 
-  public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {
+  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {
     this.cache = CacheService.getUserCache();
   }
 

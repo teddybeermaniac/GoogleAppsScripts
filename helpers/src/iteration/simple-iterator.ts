@@ -20,8 +20,7 @@
  * SOFTWARE.
  */
 export class SimpleIterator<TItem> {
-  public constructor(private iterator: { hasNext: () => boolean; next: () => TItem }) {
-  }
+  constructor(private iterator: { hasNext: () => boolean; next: () => TItem }) { }
 
   public forEach(callback: (item: TItem) => void): void {
     while (this.iterator.hasNext()) {

@@ -19,6 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ILoggerProviderSettings } from './ilogger-provider-settings';
+import type { ILoggerProviderSettings } from '../ilogger-provider-settings';
 
 export type IAppsScriptLoggerProviderSettings = ILoggerProviderSettings;

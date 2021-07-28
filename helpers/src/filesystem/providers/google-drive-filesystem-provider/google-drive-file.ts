@@ -44,7 +44,7 @@ export class GoogleDriveFile extends GoogleDriveItem implements IFile {
     return this._mimeType;
   }
 
-  public constructor(private readonly file: GoogleAppsScript.Drive.File, path: string) {
+  constructor(private readonly file: GoogleAppsScript.Drive.File, path: string) {
     super(file, ItemType.File, path);
   }
 }

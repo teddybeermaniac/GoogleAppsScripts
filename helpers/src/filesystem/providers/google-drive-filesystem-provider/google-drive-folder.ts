@@ -24,7 +24,7 @@ import { ItemType } from '../../item-type';
 import { GoogleDriveItem } from './google-drive-item';
 
 export class GoogleDriveFolder extends GoogleDriveItem implements IFolder {
-  public constructor(folder: GoogleAppsScript.Drive.Folder, path: string) {
+  constructor(folder: GoogleAppsScript.Drive.Folder, path: string) {
     super(folder, ItemType.Folder, path);
   }
 }

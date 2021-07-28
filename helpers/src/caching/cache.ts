@@ -39,9 +39,8 @@ export class Cache implements ICache {
     return this.provider.type;
   }
 
-  public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(ICacheProviderSymbol) private readonly provider: ICacheProvider) {
-  }
+  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
+    @inject(ICacheProviderSymbol) private readonly provider: ICacheProvider) { }
 
   private get prefix(): string {
     if (!this.initialized || this._prefix === undefined) {

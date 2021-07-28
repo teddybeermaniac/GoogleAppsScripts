@@ -22,12 +22,12 @@
 /* eslint-disable no-console */
 import { inject, injectable, optional } from 'inversify';
 
-import { bindSymbol } from '../../utilities';
-import { LogLevel } from '../log-level';
-import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../symbols';
+import { bindSymbol } from '../../../utilities';
+import { LogLevel } from '../../log-level';
+import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../../symbols';
+import type { ILoggerProvider } from '../ilogger-provider';
+import { ProviderType } from '../provider-type';
 import type { IAppsScriptLoggerProviderSettings } from './iapps-script-logger-provider-settings';
-import type { ILoggerProvider } from './ilogger-provider';
-import { ProviderType } from './provider-type';
 
 @injectable()
 @bindSymbol(ILoggerProviderSymbol)

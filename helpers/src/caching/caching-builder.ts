@@ -22,7 +22,7 @@
 import type { interfaces } from 'inversify';
 
 import { errors as utilities_errors, getSymbol } from '../utilities';
-import { AppsScriptCacheProvider } from './providers/apps-script-cache-provider';
+import { AppsScriptCacheProvider } from './providers/apps-script-cache-provider/apps-script-cache-provider';
 import type { ICacheProvider } from './providers/icache-provider';
 
 export class CachingBuilder {

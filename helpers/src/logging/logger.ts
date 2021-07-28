@@ -42,10 +42,9 @@ export class Logger implements ILogger {
     return this.providers.map((provider) => provider.type);
   }
 
-  public constructor(@inject(ILoggerSettingsSymbol) @optional()
+  constructor(@inject(ILoggerSettingsSymbol) @optional()
   private readonly settings: ILoggerSettings,
-  @multiInject(ILoggerProviderSymbol) private readonly providers: ILoggerProvider[]) {
-  }
+  @multiInject(ILoggerProviderSymbol) private readonly providers: ILoggerProvider[]) { }
 
   private get name(): string {
     if (!this.initialized || this._name === undefined) {
