@@ -20,13 +20,15 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+
+import { getSymbol } from '../utilities';
+import * as errors from './errors';
 import { exportMethod } from './export-method';
+import { ExportedMethodProvider } from './exported-method-provider';
 import { ExportingBuilder } from './exporting-builder';
 import type { IExportedMethodProvider } from './iexported-method-provider';
-import { IExportedMethodProviderSymbol } from './symbols';
-import { ExportedMethodProvider } from './exported-method-provider';
 import { RollupExportedMethodProvider } from './rollup-exported-method-provider';
-import { getSymbol } from '../utilities';
+import { IExportedMethodProviderSymbol } from './symbols';
 
 export function add(container: interfaces.Container,
   build: (builder: ExportingBuilder) => void): void {
@@ -43,6 +45,11 @@ export const TYPES = {
   IExportedMethodProvider: IExportedMethodProviderSymbol,
 };
 
-export type { IExportedMethodProvider };
+export type {
+  IExportedMethodProvider,
+};
 
-export { exportMethod };
+export {
+  errors,
+  exportMethod,
+};

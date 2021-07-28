@@ -19,6 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ILoggerProviderSettings } from './ilogger-provider-settings';
+import type { ItemType } from './item-type';
 
-export type IAppsScriptLoggerProviderSettings = ILoggerProviderSettings;
+export interface IItem {
+  readonly id: string;
+  readonly type: ItemType;
+  readonly path: string;
+  readonly name: string;
+  readonly creationDate: Date;
+  readonly modificationDate: Date;
+  readonly owner: string;
+  readonly readers: string[];
+  readonly editors: string[];
+}

@@ -22,6 +22,7 @@
 import {
   inject, injectable, interfaces, multiInject,
 } from 'inversify';
+
 import { ILogger, TYPES as LOGGING_TYPES } from '../logging';
 import { bindSymbol, TYPES as UTILITIES_TYPES } from '../utilities';
 import { InternalExportedMethodProvider } from './internal-exported-method-provider';

@@ -20,11 +20,13 @@
  * SOFTWARE.
  */
 import { injectable, interfaces } from 'inversify';
+
 import type { ILogger } from '../logging';
+import { getSymbol } from '../utilities';
+import { NotExportedMethodError } from './errors';
 import type { IExportedMethod } from './iexported-method';
 import type { IExportedMethodProvider } from './iexported-method-provider';
 import { exportedMethodsSymbol } from './symbols';
-import { getSymbol } from '../utilities';
 
 @injectable()
 export class InternalExportedMethodProvider implements IExportedMethodProvider {
@@ -63,10 +65,8 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
   public getExportedMethodName(symbol: symbol, name: string): string {
     const exportedMethod = this.exportedMethods
       .filter((method) => method.symbol === symbol && method.name === name)[0];
-    if (!exportedMethod) {
-      throw new Error(`Method '${name}' was not exported${symbol.description
-        ? ` from '${symbol.description}'`
-        : ''}`);
+    if (exportedMethod === undefined) {
+      throw new NotExportedMethodError(name, symbol.description);
     }
 
     return exportedMethod.exportedName;
@@ -77,8 +77,8 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
 
     const exportedMethod = this.exportedMethods
       .filter((method) => method.exportedName === exportedName)[0];
-    if (!exportedMethod) {
-      throw new Error(`Method '${exportedName}' was not exported`);
+    if (exportedMethod === undefined) {
+      throw new NotExportedMethodError(exportedName);
     }
 
     // eslint-disable-next-line max-len

@@ -20,8 +20,10 @@
  * SOFTWARE.
  */
 import type { IInitializable } from '../utilities';
+import type { ProviderType } from './providers/provider-type';
 
 export interface ILogger extends IInitializable {
+  readonly providerTypes: ProviderType[];
   trace(name: string): void;
   debug(message: string): void;
   information(message: string): void;

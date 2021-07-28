@@ -8,13 +8,18 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2019,
     project: './tsconfig.json',
+    sourceType: 'module'
   },
   plugins: [
-    '@typescript-eslint'
+    '@typescript-eslint',
+    'simple-import-sort'
   ],
   root: true,
   rules: {
+    "import/no-extraneous-dependencies": "off",
     "import/prefer-default-export": "off",
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
   }
 };

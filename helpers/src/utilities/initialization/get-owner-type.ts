@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+
 import { getSymbol } from '../binding/get-symbol';
 
 export function getOwnerType<T>(context: interfaces.Context, constructor: interfaces.Newable<T>):
@@ -40,7 +41,7 @@ interfaces.Newable<any> {
     }
   }
 
-  if (!request.bindings[0]?.implementationType) {
+  if (request.bindings[0] === undefined || request.bindings[0].implementationType === null) {
     throw new Error('Unknown error');
   }
 

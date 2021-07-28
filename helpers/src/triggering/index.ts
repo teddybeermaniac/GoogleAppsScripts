@@ -20,7 +20,9 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+
 import { getSymbol, onInitializableActivation } from '../utilities';
+import * as errors from './errors';
 import type { ITriggerManager } from './itrigger-manager';
 import { ITriggerManagerSymbol } from './symbols';
 import { TriggerManger } from './trigger-manager';
@@ -34,4 +36,10 @@ export const TYPES = {
   ITriggerManager: ITriggerManagerSymbol,
 };
 
-export type { ITriggerManager };
+export type {
+  ITriggerManager,
+};
+
+export {
+  errors,
+};

@@ -20,10 +20,12 @@
  * SOFTWARE.
  */
 import { inject, injectable, interfaces } from 'inversify';
+
 import { ILogger, TYPES as LOGGING_TYPES } from '../logging';
-import { bindSymbol, getOwnerType } from '../utilities';
+import { bindSymbol, errors as utilities_errors, getOwnerType } from '../utilities';
 import type { ICache } from './icache';
 import type { ICacheProvider } from './providers/icache-provider';
+import type { ProviderType } from './providers/provider-type';
 import { ICacheProviderSymbol, ICacheSymbol } from './symbols';
 
 @injectable()
@@ -33,13 +35,16 @@ export class Cache implements ICache {
 
   private initialized = false;
 
-  public constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(ICacheProviderSymbol) private readonly provider: ICacheProvider) {
+  public get providerType(): ProviderType {
+    return this.provider.type;
   }
+
+  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
+    @inject(ICacheProviderSymbol) private readonly provider: ICacheProvider) { }
 
   private get prefix(): string {
     if (!this.initialized || this._prefix === undefined) {
-      throw new Error('Not initialized');
+      throw new utilities_errors.InitializationError('Not initialized');
     }
 
     return this._prefix;
@@ -47,7 +52,7 @@ export class Cache implements ICache {
 
   public initialize(context: interfaces.Context): void {
     if (this.initialized) {
-      throw new Error('Already initialized');
+      throw new utilities_errors.InitializationError('Already initialized');
     }
 
     const owner = getOwnerType(context, Cache);

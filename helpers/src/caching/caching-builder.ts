@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
-import { getSymbol } from '../utilities';
-import { AppsScriptCacheProvider } from './providers/apps-script-cache-provider';
+
+import { errors as utilities_errors, getSymbol } from '../utilities';
+import { AppsScriptCacheProvider } from './providers/apps-script-cache-provider/apps-script-cache-provider';
 import type { ICacheProvider } from './providers/icache-provider';
 
 export class CachingBuilder {
@@ -31,7 +32,7 @@ export class CachingBuilder {
 
   public addAppsScriptProvider(): CachingBuilder {
     if (this.provider) {
-      throw new Error('A caching provider was already added');
+      throw new utilities_errors.BuilderError('CachingBuilder', 'A caching provider was already added');
     }
 
     this.container.bind<ICacheProvider>(getSymbol(AppsScriptCacheProvider))

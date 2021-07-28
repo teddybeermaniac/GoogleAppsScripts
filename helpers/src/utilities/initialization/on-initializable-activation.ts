@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+
 import type { IInitializable } from './iinitializable';
 
 export function onInitializableActivation<T extends IInitializable>(context: interfaces.Context,

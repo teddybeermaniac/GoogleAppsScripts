@@ -20,15 +20,17 @@
  * SOFTWARE.
  */
 import 'core-js';
+
 import { Container, interfaces } from 'inversify';
-import { TYPES as UTILITIES_TYPES } from './utilities';
 
 import * as caching from './caching';
 import * as exporting from './exporting';
+import * as filesystem from './filesystem';
 import * as iteration from './iteration';
 import * as logging from './logging';
 import * as triggering from './triggering';
 import * as utilities from './utilities';
+import { TYPES as UTILITIES_TYPES } from './utilities';
 
 export function createContainer(): interfaces.Container {
   const container = new Container();
@@ -38,5 +40,11 @@ export function createContainer(): interfaces.Container {
 }
 
 export {
-  caching, exporting, iteration, logging, triggering, utilities,
+  caching,
+  exporting,
+  filesystem,
+  iteration,
+  logging,
+  triggering,
+  utilities,
 };

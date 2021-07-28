@@ -22,5 +22,5 @@
 import type { LogLevel } from '../log-level';
 
 export interface ILoggerProviderSettings {
-  level?: LogLevel;
+  readonly level?: LogLevel;
 }

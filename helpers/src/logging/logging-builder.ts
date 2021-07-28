@@ -20,12 +20,13 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+
+import { errors as utilities_errors, getSymbol } from '../utilities';
 import type { ILoggerSettings } from './ilogger-settings';
+import { AppsScriptLoggerProvider } from './providers/apps-script-logger-provider/apps-script-logger-provider';
+import type { IAppsScriptLoggerProviderSettings } from './providers/apps-script-logger-provider/iapps-script-logger-provider-settings';
 import type { ILoggerProvider } from './providers/ilogger-provider';
-import { AppsScriptLoggerProvider } from './providers/apps-script-logger-provider';
-import type { IAppsScriptLoggerProviderSettings } from './providers/iapps-script-logger-provider-settings';
 import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerSettingsSymbol } from './symbols';
-import { getSymbol } from '../utilities';
 
 export class LoggingBuilder {
   private appScriptProvider = false;
@@ -40,7 +41,7 @@ export class LoggingBuilder {
 
   public addAppsScriptProvider(settings?: IAppsScriptLoggerProviderSettings): LoggingBuilder {
     if (this.appScriptProvider) {
-      throw new Error('AppsScript logger provider already added');
+      throw new utilities_errors.BuilderError('LoggingBuilder', 'AppsScript logger provider already added');
     }
 
     if (settings) {

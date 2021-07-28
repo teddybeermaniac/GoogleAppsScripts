@@ -20,7 +20,9 @@
  * SOFTWARE.
  */
 import type { LogLevel } from '../log-level';
+import type { ProviderType } from './provider-type';
 
 export interface ILoggerProvider {
+  readonly type: ProviderType;
   log(name: string, level: LogLevel, message: string, error: Error | undefined): void;
 }

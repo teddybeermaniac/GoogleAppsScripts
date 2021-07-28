@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import type { interfaces } from 'inversify';
+
 import { exportedMethodContainerSymbol } from './symbols';
 
 export class ExportingBuilder {

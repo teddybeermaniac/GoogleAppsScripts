@@ -20,8 +20,10 @@
  * SOFTWARE.
  */
 import type { IInitializable } from '../utilities';
+import type { ProviderType } from './providers/provider-type';
 
 export interface ICache extends IInitializable {
+  readonly providerType: ProviderType;
   get<T>(key: string): T | null;
   get<T>(key: string, value: T): T;
   pop<T>(key: string): T | null;

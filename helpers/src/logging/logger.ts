@@ -22,12 +22,14 @@
 import {
   inject, injectable, interfaces, multiInject, optional,
 } from 'inversify';
-import { ILoggerSettingsSymbol, ILoggerProviderSymbol, ILoggerSymbol } from './symbols';
+
+import { bindSymbol, errors as utilities_errors, getOwnerType } from '../utilities';
 import type { ILogger } from './ilogger';
-import { LogLevel } from './log-level';
 import type { ILoggerSettings } from './ilogger-settings';
+import { LogLevel } from './log-level';
 import type { ILoggerProvider } from './providers/ilogger-provider';
-import { bindSymbol, getOwnerType } from '../utilities';
+import type { ProviderType } from './providers/provider-type';
+import { ILoggerProviderSymbol, ILoggerSettingsSymbol, ILoggerSymbol } from './symbols';
 
 @injectable()
 @bindSymbol(ILoggerSymbol)
@@ -36,14 +38,17 @@ export class Logger implements ILogger {
 
   private initialized = false;
 
-  public constructor(@inject(ILoggerSettingsSymbol) @optional()
-  private readonly settings: ILoggerSettings,
-  @multiInject(ILoggerProviderSymbol) private readonly providers: ILoggerProvider[]) {
+  public get providerTypes(): ProviderType[] {
+    return this.providers.map((provider) => provider.type);
   }
+
+  constructor(@inject(ILoggerSettingsSymbol) @optional()
+  private readonly settings: ILoggerSettings,
+  @multiInject(ILoggerProviderSymbol) private readonly providers: ILoggerProvider[]) { }
 
   private get name(): string {
     if (!this.initialized || this._name === undefined) {
-      throw new Error('Not initialized');
+      throw new utilities_errors.InitializationError('Not initialized');
     }
 
     return this._name;
@@ -66,7 +71,7 @@ export class Logger implements ILogger {
 
   public initialize(context: interfaces.Context): void {
     if (this.initialized) {
-      throw new Error('Already initialized');
+      throw new utilities_errors.InitializationError('Already initialized');
     }
 
     const owner = getOwnerType(context, Logger);

@@ -20,11 +20,13 @@
  * SOFTWARE.
  */
 import { injectable } from 'inversify';
+
 import type { ICache } from '../caching';
 import { exportMethod } from '../exporting';
 import type { ILogger } from '../logging';
-import type { IInterruptableIterator } from './iinterruptable-iterator';
 import type { ITriggerManager } from '../triggering';
+import { AlreadyRunningIterationError } from './errors';
+import type { IInterruptableIterator } from './iinterruptable-iterator';
 
 @injectable()
 export abstract class InterruptableIterator<T> implements IInterruptableIterator<T> {
@@ -48,7 +50,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   private iterationStarted?: number;
 
-  public constructor(protected readonly logger: ILogger, protected readonly cache: ICache,
+  constructor(protected readonly logger: ILogger, protected readonly cache: ICache,
     private readonly triggerManager: ITriggerManager) { }
 
   protected abstract next(iterationToken: T | null): T | null;
@@ -144,7 +146,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   public start(iterationToken?: T): void {
     if (!this.tryStart(iterationToken)) {
-      throw new Error('Iteration currently running');
+      throw new AlreadyRunningIterationError();
     }
   }
 
