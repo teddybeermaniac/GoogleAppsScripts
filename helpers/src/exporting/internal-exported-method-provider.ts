@@ -72,7 +72,8 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
     return exportedMethod.exportedName;
   }
 
-  public callExportedMethod(exportedName: string): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public callExportedMethod(exportedName: string, args: any[]): any {
     this.logger?.debug(`Calling exported method '${exportedName}'`);
 
     const exportedMethod = this.exportedMethods
@@ -85,7 +86,7 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
     const instance: any = this.container.get(exportedMethod.symbol);
     // eslint-disable-next-line max-len
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    instance[exportedMethod.name]();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
+    return instance[exportedMethod.name](...args);
   }
 }

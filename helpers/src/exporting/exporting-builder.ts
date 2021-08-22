@@ -21,14 +21,18 @@
  */
 import type { interfaces } from 'inversify';
 
+import { getSymbol } from '../utilities';
 import { exportedMethodContainerSymbol } from './symbols';
 
 export class ExportingBuilder {
   constructor(private readonly container: interfaces.Container) { }
 
-  public addContainer<T>(constructor: interfaces.Newable<T>): ExportingBuilder {
+  public addContainer<T>(constructor: interfaces.Newable<T>, bind = false): ExportingBuilder {
     this.container.bind<interfaces.Newable<T>>(exportedMethodContainerSymbol)
       .toConstructor(constructor);
+    if (bind) {
+      this.container.bind(getSymbol(constructor)).to(constructor).inSingletonScope();
+    }
 
     return this;
   }

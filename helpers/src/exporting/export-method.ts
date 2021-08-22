@@ -23,10 +23,12 @@ import type { IExportedMethod } from './iexported-method';
 import { exportedMethodsSymbol } from './symbols';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function exportMethod<T extends Object>(asIs?: boolean):
-(target: T, propertyKey: string, _?: TypedPropertyDescriptor<(() => void)>) => void {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return (target: T, propertyKey: string, _?: TypedPropertyDescriptor<(() => void)>): void => {
+export function exportMethod<TTarget extends Object>(asIs?: boolean):
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(target: TTarget, propertyKey: string, _?: TypedPropertyDescriptor<any>) => void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+  return (target: TTarget, propertyKey: string, _?: TypedPropertyDescriptor<any>):
+  void => {
     const exportedMethod = {
       name: propertyKey,
       asIs: asIs || false,

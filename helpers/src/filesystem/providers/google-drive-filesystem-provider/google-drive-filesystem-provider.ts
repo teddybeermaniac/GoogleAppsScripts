@@ -105,7 +105,7 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
           throw new InvalidPathError(path);
         }
 
-        const segmentFile = (childIterator as GoogleAppsScript.Drive.FileIterator)
+        const segmentFile = (<GoogleAppsScript.Drive.FileIterator>childIterator)
           .next();
         if (childIterator.hasNext()) {
           throw new DuplicatePathError(path, segmentFile.getName());
@@ -118,7 +118,7 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
         throw new InvalidPathError(path);
       }
 
-      segmentFolder = (childIterator as GoogleAppsScript.Drive.FolderIterator).next();
+      segmentFolder = (<GoogleAppsScript.Drive.FolderIterator>childIterator).next();
       if (childIterator.hasNext()) {
         throw new DuplicatePathError(path, segmentFolder.getName());
       }
