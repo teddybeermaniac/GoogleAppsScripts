@@ -21,4 +21,4 @@
  */
 import type { ILoggerProviderSettings } from '../ilogger-provider-settings';
 
-export type IAppsScriptLoggerProviderSettings = ILoggerProviderSettings;
+export type IGoogleAppsScriptLoggerProviderSettings = ILoggerProviderSettings;

@@ -29,7 +29,7 @@ import { ProviderType } from '../provider-type';
 
 @injectable()
 @bindSymbol(ICacheProviderSymbol)
-export class AppsScriptCacheProvider implements ICacheProvider {
+export class GoogleAppsScriptCacheProvider implements ICacheProvider {
   private static readonly ALL_KEYS_KEY = '__ALL_KEYS__';
 
   private readonly cache: GoogleAppsScript.Cache.Cache;
@@ -48,7 +48,7 @@ export class AppsScriptCacheProvider implements ICacheProvider {
   }
 
   private getAllKeys(prefix: string): string[] {
-    const allKeysJson = this.get(prefix, AppsScriptCacheProvider.ALL_KEYS_KEY);
+    const allKeysJson = this.get(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY);
 
     return allKeysJson ? <string[]>JSON.parse(allKeysJson) : [];
   }
@@ -58,17 +58,18 @@ export class AppsScriptCacheProvider implements ICacheProvider {
       `Getting cache key '${key}' with a prefix '${prefix}'`,
     );
 
-    return this.cache.get(AppsScriptCacheProvider.getKey(prefix, key));
+    return this.cache.get(GoogleAppsScriptCacheProvider.getKey(prefix, key));
   }
 
   public set(prefix: string, key: string, value: string, ttl: number | undefined):
   void {
-    if (key !== AppsScriptCacheProvider.ALL_KEYS_KEY) {
+    if (key !== GoogleAppsScriptCacheProvider.ALL_KEYS_KEY) {
       const allKeys = this.getAllKeys(prefix);
       if (allKeys.indexOf(key) === -1) {
         allKeys.push(key);
 
-        this.set(prefix, AppsScriptCacheProvider.ALL_KEYS_KEY, JSON.stringify(allKeys), undefined);
+        this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSON.stringify(allKeys),
+          undefined);
       }
     }
 
@@ -76,31 +77,32 @@ export class AppsScriptCacheProvider implements ICacheProvider {
       `Setting cache key '${key}' with a prefix '${prefix}'${ttl !== undefined ? ` with a TTL of ${ttl}` : ''} to a value of '${value}'`,
     );
     if (ttl !== undefined) {
-      this.cache.put(AppsScriptCacheProvider.getKey(prefix, key), value, ttl);
+      this.cache.put(GoogleAppsScriptCacheProvider.getKey(prefix, key), value, ttl);
     } else {
-      this.cache.put(AppsScriptCacheProvider.getKey(prefix, key), value);
+      this.cache.put(GoogleAppsScriptCacheProvider.getKey(prefix, key), value);
     }
   }
 
   public del(prefix: string, key: string): void {
     this.logger.trace(`Deleting cache key '${key}' with a prefix '${prefix}'`);
-    this.cache.remove(AppsScriptCacheProvider.getKey(prefix, key));
+    this.cache.remove(GoogleAppsScriptCacheProvider.getKey(prefix, key));
 
     const allKeys = this.getAllKeys(prefix);
     const keyIndex = allKeys.indexOf(key);
     if (keyIndex !== -1) {
       allKeys.splice(keyIndex, 1);
-      this.set(prefix, AppsScriptCacheProvider.ALL_KEYS_KEY, JSON.stringify(allKeys), undefined);
+      this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSON.stringify(allKeys),
+        undefined);
     }
   }
 
   public clear(prefix: string): void {
     let allKeys = this.getAllKeys(prefix);
-    allKeys = [...allKeys, AppsScriptCacheProvider.ALL_KEYS_KEY];
+    allKeys = [...allKeys, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY];
 
     this.logger.trace(
       `Deleting cache keys '${allKeys.join('\', \'')}' with a prefix '${prefix}'`,
     );
-    this.cache.removeAll(allKeys.map((key) => AppsScriptCacheProvider.getKey(prefix, key)));
+    this.cache.removeAll(allKeys.map((key) => GoogleAppsScriptCacheProvider.getKey(prefix, key)));
   }
 }
