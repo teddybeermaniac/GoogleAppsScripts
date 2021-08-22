@@ -39,7 +39,7 @@ export function add(container: interfaces.Container, build: (builder: Filesystem
   const builder = new FilesystemBuilder(container);
   build(builder);
 
-  container.bind<IFilesystem>(getSymbol(Filesystem)).to(Filesystem).inTransientScope();
+  container.bind<IFilesystem>(getSymbol(Filesystem)).to(Filesystem).inSingletonScope();
 }
 
 export const TYPES = {

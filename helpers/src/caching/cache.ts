@@ -36,7 +36,7 @@ export class Cache implements ICache {
   private initialized = false;
 
   public get providerType(): ProviderType {
-    return this.provider.type;
+    return this.provider.providerType;
   }
 
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,

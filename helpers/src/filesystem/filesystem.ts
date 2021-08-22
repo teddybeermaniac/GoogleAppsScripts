@@ -33,7 +33,7 @@ import { IFilesystemProviderSymbol, IFilesystemSymbol } from './symbols';
 @bindSymbol(IFilesystemSymbol)
 export class Filesystem implements IFilesystem {
   public get providerType(): ProviderType {
-    return this.provider.type;
+    return this.provider.providerType;
   }
 
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
@@ -56,8 +56,8 @@ export class Filesystem implements IFilesystem {
     return this.provider.list(Filesystem.sanitizePath(path));
   }
 
-  public stat(path: string): IItem | null {
+  public stat(path: string, resolve: boolean): IItem | null {
     this.logger.debug(`Stat'ing path '${path}'`);
-    return this.provider.stat(Filesystem.sanitizePath(path));
+    return this.provider.stat(Filesystem.sanitizePath(path), resolve);
   }
 }

@@ -39,7 +39,7 @@ export class GoogleAppsScriptCacheProvider implements ICacheProvider {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public get type(): ProviderType {
+  public get providerType(): ProviderType {
     return ProviderType.GoogleAppsScript;
   }
 

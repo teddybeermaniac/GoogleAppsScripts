@@ -39,7 +39,7 @@ export class Logger implements ILogger {
   private initialized = false;
 
   public get providerTypes(): ProviderType[] {
-    return this.providers.map((provider) => provider.type);
+    return this.providers.map((provider) => provider.providerType);
   }
 
   constructor(@inject(ILoggerSettingsSymbol) @optional()
