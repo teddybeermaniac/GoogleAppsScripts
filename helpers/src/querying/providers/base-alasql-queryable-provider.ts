@@ -20,11 +20,13 @@
  * SOFTWARE.
  */
 import alasql from 'alasql';
+import { injectable } from 'inversify';
 
 import type { ILogger } from '../../logging';
 import type { IQueryableProvider } from './iqueryable-provider';
 import type { ProviderType } from './provider-type';
 
+@injectable()
 export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected abstract getTable(name: string): any[] | null;
