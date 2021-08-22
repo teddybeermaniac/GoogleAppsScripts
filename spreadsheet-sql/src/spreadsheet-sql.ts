@@ -29,7 +29,7 @@ import { SpreadsheetSQLSymbol } from './symbols';
 @injectable()
 @utilities.bindSymbol(SpreadsheetSQLSymbol)
 export class SpreadsheetSQL {
-  public constructor(@inject(logging.TYPES.ILogger) private readonly logger: logging.ILogger,
+  constructor(@inject(logging.TYPES.ILogger) private readonly logger: logging.ILogger,
     @inject(querying.TYPES.IQueryable) private readonly query: querying.IQueryable) {
   }
 
