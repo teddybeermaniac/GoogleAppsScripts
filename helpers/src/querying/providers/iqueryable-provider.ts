@@ -19,34 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
+import type { ProviderType } from './provider-type';
 
-import { Container, interfaces } from 'inversify';
+export interface IQueryableProvider {
+  readonly providerType: ProviderType;
 
-import * as caching from './caching';
-import * as exporting from './exporting';
-import * as filesystem from './filesystem';
-import * as iteration from './iteration';
-import * as logging from './logging';
-import * as querying from './querying';
-import * as triggering from './triggering';
-import * as utilities from './utilities';
-import { TYPES as UTILITIES_TYPES } from './utilities';
-
-export function createContainer(): interfaces.Container {
-  const container = new Container();
-  container.bind<interfaces.Container>(UTILITIES_TYPES.Container).toConstantValue(container);
-
-  return container;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  query<TModel>(query: string, ...parameters: any[]): TModel[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  queryAny(query: string, ...parameters: any[]): any[][];
 }
-
-export {
-  caching,
-  exporting,
-  filesystem,
-  iteration,
-  logging,
-  querying,
-  triggering,
-  utilities,
-};

@@ -23,8 +23,9 @@ import type { interfaces } from 'inversify';
 
 import { BindSymbolSymbol } from '../symbols';
 
-export function bindSymbol<T>(symbol: symbol): (constructor: interfaces.Newable<T>) => void {
-  return (constructor: interfaces.Newable<T>) => {
+export function bindSymbol<TContainer>(symbol: symbol):
+(constructor: interfaces.Newable<TContainer>) => void {
+  return (constructor: interfaces.Newable<TContainer>) => {
     Reflect.defineMetadata(BindSymbolSymbol, symbol, constructor);
   };
 }

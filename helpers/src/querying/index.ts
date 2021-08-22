@@ -19,34 +19,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
+import type { interfaces } from 'inversify';
 
-import { Container, interfaces } from 'inversify';
+import { getSymbol } from '../utilities';
+import * as errors from './errors';
+import type { IQueryable } from './iqueryable';
+import { GoogleSpreadsheetQueryableProvider } from './providers/google-spreadsheet-queryable-provider/google-spreadsheet-queryable-provider';
+import type { IQueryableProvider } from './providers/iqueryable-provider';
+import type { ProviderType } from './providers/provider-type';
+import { Queryable } from './queryable';
+import { IQueryableSymbol } from './symbols';
 
-import * as caching from './caching';
-import * as exporting from './exporting';
-import * as filesystem from './filesystem';
-import * as iteration from './iteration';
-import * as logging from './logging';
-import * as querying from './querying';
-import * as triggering from './triggering';
-import * as utilities from './utilities';
-import { TYPES as UTILITIES_TYPES } from './utilities';
-
-export function createContainer(): interfaces.Container {
-  const container = new Container();
-  container.bind<interfaces.Container>(UTILITIES_TYPES.Container).toConstantValue(container);
-
-  return container;
+export function add(container: interfaces.Container): void {
+  container.bind<IQueryable>(getSymbol(Queryable)).to(Queryable).inSingletonScope();
+  container.bind<IQueryableProvider>(getSymbol(GoogleSpreadsheetQueryableProvider))
+    .to(GoogleSpreadsheetQueryableProvider).inTransientScope();
 }
 
+export const TYPES = {
+  IQueryable: IQueryableSymbol,
+};
+
+export type {
+  IQueryable,
+  IQueryableProvider,
+};
+
 export {
-  caching,
-  exporting,
-  filesystem,
-  iteration,
-  logging,
-  querying,
-  triggering,
-  utilities,
+  errors,
+  ProviderType,
 };

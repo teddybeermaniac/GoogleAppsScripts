@@ -57,7 +57,7 @@ export class Filesystem implements IFilesystem {
   }
 
   public stat(path: string, resolve: boolean): IItem | null {
-    this.logger.debug(`Stat'ing path '${path}'`);
+    this.logger.debug(`Stat'ing${resolve ? ' and resolving' : ''} path '${path}'`);
     return this.provider.stat(Filesystem.sanitizePath(path), resolve);
   }
 }

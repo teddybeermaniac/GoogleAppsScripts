@@ -61,9 +61,9 @@ export class Cache implements ICache {
     this.logger.debug(`Initialized with a '${this.prefix}' prefix`);
   }
 
-  public get<T>(key: string): T | null;
-  public get<T>(key: string, value: T): T;
-  public get<T>(key: string, value?: T): T | null {
+  public get<TValue>(key: string): TValue | null;
+  public get<TValue>(key: string, value: TValue): TValue;
+  public get<TValue>(key: string, value?: TValue): TValue | null {
     this.logger.debug(`Getting cache key '${key}'`);
     const json = this.provider.get(this.prefix, key);
     if (json === null) {
@@ -72,19 +72,19 @@ export class Cache implements ICache {
     }
 
     this.logger.debug(`Key '${key}' found in cache with value '${json}'`);
-    return <T>JSON.parse(json);
+    return <TValue>JSON.parse(json);
   }
 
-  public pop<T>(key: string): T | null;
-  public pop<T>(key: string, value: T): T;
-  public pop<T>(key: string, value?: T): T | null {
+  public pop<TValue>(key: string): TValue | null;
+  public pop<TValue>(key: string, value: TValue): TValue;
+  public pop<TValue>(key: string, value?: TValue): TValue | null {
     const result = this.get(key, value) ?? null;
     this.del(key);
 
     return result;
   }
 
-  public set<T>(key: string, value: T, ttl?: number): void {
+  public set<TValue>(key: string, value: TValue, ttl?: number): void {
     const json = JSON.stringify(value);
     this.logger.debug(
       `Setting cache key '${key}'${ttl !== undefined ? ` with a TTL of ${ttl}s` : ''} to value '${json}'`,

@@ -2,5 +2,8 @@
     "dry": {
         "extends": "../_common/package-dry.json"
     },
+    "dependencies": {
+        "alasql": "^1.7.3"
+    },
     "name": "helpers"
 }

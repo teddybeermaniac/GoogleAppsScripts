@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IInterruptableIterator<T> {
-  tryStart(iterationToken?: T): boolean;
-  start(iterationToken?: T): void;
+export interface IInterruptableIterator<TToken> {
+  tryStart(iterationToken?: TToken): boolean;
+  start(iterationToken?: TToken): void;
   isRunning(): boolean;
   isFinished(): boolean;
 }

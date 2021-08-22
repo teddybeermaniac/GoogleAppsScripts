@@ -19,34 +19,5 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
-
-import { Container, interfaces } from 'inversify';
-
-import * as caching from './caching';
-import * as exporting from './exporting';
-import * as filesystem from './filesystem';
-import * as iteration from './iteration';
-import * as logging from './logging';
-import * as querying from './querying';
-import * as triggering from './triggering';
-import * as utilities from './utilities';
-import { TYPES as UTILITIES_TYPES } from './utilities';
-
-export function createContainer(): interfaces.Container {
-  const container = new Container();
-  container.bind<interfaces.Container>(UTILITIES_TYPES.Container).toConstantValue(container);
-
-  return container;
-}
-
-export {
-  caching,
-  exporting,
-  filesystem,
-  iteration,
-  logging,
-  querying,
-  triggering,
-  utilities,
-};
+export const IQueryableSymbol = Symbol('IQueryable');
+export const GoogleSpreadsheetQueryableProviderSymbol = Symbol('GoogleSpreadsheetQueryableProvider');
