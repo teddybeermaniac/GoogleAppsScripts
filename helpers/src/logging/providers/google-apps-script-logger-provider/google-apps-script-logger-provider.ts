@@ -24,21 +24,21 @@ import { inject, injectable, optional } from 'inversify';
 
 import { bindSymbol } from '../../../utilities';
 import { LogLevel } from '../../log-level';
-import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../../symbols';
+import { IGoogleAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../../symbols';
 import type { ILoggerProvider } from '../ilogger-provider';
 import { ProviderType } from '../provider-type';
-import type { IAppsScriptLoggerProviderSettings } from './iapps-script-logger-provider-settings';
+import type { IGoogleAppsScriptLoggerProviderSettings } from './igoogle-apps-script-logger-provider-settings';
 
 @injectable()
 @bindSymbol(ILoggerProviderSymbol)
-export class AppsScriptLoggerProvider implements ILoggerProvider {
+export class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
   // eslint-disable-next-line class-methods-use-this
-  public get type(): ProviderType {
+  public get providerType(): ProviderType {
     return ProviderType.GoogleAppsScript;
   }
 
-  constructor(@inject(IAppsScriptLoggerProviderSettingsSymbol) @optional()
-  private readonly settings: IAppsScriptLoggerProviderSettings) { }
+  constructor(@inject(IGoogleAppsScriptLoggerProviderSettingsSymbol) @optional()
+  private readonly settings: IGoogleAppsScriptLoggerProviderSettings) { }
 
   public log(name: string, level: LogLevel, message: string, error: Error | undefined):
   void {

@@ -24,11 +24,11 @@ import type { ProviderType } from './providers/provider-type';
 
 export interface ICache extends IInitializable {
   readonly providerType: ProviderType;
-  get<T>(key: string): T | null;
-  get<T>(key: string, value: T): T;
-  pop<T>(key: string): T | null;
-  pop<T>(key: string, value: T): T;
-  set<T>(key: string, value: T, ttl?: number): void;
+  get<TValue>(key: string): TValue | null;
+  get<TValue>(key: string, value: TValue): TValue;
+  pop<TValue>(key: string): TValue | null;
+  pop<TValue>(key: string, value: TValue): TValue;
+  set<TValue>(key: string, value: TValue, ttl?: number): void;
   del(key: string): void;
   clear(): void;
 }

@@ -2,5 +2,8 @@
     "dry": {
         "extends": "../_common/package-dry.json"
     },
+    "dependencies": {
+        "helpers": "link:../helpers"
+    },
     "name": null
 }

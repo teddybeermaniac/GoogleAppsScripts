@@ -19,34 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
+import {
+  exporting, logging, querying, utilities,
+} from 'helpers';
+import { inject, injectable } from 'inversify';
 
-import { Container, interfaces } from 'inversify';
+import { GoogleSpreadsheetSQLSymbol } from './symbols';
 
-import * as caching from './caching';
-import * as exporting from './exporting';
-import * as filesystem from './filesystem';
-import * as iteration from './iteration';
-import * as logging from './logging';
-import * as querying from './querying';
-import * as triggering from './triggering';
-import * as utilities from './utilities';
-import { TYPES as UTILITIES_TYPES } from './utilities';
+@injectable()
+@utilities.bindSymbol(GoogleSpreadsheetSQLSymbol)
+export class GoogleSpreadsheetSQL {
+  constructor(@inject(logging.TYPES.ILogger) private readonly logger: logging.ILogger,
+    @inject(querying.TYPES.IQueryable) private readonly query: querying.IQueryable) {
+  }
 
-export function createContainer(): interfaces.Container {
-  const container = new Container();
-  container.bind<interfaces.Container>(UTILITIES_TYPES.Container).toConstantValue(container);
+  @exporting.exportMethod(true)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public SQL(query: string, ...parameters: any[]): any[][] {
+    this.logger.debug(`Running query '${query}'`);
+    const queryable = this.query.fromCurrentSpreadsheet();
 
-  return container;
+    return queryable.queryAny(query, ...parameters);
+  }
 }
-
-export {
-  caching,
-  exporting,
-  filesystem,
-  iteration,
-  logging,
-  querying,
-  triggering,
-  utilities,
-};

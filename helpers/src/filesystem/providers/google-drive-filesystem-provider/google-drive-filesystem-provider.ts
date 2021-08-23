@@ -43,7 +43,7 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
   private readonly SHORTCUT_MIME_TYPE = 'application/vnd.google-apps.shortcut';
 
   // eslint-disable-next-line class-methods-use-this
-  public get type(): ProviderType {
+  public get providerType(): ProviderType {
     return ProviderType.GoogleDrive;
   }
 
@@ -105,7 +105,7 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
           throw new InvalidPathError(path);
         }
 
-        const segmentFile = (childIterator as GoogleAppsScript.Drive.FileIterator)
+        const segmentFile = (<GoogleAppsScript.Drive.FileIterator>childIterator)
           .next();
         if (childIterator.hasNext()) {
           throw new DuplicatePathError(path, segmentFile.getName());
@@ -118,7 +118,7 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
         throw new InvalidPathError(path);
       }
 
-      segmentFolder = (childIterator as GoogleAppsScript.Drive.FolderIterator).next();
+      segmentFolder = (<GoogleAppsScript.Drive.FolderIterator>childIterator).next();
       if (childIterator.hasNext()) {
         throw new DuplicatePathError(path, segmentFolder.getName());
       }
@@ -160,7 +160,7 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     return items;
   }
 
-  public stat(path: string): IItem | null {
+  public stat(path: string, resolve: boolean): IItem | null {
     this.logger.trace(`Stat'ing path '${path}'`);
     let id: string;
     try {
@@ -173,15 +173,23 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
       throw error;
     }
 
-    const file = DriveApp.getFileById(id);
-    const mimeType = file.getMimeType();
+    let file = DriveApp.getFileById(id);
+    let mimeType = file.getMimeType();
+    if (mimeType === this.SHORTCUT_MIME_TYPE) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const targetId = file.getTargetId()!;
+      if (resolve) {
+        file = DriveApp.getFileById(targetId);
+        mimeType = file.getMimeType();
+      } else {
+        return new GoogleDriveShortcut(file, path, this.getPathFromId(targetId));
+      }
+    }
+
     if (mimeType === this.FOLDER_MIME_TYPE) {
       const folder = DriveApp.getFolderById(id);
 
       return new GoogleDriveFolder(folder, path);
-    } if (mimeType === this.SHORTCUT_MIME_TYPE) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return new GoogleDriveShortcut(file, path, this.getPathFromId(file.getTargetId()!));
     }
 
     return new GoogleDriveFile(file, path);

@@ -29,7 +29,7 @@ import { AlreadyRunningIterationError } from './errors';
 import type { IInterruptableIterator } from './iinterruptable-iterator';
 
 @injectable()
-export abstract class InterruptableIterator<T> implements IInterruptableIterator<T> {
+export abstract class InterruptableIterator<TToken> implements IInterruptableIterator<TToken> {
   private static readonly TRIGGER_MINUTES = 1;
 
   private static readonly MAXIMUM_RUNTIME_SECONDS = 6 * 60;
@@ -53,7 +53,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
   constructor(protected readonly logger: ILogger, protected readonly cache: ICache,
     private readonly triggerManager: ITriggerManager) { }
 
-  protected abstract next(iterationToken: T | null): T | null;
+  protected abstract next(iterationToken: TToken | null): TToken | null;
 
   private shouldContinue(): boolean {
     const { iterationStarted } = this;
@@ -98,9 +98,9 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
     this.logger.information('Continuing iteration');
     this.cache.set(InterruptableIterator.RUNNING_KEY, true,
       InterruptableIterator.MAXIMUM_RUNTIME_SECONDS);
-    let iterationToken = this.cache.get<T>(InterruptableIterator.ITERATION_TOKEN_KEY);
+    let iterationToken = this.cache.get<TToken>(InterruptableIterator.ITERATION_TOKEN_KEY);
     if (iterationToken === null) {
-      iterationToken = this.cache.pop<T>(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY);
+      iterationToken = this.cache.pop<TToken>(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY);
     }
 
     while (iterationToken !== null) {
@@ -125,7 +125,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
     }
   }
 
-  public tryStart(iterationToken?: T): boolean {
+  public tryStart(iterationToken?: TToken): boolean {
     if (this.isRunning()) {
       this.logger.information('Iteration currently running');
       return false;
@@ -144,7 +144,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
     return true;
   }
 
-  public start(iterationToken?: T): void {
+  public start(iterationToken?: TToken): void {
     if (!this.tryStart(iterationToken)) {
       throw new AlreadyRunningIterationError();
     }
@@ -156,7 +156,7 @@ export abstract class InterruptableIterator<T> implements IInterruptableIterator
 
   public isFinished(): boolean {
     return !this.isRunning()
-      && this.cache.get<T>(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY) === null
-      && this.cache.get<T>(InterruptableIterator.ITERATION_TOKEN_KEY) === null;
+      && this.cache.get<TToken>(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY) === null
+      && this.cache.get<TToken>(InterruptableIterator.ITERATION_TOKEN_KEY) === null;
   }
 }

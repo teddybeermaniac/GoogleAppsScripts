@@ -22,7 +22,7 @@
 import type { interfaces } from 'inversify';
 
 import { errors as utilities_errors, getSymbol } from '../utilities';
-import { AppsScriptCacheProvider } from './providers/apps-script-cache-provider/apps-script-cache-provider';
+import { GoogleAppsScriptCacheProvider } from './providers/google-apps-script-cache-provider/google-apps-script-cache-provider';
 import type { ICacheProvider } from './providers/icache-provider';
 
 export class CachingBuilder {
@@ -30,13 +30,13 @@ export class CachingBuilder {
 
   constructor(private readonly container: interfaces.Container) { }
 
-  public addAppsScriptProvider(): CachingBuilder {
+  public addGoogleAppsScriptProvider(): CachingBuilder {
     if (this.provider) {
       throw new utilities_errors.BuilderError('CachingBuilder', 'A caching provider was already added');
     }
 
-    this.container.bind<ICacheProvider>(getSymbol(AppsScriptCacheProvider))
-      .to(AppsScriptCacheProvider).inSingletonScope();
+    this.container.bind<ICacheProvider>(getSymbol(GoogleAppsScriptCacheProvider))
+      .to(GoogleAppsScriptCacheProvider).inSingletonScope();
     this.provider = true;
 
     return this;

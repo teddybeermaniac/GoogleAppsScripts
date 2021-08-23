@@ -23,10 +23,10 @@ import type { interfaces } from 'inversify';
 
 import { errors as utilities_errors, getSymbol } from '../utilities';
 import type { ILoggerSettings } from './ilogger-settings';
-import { AppsScriptLoggerProvider } from './providers/apps-script-logger-provider/apps-script-logger-provider';
-import type { IAppsScriptLoggerProviderSettings } from './providers/apps-script-logger-provider/iapps-script-logger-provider-settings';
+import { GoogleAppsScriptLoggerProvider } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider';
+import type { IGoogleAppsScriptLoggerProviderSettings } from './providers/google-apps-script-logger-provider/igoogle-apps-script-logger-provider-settings';
 import type { ILoggerProvider } from './providers/ilogger-provider';
-import { IAppsScriptLoggerProviderSettingsSymbol, ILoggerSettingsSymbol } from './symbols';
+import { IGoogleAppsScriptLoggerProviderSettingsSymbol, ILoggerSettingsSymbol } from './symbols';
 
 export class LoggingBuilder {
   private appScriptProvider = false;
@@ -39,18 +39,20 @@ export class LoggingBuilder {
     return this;
   }
 
-  public addAppsScriptProvider(settings?: IAppsScriptLoggerProviderSettings): LoggingBuilder {
+  public addGoogleAppsScriptProvider(settings?: IGoogleAppsScriptLoggerProviderSettings):
+  LoggingBuilder {
     if (this.appScriptProvider) {
-      throw new utilities_errors.BuilderError('LoggingBuilder', 'AppsScript logger provider already added');
+      throw new utilities_errors.BuilderError('LoggingBuilder', 'GoogleAppsScript logger provider already added');
     }
 
     if (settings) {
       this.container
-        .bind<IAppsScriptLoggerProviderSettings>(IAppsScriptLoggerProviderSettingsSymbol)
-        .toConstantValue(settings);
+        .bind<IGoogleAppsScriptLoggerProviderSettings>(
+        IGoogleAppsScriptLoggerProviderSettingsSymbol,
+      ).toConstantValue(settings);
     }
-    this.container.bind<ILoggerProvider>(getSymbol(AppsScriptLoggerProvider))
-      .to(AppsScriptLoggerProvider).inSingletonScope();
+    this.container.bind<ILoggerProvider>(getSymbol(GoogleAppsScriptLoggerProvider))
+      .to(GoogleAppsScriptLoggerProvider).inSingletonScope();
     this.appScriptProvider = true;
 
     return this;

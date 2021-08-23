@@ -3,7 +3,7 @@
         "extends": "../_common/package-dry.json"
     },
     "dependencies": {
-        "alasql": "^1.7.3"
+        "helpers": "link:../helpers"
     },
-    "name": "helpers"
+    "name": "google-spreadsheet-sql"
 }

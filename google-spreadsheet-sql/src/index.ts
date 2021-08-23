@@ -19,34 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
 
-import { Container, interfaces } from 'inversify';
+import {
+  createContainer, exporting, logging, querying,
+} from 'helpers';
+import type { interfaces } from 'inversify';
 
-import * as caching from './caching';
-import * as exporting from './exporting';
-import * as filesystem from './filesystem';
-import * as iteration from './iteration';
-import * as logging from './logging';
-import * as querying from './querying';
-import * as triggering from './triggering';
-import * as utilities from './utilities';
-import { TYPES as UTILITIES_TYPES } from './utilities';
+import { GoogleSpreadsheetSQL } from './google-spreadsheet-sql';
 
-export function createContainer(): interfaces.Container {
-  const container = new Container();
-  container.bind<interfaces.Container>(UTILITIES_TYPES.Container).toConstantValue(container);
-
-  return container;
-}
+const container: interfaces.Container = createContainer();
+exporting.add(container, (builder) => {
+  builder.addContainer(GoogleSpreadsheetSQL, true);
+});
+logging.add(container, (builder) => {
+  builder.addSettings({
+    level: logging.LogLevel.Information,
+  });
+  builder.addGoogleAppsScriptProvider();
+});
+querying.add(container);
 
 export {
-  caching,
-  exporting,
-  filesystem,
-  iteration,
-  logging,
-  querying,
-  triggering,
-  utilities,
+  container,
 };

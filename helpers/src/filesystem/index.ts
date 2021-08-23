@@ -25,7 +25,12 @@ import { getSymbol } from '../utilities';
 import * as errors from './errors';
 import { Filesystem } from './filesystem';
 import { FilesystemBuilder } from './filesystem-builder';
+import type { IFile } from './ifile';
 import type { IFilesystem } from './ifilesystem';
+import type { IFolder } from './ifolder';
+import type { IItem } from './iitem';
+import type { IShortcut } from './ishortcut';
+import { ItemType } from './item-type';
 import { ProviderType } from './providers/provider-type';
 import { IFilesystemSymbol } from './symbols';
 
@@ -34,7 +39,7 @@ export function add(container: interfaces.Container, build: (builder: Filesystem
   const builder = new FilesystemBuilder(container);
   build(builder);
 
-  container.bind<IFilesystem>(getSymbol(Filesystem)).to(Filesystem).inTransientScope();
+  container.bind<IFilesystem>(getSymbol(Filesystem)).to(Filesystem).inSingletonScope();
 }
 
 export const TYPES = {
@@ -42,10 +47,15 @@ export const TYPES = {
 };
 
 export type {
+  IFile,
   IFilesystem,
+  IFolder,
+  IItem,
+  IShortcut,
 };
 
 export {
   errors,
+  ItemType,
   ProviderType,
 };
