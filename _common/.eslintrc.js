@@ -12,6 +12,7 @@ module.exports = {
   },
   plugins: [
     '@typescript-eslint',
+    'import',
     'simple-import-sort'
   ],
   root: true,
