@@ -19,26 +19,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-import {
-  createContainer, exporting, logging, querying,
-} from 'helpers';
-import type { interfaces } from 'inversify';
-
-import { SpreadsheetSQL } from './spreadsheet-sql';
-
-const container: interfaces.Container = createContainer();
-exporting.add(container, (builder) => {
-  builder.addContainer(SpreadsheetSQL, true);
-});
-logging.add(container, (builder) => {
-  builder.addSettings({
-    level: logging.LogLevel.Information,
-  });
-  builder.addGoogleAppsScriptProvider();
-});
-querying.add(container);
-
-export {
-  container,
-};
+export const GoogleSpreadsheetSQLSymbol = Symbol('GoogleSpreadsheetSQL');

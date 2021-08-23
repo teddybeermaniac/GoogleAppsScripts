@@ -1,5 +1,3 @@
-import type { IQueryableProvider } from './providers/iqueryable-provider';
-
 /*
  * Copyright © 2021 Michał Przybyś <michal@przybys.eu>
  *
@@ -21,6 +19,8 @@ import type { IQueryableProvider } from './providers/iqueryable-provider';
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type { IQueryableProvider } from './providers/iqueryable-provider';
+
 export interface IQueryable {
   fromFile(path: string): IQueryableProvider;
   fromCurrentSpreadsheet(): IQueryableProvider;

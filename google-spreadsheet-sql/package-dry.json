@@ -5,5 +5,5 @@
     "dependencies": {
         "helpers": "link:../helpers"
     },
-    "name": "spreadsheet-sql"
+    "name": "google-spreadsheet-sql"
 }

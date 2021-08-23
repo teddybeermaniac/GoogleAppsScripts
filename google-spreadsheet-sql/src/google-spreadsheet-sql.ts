@@ -19,4 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const SpreadsheetSQLSymbol = Symbol('SpreadsheetSQL');
+import {
+  exporting, logging, querying, utilities,
+} from 'helpers';
+import { inject, injectable } from 'inversify';
+
+import { GoogleSpreadsheetSQLSymbol } from './symbols';
+
+@injectable()
+@utilities.bindSymbol(GoogleSpreadsheetSQLSymbol)
+export class GoogleSpreadsheetSQL {
+  constructor(@inject(logging.TYPES.ILogger) private readonly logger: logging.ILogger,
+    @inject(querying.TYPES.IQueryable) private readonly query: querying.IQueryable) {
+  }
+
+  @exporting.exportMethod(true)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public SQL(query: string, ...parameters: any[]): any[][] {
+    this.logger.debug(`Running query '${query}'`);
+    const queryable = this.query.fromCurrentSpreadsheet();
+
+    return queryable.queryAny(query, ...parameters);
+  }
+}

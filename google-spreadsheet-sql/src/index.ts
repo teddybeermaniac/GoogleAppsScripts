@@ -19,26 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 import {
-  exporting, logging, querying, utilities,
+  createContainer, exporting, logging, querying,
 } from 'helpers';
-import { inject, injectable } from 'inversify';
+import type { interfaces } from 'inversify';
 
-import { SpreadsheetSQLSymbol } from './symbols';
+import { GoogleSpreadsheetSQL } from './google-spreadsheet-sql';
 
-@injectable()
-@utilities.bindSymbol(SpreadsheetSQLSymbol)
-export class SpreadsheetSQL {
-  constructor(@inject(logging.TYPES.ILogger) private readonly logger: logging.ILogger,
-    @inject(querying.TYPES.IQueryable) private readonly query: querying.IQueryable) {
-  }
+const container: interfaces.Container = createContainer();
+exporting.add(container, (builder) => {
+  builder.addContainer(GoogleSpreadsheetSQL, true);
+});
+logging.add(container, (builder) => {
+  builder.addSettings({
+    level: logging.LogLevel.Information,
+  });
+  builder.addGoogleAppsScriptProvider();
+});
+querying.add(container);
 
-  @exporting.exportMethod(true)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public SQL(query: string, ...parameters: any[]): any[][] {
-    this.logger.debug(`Running query '${query}'`);
-    const queryable = this.query.fromCurrentSpreadsheet();
-
-    return queryable.queryAny(query, ...parameters);
-  }
-}
+export {
+  container,
+};
