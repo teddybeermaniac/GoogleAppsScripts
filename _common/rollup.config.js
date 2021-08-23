@@ -75,6 +75,10 @@ export default {
       preferBuiltins: false
     }),
     commonjs({
+      dynamicRequireTargets: [
+        '../helpers/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        'node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+      ],
       extensions: [
         '.js',
         '.ts'
