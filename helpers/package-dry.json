@@ -3,7 +3,9 @@
         "extends": "../_common/package-dry.json"
     },
     "dependencies": {
-        "alasql": "^1.7.3"
+        "@types/object-hash": "^2.1.1",
+        "alasql": "^1.7.3",
+        "object-hash": "^2.2.0"
     },
     "name": "helpers"
 }

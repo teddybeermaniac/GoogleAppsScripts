@@ -3,7 +3,9 @@
         "extends": "../_common/package-dry.json"
     },
     "dependencies": {
-        "helpers": "link:../helpers"
+        "@types/object-hash": "^2.1.1",
+        "helpers": "link:../helpers",
+        "object-hash": "^2.2.0"
     },
     "name": "google-spreadsheet-sql"
 }

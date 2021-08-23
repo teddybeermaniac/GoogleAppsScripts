@@ -21,6 +21,7 @@
  */
 import { inject, injectable } from 'inversify';
 
+import { ICache, TYPES as CACHING_TYPES } from '../../../caching';
 import type { IFile } from '../../../filesystem';
 import { ILogger, TYPES as LOGGING_TYPES } from '../../../logging';
 import { bindSymbol, errors as utilities_errors } from '../../../utilities';
@@ -45,8 +46,9 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
   }
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
-  constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger) {
-    super(logger);
+  constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger,
+    @inject(CACHING_TYPES.ICache) cache: ICache) {
+    super(logger, cache);
   }
 
   private get spreadsheet(): GoogleAppsScript.Spreadsheet.Spreadsheet {
@@ -58,6 +60,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
   }
 
   public loadFile(file: IFile): void {
+    this.logger.trace(`Loading file '${file.path}'`);
     if (this.initialized) {
       throw new utilities_errors.InitializationError('Already initialized');
     }
@@ -67,6 +70,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
   }
 
   public loadCurrent(): void {
+    this.logger.trace('Loading current spreadsheet');
     if (this.initialized) {
       throw new utilities_errors.InitializationError('Already initialized');
     }
@@ -81,7 +85,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected getTable(name: string): any[] | null {
-    this.logger.debug(`Getting contents of named range '${name}'`);
+    this.logger.trace(`Getting contents of named range '${name}'`);
     const range = this.spreadsheet.getRangeByName(name);
     if (!range) {
       throw new InvalidQueryError(`Named range '${name}' does not exist`);
@@ -95,6 +99,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
     const names = data[0].map((column) => <string>column);
     const values = data.slice(1);
 
+    this.logger.trace(`Converting named range '${name}' to a list of objects`);
     let filterEmpty = true;
     return values
       .reverse()

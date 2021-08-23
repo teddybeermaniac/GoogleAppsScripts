@@ -19,56 +19,70 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import alasql from 'alasql';
 import { injectable } from 'inversify';
+import objectHash from 'object-hash';
 
+import type { ICache } from '../../caching';
 import type { ILogger } from '../../logging';
 import type { IQueryableProvider } from './iqueryable-provider';
 import type { ProviderType } from './provider-type';
 
 @injectable()
 export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected abstract getTable(name: string): any[] | null;
 
   public abstract get providerType(): ProviderType;
 
-  constructor(protected readonly logger: ILogger) { }
+  constructor(protected readonly logger: ILogger, private readonly cache: ICache) { }
+
+  private getCache<TValue>(query: string, cacheKey: string | boolean, parameters: any[]):
+  any | null {
+    this.logger.trace(`Getting result of '${query}' query from cache`);
+    return this.cache.get<TValue>(objectHash.sha1([query, cacheKey, parameters]));
+  }
+
+  private putCache<TValue>(query: string, cacheKey: string | boolean, parameters: any[],
+    result: any) {
+    this.logger.trace(`Putting result of '${query}' query into cache`);
+    this.cache.set<TValue>(objectHash.sha1([query, cacheKey, parameters]), result);
+  }
 
   private getTables(query: string): string[] {
-    this.logger.debug('Getting all tables used in query');
+    this.logger.trace(`Getting all tables used in query '${query}'`);
     const tables = query.match(/(?<=(FROM|JOIN)\s+\[?)[A-Za-z0-9_!]+(?=\]?)?/gi);
     if (!tables) {
-      this.logger.debug('Query is not using any tables');
+      this.logger.trace('Query is not using any tables');
       return [];
     }
 
     const withs = query.match(/(?<=WITH\s+\[?)[A-Za-z0-9_]+(?=\]?)?/gi);
     if (withs) {
-      this.logger.debug(`Query is using '${withs.join('\', \'')}' withs`);
+      this.logger.trace(`Query is using '${withs.join('\', \'')}' withs`);
     }
     const aliases = query.match(/(?<=AS\s+\[?)[A-Za-z0-9_]+(?=\]?)?/gi);
     if (aliases) {
-      this.logger.debug(`Query is using '${aliases.join('\', \'')}' aliases`);
+      this.logger.trace(`Query is using '${aliases.join('\', \'')}' aliases`);
     }
 
     const usedTables = tables.filter((table) => !withs?.includes(table)
       && !aliases?.includes(table));
-    this.logger.debug(`Query is using '${usedTables.join('\', \'')}' tables`);
+    this.logger.trace(`Query is using '${usedTables.join('\', \'')}' tables`);
 
     return usedTables;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private processQuery(query: string, parameters: any[]): [string, any[]] {
-    this.logger.debug(`Processing query '${query}'`);
+    this.logger.trace(`Processing query '${query}'`);
     const tables = this.getTables(query);
 
     let processedQuery = query;
     let processedParameters = parameters;
 
     const withQueries: string[] = [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const withParameters: any[] = [];
     tables?.forEach((table) => {
       const data = this.getTable(table);
@@ -90,21 +104,48 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
     return [processedQuery, processedParameters];
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public query<TRow>(query: string, ...parameters: any[]): TRow[] {
-    this.logger.debug('Querying a model');
+  public query<TRow>(query: string, cacheKey: string | boolean | null, ...parameters: any[]):
+  TRow[] {
+    this.logger.debug(`Querying a model ${cacheKey ? 'with cache' : 'without cache'} with query '${query}'`);
+    if (cacheKey) {
+      const cached = this.getCache<TRow[]>(query, cacheKey, parameters);
+      if (cached !== null) {
+        this.logger.debug('Result found in cache');
+        return cached;
+      }
+    }
+
     const [processedQuery, processedParameters] = this.processQuery(query, parameters);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (<any[]>alasql(processedQuery, processedParameters)).map((row) => <TRow>row);
+    this.logger.debug('Running query');
+    const result = (<any[]>alasql(processedQuery, processedParameters)).map((row) => <TRow>row);
+    if (cacheKey) {
+      this.putCache<TRow[]>(query, cacheKey, parameters, result);
+    }
+
+    this.logger.trace(`The result of the query is '${JSON.stringify(result)}'`);
+    return result;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public queryAny(query: string, ...parameters: any[]): any[][] {
-    this.logger.debug('Querying any');
+  public queryAny(query: string, cacheKey: string | boolean | null, ...parameters: any[]): any[][] {
+    this.logger.debug(`Querying any ${cacheKey ? 'with cache' : 'without cache'} with query '${query}'`);
+    if (cacheKey) {
+      const cached = this.getCache<any[][]>(query, cacheKey, parameters);
+      if (cached !== null) {
+        this.logger.debug('Result found in cache');
+        return cached;
+      }
+    }
+
     const [processedQuery, processedParameters] = this.processQuery(query, parameters);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return <any[][]>alasql(processedQuery, processedParameters);
+    this.logger.debug('Running query');
+    const result = alasql(processedQuery, processedParameters);
+    if (cacheKey) {
+      this.putCache<any[][]>(query, cacheKey, parameters, result);
+    }
+
+    this.logger.trace(`The result of the query is '${JSON.stringify(result)}'`);
+    return result;
   }
 }

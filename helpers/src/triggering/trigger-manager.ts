@@ -65,7 +65,7 @@ export class TriggerManger implements ITriggerManager {
     replace: boolean | undefined): void {
     if (this.exists(method)) {
       if (replace) {
-        this.logger.trace(`Trigger for method '${method.name}'${this.symbol.description
+        this.logger.debug(`Trigger for method '${method.name}'${this.symbol.description
           ? ` from '${this.symbol.description}'`
           : ''} already exists; replacing`);
         this.remove(method);
@@ -128,7 +128,7 @@ export class TriggerManger implements ITriggerManager {
   }
 
   public exists(method: () => void): boolean {
-    this.logger.trace(`Checking trigger for method '${method.name}'${this.symbol.description
+    this.logger.debug(`Checking trigger for method '${method.name}'${this.symbol.description
       ? ` from '${this.symbol.description}'`
       : ''}`);
 

@@ -11,8 +11,12 @@ To install this script:
 6. In your Spreadsheet's script file add the reference to the script created in step **4**.
 7. Then in that script add:
 ```js
-function SQL(query, refreshToken, ...parameters) {
-  return GoogleSpreadsheetSQL.SQL(query, ...parameters);
+function SQL(query, cacheKey, ...parameters) {
+  return GoogleSpreadsheetSQL.sql(query, cacheKey, ...parameters);
+}
+
+function CACHEKEY(...parameters) {
+  return GoogleSpreadsheetSQL.cachekey(...parameters);
 }
 
 function NOOP(..._) { }
@@ -33,7 +37,7 @@ and a named range `Orders`:
 |  3 |        2 | 18/12/2020 |    15 |
 
 And this formula **(remember to use `MATRIX OF SELECT`)**:
-```
+```excel
 =SQL("MATRIX OF SELECT
     [People].[Name],
     COUNT(1) AS [Count],
@@ -56,6 +60,8 @@ The result will be:
 | John    | 1 | 15 |
 
 The `NOOP` function is required, because Google Sheets won't recalculate the data unless the formula, or data in references which are a part of the formula change, but the script gets named ranges in the code, so the function ignores it. Of course you don't need to use the tables - you can for example put a reference to a cell with a date, updated daily by a trigger, to recalculate the query every day.
+
+To enable internal caching, replace `NOOP` function with `CACHEKEY`.
 
 ## Notes
 See [AlaSQL](https://github.com/agershun/alasql) for more details.

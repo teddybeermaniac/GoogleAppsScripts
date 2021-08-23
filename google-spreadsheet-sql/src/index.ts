@@ -21,13 +21,16 @@
  */
 
 import {
-  createContainer, exporting, logging, querying,
+  caching, createContainer, exporting, logging, querying,
 } from 'helpers';
 import type { interfaces } from 'inversify';
 
 import { GoogleSpreadsheetSQL } from './google-spreadsheet-sql';
 
 const container: interfaces.Container = createContainer();
+caching.add(container, (builder) => {
+  builder.addGoogleAppsScriptProvider();
+});
 exporting.add(container, (builder) => {
   builder.addContainer(GoogleSpreadsheetSQL, true);
 });
