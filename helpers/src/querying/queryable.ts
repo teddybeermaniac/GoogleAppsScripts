@@ -58,7 +58,7 @@ export class Queryable implements IQueryable {
     let provider: IFileQueryableProvider;
     switch (file.mimeType) {
       case 'application/vnd.google-apps.spreadsheet':
-        this.logger.debug(`File '${path}' is a Google Spreadsheet`);
+        this.logger.trace(`File '${path}' is a Google Spreadsheet`);
         provider = this.container.get<IFileQueryableProvider>(
           GoogleSpreadsheetQueryableProviderSymbol,
         );

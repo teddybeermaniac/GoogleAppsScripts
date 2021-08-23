@@ -47,24 +47,32 @@ export class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
     }
 
     let method: (message: string) => void;
+    let prefix: string;
     // eslint-disable-next-line default-case
     switch (level) {
       case LogLevel.Trace:
+        method = console.log;
+        prefix = 'TRC';
+        break;
       case LogLevel.Debug:
         method = console.log;
+        prefix = 'DBG';
         break;
       case LogLevel.Information:
         method = console.info;
+        prefix = 'INF';
         break;
       case LogLevel.Warning:
         method = console.warn;
+        prefix = 'WRN';
         break;
       case LogLevel.Error:
         method = console.error;
+        prefix = 'ERR';
         break;
     }
 
-    const fullMessage = `[${name}] ${message}${level === LogLevel.Error && error
+    const fullMessage = `[${prefix}][${name}] ${message}${level === LogLevel.Error && error
       ? `; ${error.name}: ${error.message}${error.stack ? `; ${error.stack}` : ''}`
       : ''}`;
 

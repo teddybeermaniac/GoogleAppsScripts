@@ -63,14 +63,14 @@ export abstract class InterruptableIterator<TToken> implements IInterruptableIte
 
       this.runTime += iterationTime;
       this.iterations += 1;
-      this.logger.debug(`Iteration took ${iterationTime}ms`);
+      this.logger.trace(`Iteration took ${iterationTime}ms`);
     }
 
     if (this.iterations > 0) {
       const averageTime = this.runTime / this.iterations;
       const leftTime = InterruptableIterator.MAXIMUM_RUNTIME_SECONDS * 1000
         - (Date.now() - this.started);
-      this.logger.debug(`Average iteration time ${averageTime}ms; time left ${leftTime}ms`);
+      this.logger.trace(`Average iteration time ${averageTime}ms; time left ${leftTime}ms`);
 
       if (averageTime * InterruptableIterator.ITERATION_TIME_SAFETY_BUFFER > leftTime) {
         return false;

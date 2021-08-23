@@ -23,6 +23,7 @@ import {
   exporting, logging, querying, utilities,
 } from 'helpers';
 import { inject, injectable } from 'inversify';
+import objectHash from 'object-hash';
 
 import { GoogleSpreadsheetSQLSymbol } from './symbols';
 
@@ -35,10 +36,18 @@ export class GoogleSpreadsheetSQL {
 
   @exporting.exportMethod(true)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public SQL(query: string, ...parameters: any[]): any[][] {
-    this.logger.debug(`Running query '${query}'`);
+  public sql(query: string, cacheKey: string | boolean | null, ...parameters: any[]): any[][] {
+    this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
     const queryable = this.query.fromCurrentSpreadsheet();
 
-    return queryable.queryAny(query, ...parameters);
+    return queryable.queryAny(query, cacheKey, ...parameters);
+  }
+
+  @exporting.exportMethod(true)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public cacheKey(...parameters: any[]): string {
+    this.logger.debug('Calculating cache key');
+
+    return objectHash.sha1(parameters);
   }
 }
