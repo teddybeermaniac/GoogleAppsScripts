@@ -19,6 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const GoogleSpreadsheetQueryableProviderSymbol = Symbol('GoogleSpreadsheetQueryableProvider');
-export const IQueryableSymbol = Symbol('IQueryable');
-export const fromMethodsSymbol = Symbol('fromMethodsSymbol');
+import type { FromCallback } from './from-callback';
+
+export interface IFromMethod {
+  callback: FromCallback;
+  methodName: string;
+}

@@ -26,18 +26,20 @@ import alasql from 'alasql';
 import { injectable } from 'inversify';
 import objectHash from 'object-hash';
 
-import type { ICache } from '../../caching';
-import type { ILogger } from '../../logging';
-import type { IQueryableProvider } from './iqueryable-provider';
-import type { ProviderType } from './provider-type';
+import type { ICache } from '../../../caching';
+import type { ILogger } from '../../../logging';
+import { fromMethodsSymbol } from '../../symbols';
+import type { IQueryableProvider } from '../iqueryable-provider';
+import type { ProviderType } from '../provider-type';
+import type { IFromMethod } from './ifrom-method';
 
 @injectable()
 export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider {
-  protected abstract getTable(name: string): any[] | null;
-
   public abstract get providerType(): ProviderType;
 
-  constructor(protected readonly logger: ILogger, private readonly cache: ICache) { }
+  constructor(protected readonly logger: ILogger, private readonly cache: ICache) {
+    this.addFromMethods();
+  }
 
   private getCache<TValue>(query: string, cacheKey: string | boolean, parameters: any[]):
   any | null {
@@ -51,57 +53,16 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
     this.cache.set<TValue>(objectHash.sha1([query, cacheKey, parameters]), result);
   }
 
-  private getTables(query: string): string[] {
-    this.logger.trace(`Getting all tables used in query '${query}'`);
-    const tables = query.match(/(?<=(FROM|JOIN)\s+\[?)[A-Za-z0-9_!]+(?=\]?)?/gi);
-    if (!tables) {
-      this.logger.trace('Query is not using any tables');
-      return [];
-    }
-
-    const withs = query.match(/(?<=WITH\s+\[?)[A-Za-z0-9_]+(?=\]?)?/gi);
-    if (withs) {
-      this.logger.trace(`Query is using '${withs.join('\', \'')}' withs`);
-    }
-    const aliases = query.match(/(?<=AS\s+\[?)[A-Za-z0-9_]+(?=\]?)?/gi);
-    if (aliases) {
-      this.logger.trace(`Query is using '${aliases.join('\', \'')}' aliases`);
-    }
-
-    const usedTables = tables.filter((table) => !withs?.includes(table)
-      && !aliases?.includes(table));
-    this.logger.trace(`Query is using '${usedTables.join('\', \'')}' tables`);
-
-    return usedTables;
-  }
-
-  private processQuery(query: string, parameters: any[]): [string, any[]] {
-    this.logger.trace(`Processing query '${query}'`);
-    const tables = this.getTables(query);
-
-    let processedQuery = query;
-    let processedParameters = parameters;
-
-    const withQueries: string[] = [];
-    const withParameters: any[] = [];
-    tables?.forEach((table) => {
-      const data = this.getTable(table);
-
-      if (data) {
-        withQueries.push(`[${table}] AS (SELECT * FROM ?)`);
-        withParameters.push(data);
-      }
+  protected addFromMethods(): void {
+    this.logger.trace('Adding FROM methods');
+    const fromMethods = <IFromMethod[]>Reflect.getMetadata(fromMethodsSymbol, this.constructor);
+    fromMethods?.forEach((method) => {
+      this.logger.trace(`Adding '${method.methodName}' method`);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      (<any>alasql).from[method.methodName] = (tableName: string, _: any,
+        callback: (data: any[], idx: number, query: any) => any, idx: number, query: any) => method
+        .callback.bind(this)(tableName, (data: any[]) => callback(data, idx, query));
     });
-
-    if (withQueries.length > 0) {
-      if (/^WITH/i.test(processedQuery)) {
-        processedQuery = `,${processedQuery.substring(4)}`;
-      }
-      processedQuery = `WITH ${withQueries.join(', ')} ${processedQuery}`;
-      processedParameters = withParameters.concat(processedParameters);
-    }
-
-    return [processedQuery, processedParameters];
   }
 
   public query<TRow>(query: string, cacheKey: string | boolean | null, ...parameters: any[]):
@@ -115,10 +76,8 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
       }
     }
 
-    const [processedQuery, processedParameters] = this.processQuery(query, parameters);
-
     this.logger.debug('Running query');
-    const result = (<any[]>alasql(processedQuery, processedParameters)).map((row) => <TRow>row);
+    const result = (<any[]>alasql(query, parameters)).map((row) => <TRow>row);
     if (cacheKey) {
       this.putCache<TRow[]>(query, cacheKey, parameters, result);
     }
@@ -137,10 +96,8 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
       }
     }
 
-    const [processedQuery, processedParameters] = this.processQuery(query, parameters);
-
     this.logger.debug('Running query');
-    const result = alasql(processedQuery, processedParameters);
+    const result = alasql(query, parameters);
     if (cacheKey) {
       this.putCache<any[][]>(query, cacheKey, parameters, result);
     }

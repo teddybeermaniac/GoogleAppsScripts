@@ -19,6 +19,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const GoogleSpreadsheetQueryableProviderSymbol = Symbol('GoogleSpreadsheetQueryableProvider');
-export const IQueryableSymbol = Symbol('IQueryable');
-export const fromMethodsSymbol = Symbol('fromMethodsSymbol');
+import { fromMethodsSymbol } from '../../symbols';
+import type { BaseAlaSQLQueryableProvider } from './base-alasql-queryable-provider';
+import type { FromCallback } from './from-callback';
+import type { IFromMethod } from './ifrom-method';
+
+export function fromMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: string):
+(target: TTarget, _: string, descriptor: TypedPropertyDescriptor<FromCallback>) => void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return (target: TTarget, _: string, descriptor: TypedPropertyDescriptor<FromCallback>):
+  void => {
+    if (!descriptor.value) {
+      return;
+    }
+
+    const fromMethodDefinition = {
+      callback: descriptor.value,
+      methodName: name,
+    };
+
+    const fromMethods = <IFromMethod[]>Reflect.getMetadata(fromMethodsSymbol, target.constructor);
+    if (fromMethods) {
+      fromMethods.push(fromMethodDefinition);
+    } else {
+      Reflect.defineMetadata(fromMethodsSymbol, [fromMethodDefinition], target.constructor);
+    }
+  };
+}
