@@ -27,7 +27,8 @@ import { ILogger, TYPES as LOGGING_TYPES } from '../../../logging';
 import { bindSymbol, errors as utilities_errors } from '../../../utilities';
 import { InvalidQueryError, NotASpreadsheetContextError } from '../../errors';
 import { GoogleSpreadsheetQueryableProviderSymbol } from '../../symbols';
-import { BaseAlaSQLQueryableProvider } from '../base-alasql-queryable-provider';
+import { BaseAlaSQLQueryableProvider } from '../base-alasql-queryable-provider/base-alasql-queryable-provider';
+import { fromMethod } from '../base-alasql-queryable-provider/from-method';
 import type { ICurrentQueryableProvider } from '../icurrent-queryable-provider';
 import type { IFileQueryableProvider } from '../ifile-queryable-provider';
 import { ProviderType } from '../provider-type';
@@ -59,6 +60,48 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
     return this._spreadsheet;
   }
 
+  @fromMethod('NAMEDRANGE')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private fromNamedRange(tableName: string, callback: (data: any[]) => any[]): any[] {
+    this.logger.trace(`Getting contents of named range '${tableName}'`);
+    const range = this.spreadsheet.getRangeByName(tableName);
+    if (!range) {
+      throw new InvalidQueryError(`Named range '${tableName}' does not exist`);
+    }
+
+    const data = range.getValues();
+    if (!data || !data[0] || !data[0][0] || data[0].every((column) => column === '')) {
+      throw new InvalidQueryError(`Named range '${tableName}' is not valid`);
+    }
+
+    const names = data[0].map((column) => <string>column);
+    const values = data.slice(1);
+
+    this.logger.trace(`Converting named range '${tableName}' to a list of objects`);
+    let filterEmpty = true;
+    const processedData = values
+      .reverse()
+      .filter((row) => {
+        if (filterEmpty) {
+          if (row.every((column) => column === '')) {
+            return false;
+          }
+
+          filterEmpty = false;
+        }
+
+        return true;
+      }).reverse()
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .map((row) => Object.fromEntries(row.map((column, index) => [names[index]!, column])));
+
+    if (callback) {
+      return callback(processedData);
+    }
+
+    return processedData;
+  }
+
   public loadFile(file: IFile): void {
     this.logger.trace(`Loading file '${file.path}'`);
     if (this.initialized) {
@@ -81,40 +124,5 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
     }
 
     this.initialized = true;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected getTable(name: string): any[] | null {
-    this.logger.trace(`Getting contents of named range '${name}'`);
-    const range = this.spreadsheet.getRangeByName(name);
-    if (!range) {
-      throw new InvalidQueryError(`Named range '${name}' does not exist`);
-    }
-
-    const data = range.getValues();
-    if (!data || !data[0] || !data[0][0] || data[0].every((column) => column === '')) {
-      throw new InvalidQueryError(`Named range '${name}' is not valid`);
-    }
-
-    const names = data[0].map((column) => <string>column);
-    const values = data.slice(1);
-
-    this.logger.trace(`Converting named range '${name}' to a list of objects`);
-    let filterEmpty = true;
-    return values
-      .reverse()
-      .filter((row) => {
-        if (filterEmpty) {
-          if (row.every((column) => column === '')) {
-            return false;
-          }
-
-          filterEmpty = false;
-        }
-
-        return true;
-      }).reverse()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .map((row) => Object.fromEntries(row.map((column, index) => [names[index]!, column])));
   }
 }

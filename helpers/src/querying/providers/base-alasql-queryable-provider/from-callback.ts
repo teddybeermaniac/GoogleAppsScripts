@@ -19,6 +19,5 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const GoogleSpreadsheetQueryableProviderSymbol = Symbol('GoogleSpreadsheetQueryableProvider');
-export const IQueryableSymbol = Symbol('IQueryable');
-export const fromMethodsSymbol = Symbol('fromMethodsSymbol');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type FromCallback = (tableName: string, callback: (data: any[]) => any[]) => any[];

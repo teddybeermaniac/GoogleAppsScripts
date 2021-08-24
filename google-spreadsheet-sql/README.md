@@ -36,16 +36,16 @@ and a named range `Orders`:
 |  2 |        1 | 17/12/2020 |    10 |
 |  3 |        2 | 18/12/2020 |    15 |
 
-And this formula **(remember to use `MATRIX OF SELECT`)**:
+and this formula **(remember to use `MATRIX OF SELECT`)**:
 ```excel
 =SQL("MATRIX OF SELECT
     [People].[Name],
     COUNT(1) AS [Count],
     SUM([Orders].[Value]) AS [Value]
 FROM
-    [People]
+    NAMEDRANGE('People') AS [People]
 INNER JOIN
-    [Orders]
+    NAMEDRANGE('Orders') AS [Orders]
 ON
     [Orders].[PersonId] = [People].[Id]
 GROUP BY
@@ -53,7 +53,7 @@ GROUP BY
     [People].[Name]", NOOP(People, Orders))
 ```
 
-The result will be:
+the result will be:
 |         |   |    |
 | ------- | - | -- |
 | Michael | 2 | 12 |
