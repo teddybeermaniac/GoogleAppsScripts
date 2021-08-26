@@ -19,23 +19,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { InvalidFromMethodError } from '../../errors';
 import { fromMethodsSymbol } from '../../symbols';
 import type { BaseAlaSQLQueryableProvider } from './base-alasql-queryable-provider';
-import type { FromCallback } from './from-callback';
 import type { IFromMethod } from './ifrom-method';
 
 export function fromMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: string):
-(target: TTarget, _: string, descriptor: TypedPropertyDescriptor<FromCallback>) => void {
+(target: TTarget, propertyKey: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  descriptor: TypedPropertyDescriptor<(tableName: string) => any[]>) => void {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return (target: TTarget, _: string, descriptor: TypedPropertyDescriptor<FromCallback>):
+  return (target: TTarget, propertyKey: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    descriptor: TypedPropertyDescriptor<(tableName: string) => any[]>):
   void => {
     if (!descriptor.value) {
-      return;
+      throw new InvalidFromMethodError(propertyKey, target.constructor.name);
     }
 
     const fromMethodDefinition = {
       callback: descriptor.value,
-      methodName: name,
+      name,
     };
 
     const fromMethods = <IFromMethod[]>Reflect.getMetadata(fromMethodsSymbol, target.constructor);

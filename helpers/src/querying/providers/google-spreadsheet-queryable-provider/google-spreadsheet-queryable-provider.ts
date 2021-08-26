@@ -62,7 +62,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
 
   @fromMethod('NAMEDRANGE')
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private fromNamedRange(tableName: string, callback: (data: any[]) => any[]): any[] {
+  private fromNamedRange(tableName: string): any[] {
     this.logger.trace(`Getting contents of named range '${tableName}'`);
     const range = this.spreadsheet.getRangeByName(tableName);
     if (!range) {
@@ -79,7 +79,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
 
     this.logger.trace(`Converting named range '${tableName}' to a list of objects`);
     let filterEmpty = true;
-    const processedData = values
+    return values
       .reverse()
       .filter((row) => {
         if (filterEmpty) {
@@ -94,12 +94,6 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
       }).reverse()
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .map((row) => Object.fromEntries(row.map((column, index) => [names[index]!, column])));
-
-    if (callback) {
-      return callback(processedData);
-    }
-
-    return processedData;
   }
 
   public loadFile(file: IFile): void {

@@ -57,11 +57,17 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
     this.logger.trace('Adding FROM methods');
     const fromMethods = <IFromMethod[]>Reflect.getMetadata(fromMethodsSymbol, this.constructor);
     fromMethods?.forEach((method) => {
-      this.logger.trace(`Adding '${method.methodName}' method`);
+      this.logger.trace(`Adding '${method.name}' method`);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (<any>alasql).from[method.methodName] = (tableName: string, _: any,
-        callback: (data: any[], idx: number, query: any) => any, idx: number, query: any) => method
-        .callback.bind(this)(tableName, (data: any[]) => callback(data, idx, query));
+      (<any>alasql).from[method.name] = (tableName: string, _: any,
+        callback: (data: any[], idx: number, query: any) => any, idx: number, query: any) => {
+        const data = method.callback.bind(this)(tableName);
+        if (callback) {
+          return callback(data, idx, query);
+        }
+
+        return data;
+      };
     });
   }
 

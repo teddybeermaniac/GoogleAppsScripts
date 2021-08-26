@@ -31,16 +31,16 @@ import { GoogleSpreadsheetSQLSymbol } from './symbols';
 @utilities.bindSymbol(GoogleSpreadsheetSQLSymbol)
 export class GoogleSpreadsheetSQL {
   constructor(@inject(logging.TYPES.ILogger) private readonly logger: logging.ILogger,
-    @inject(querying.TYPES.IQueryable) private readonly query: querying.IQueryable) {
+    @inject(querying.TYPES.IQueryable) private readonly queryable: querying.IQueryable) {
   }
 
   @exporting.exportMethod(true)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public sql(query: string, cacheKey: string | boolean | null, ...parameters: any[]): any[][] {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
-    const queryable = this.query.fromCurrentSpreadsheet();
+    const queryableProvider = this.queryable.fromCurrentSpreadsheet();
 
-    return queryable.queryAny(query, cacheKey, ...parameters);
+    return queryableProvider.queryAny(query, cacheKey, ...parameters);
   }
 
   @exporting.exportMethod(true)
