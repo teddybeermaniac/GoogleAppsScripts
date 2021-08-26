@@ -20,11 +20,9 @@
  * SOFTWARE.
  */
 import { ExportingError } from './exporting-error';
-import { InvalidExportedMethodError } from './invalid-exported-method-error';
-import { NotExportedMethodError } from './not-exported-method-error';
 
-export {
-  ExportingError,
-  InvalidExportedMethodError,
-  NotExportedMethodError,
-};
+export class InvalidExportedMethodError extends ExportingError {
+  constructor(public readonly method: string, public readonly container: string) {
+    super(`Invalid exported method '${method}' on '${container}'`);
+  }
+}

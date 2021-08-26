@@ -19,12 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { ExportingError } from './exporting-error';
-import { InvalidExportedMethodError } from './invalid-exported-method-error';
-import { NotExportedMethodError } from './not-exported-method-error';
+import { QueryingError } from './querying-error';
 
-export {
-  ExportingError,
-  InvalidExportedMethodError,
-  NotExportedMethodError,
-};
+export class InvalidFromMethodError extends QueryingError {
+  constructor(public readonly method: string, public readonly container: string) {
+    super(`Invalid FROM method '${method}' on '${container}'`);
+  }
+}

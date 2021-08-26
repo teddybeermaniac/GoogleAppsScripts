@@ -19,18 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { InvalidExportedMethodError } from './errors';
 import type { IExportedMethod } from './iexported-method';
 import { exportedMethodsSymbol } from './symbols';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function exportMethod<TTarget extends Object>(asIs?: boolean):
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(target: TTarget, propertyKey: string, _?: TypedPropertyDescriptor<any>) => void {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-  return (target: TTarget, propertyKey: string, _?: TypedPropertyDescriptor<any>):
+export function exportMethod<TTarget extends Object>(asIs?: boolean, name?: string):
+(target: TTarget, propertyKey: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  descriptor: TypedPropertyDescriptor<(...parameters: any[]) => any>) => void {
+  return (target: TTarget, propertyKey: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    descriptor: TypedPropertyDescriptor<(...parameters: any[]) => any>):
   void => {
+    if (!descriptor.value) {
+      throw new InvalidExportedMethodError(propertyKey, target.constructor.name);
+    }
+
     const exportedMethod = {
-      name: propertyKey,
+      callback: descriptor.value,
+      name: name ?? propertyKey,
       asIs: asIs || false,
     };
 

@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 export interface IExportedMethod {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  callback: (...parameters: any[]) => any;
   name: string;
   asIs: boolean;
 }
