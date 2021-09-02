@@ -19,7 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const GoogleSpreadsheetQueryableProviderSymbol = Symbol('GoogleSpreadsheetQueryableProvider');
-export const IAlaSQLFunctionSymbol = Symbol('IAlaSQLFunction');
-export const IQueryableSymbol = Symbol('IQueryable');
-export const fromMethodsSymbol = Symbol('fromMethodsSymbol');
+import { injectable } from 'inversify';
+import moment from 'moment';
+
+import { bindSymbol } from '../../../../utilities';
+import { IAlaSQLFunctionSymbol } from '../../../symbols';
+import type { IAlaSQLFunction } from './ialasql-function';
+
+@injectable()
+@bindSymbol(IAlaSQLFunctionSymbol)
+export class AlaSQLMomentFunction implements IAlaSQLFunction {
+  // eslint-disable-next-line class-methods-use-this
+  public get name(): string {
+    return 'moment';
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, class-methods-use-this
+  public callback(input?: moment.MomentInput): any {
+    return moment(input);
+  }
+}

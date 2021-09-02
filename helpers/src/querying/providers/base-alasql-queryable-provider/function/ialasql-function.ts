@@ -19,7 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const GoogleSpreadsheetQueryableProviderSymbol = Symbol('GoogleSpreadsheetQueryableProvider');
-export const IAlaSQLFunctionSymbol = Symbol('IAlaSQLFunction');
-export const IQueryableSymbol = Symbol('IQueryable');
-export const fromMethodsSymbol = Symbol('fromMethodsSymbol');
+export interface IAlaSQLFunction {
+  readonly name: string;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  callback(...parameters: any[]): any;
+}

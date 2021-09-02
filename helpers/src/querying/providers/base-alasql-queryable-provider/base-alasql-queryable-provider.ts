@@ -23,22 +23,29 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import alasql from 'alasql';
-import { injectable } from 'inversify';
+import { injectable, interfaces } from 'inversify';
 import objectHash from 'object-hash';
 
 import type { ICache } from '../../../caching';
 import type { ILogger } from '../../../logging';
-import { fromMethodsSymbol } from '../../symbols';
+import { fromMethodsSymbol, IAlaSQLFunctionSymbol } from '../../symbols';
 import type { IQueryableProvider } from '../iqueryable-provider';
 import type { ProviderType } from '../provider-type';
+import type { IAlaSQLFunction } from './function/ialasql-function';
 import type { IFromMethod } from './ifrom-method';
 
 @injectable()
 export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider {
+  private static functionsAdded = false;
+
   public abstract get providerType(): ProviderType;
 
-  constructor(protected readonly logger: ILogger, private readonly cache: ICache) {
+  constructor(protected readonly logger: ILogger, private readonly cache: ICache,
+    private container: interfaces.Container) {
     this.addFromMethods();
+    if (!BaseAlaSQLQueryableProvider.functionsAdded) {
+      this.addFunctions();
+    }
   }
 
   private getCache<TValue>(query: string, cacheKey: string | boolean, parameters: any[]):
@@ -53,7 +60,7 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
     this.cache.set<TValue>(objectHash.sha1([query, cacheKey, parameters]), result);
   }
 
-  protected addFromMethods(): void {
+  private addFromMethods(): void {
     this.logger.trace('Adding FROM methods');
     const fromMethods = <IFromMethod[]>Reflect.getMetadata(fromMethodsSymbol, this.constructor);
     fromMethods?.forEach((method) => {
@@ -69,6 +76,18 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
         return data;
       };
     });
+  }
+
+  private addFunctions(): void {
+    this.logger.trace('Adding custom functions');
+    this.container.getAll<IAlaSQLFunction>(IAlaSQLFunctionSymbol).forEach((func) => {
+      this.logger.trace(`Adding '${func.name.toUpperCase()}' function`);
+      alasql.fn[func.name.toUpperCase()] = (...parameters: any[]) => {
+        this.logger.trace(`Calling function '${func.name.toUpperCase()}'${parameters !== undefined && parameters !== null ? ` with parameters '${parameters.toString()}'` : ' without parameters'}`);
+        return func.callback(...parameters);
+      };
+    });
+    BaseAlaSQLQueryableProvider.functionsAdded = true;
   }
 
   public query<TRow>(query: string, cacheKey: string | boolean | null, ...parameters: any[]):
