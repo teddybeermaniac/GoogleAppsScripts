@@ -36,15 +36,16 @@ import type { IFromMethod } from './ifrom-method';
 
 @injectable()
 export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider {
-  private static functionsAdded = false;
+  private static _alasqlInitialized = false;
 
   public abstract get providerType(): ProviderType;
 
   constructor(protected readonly logger: ILogger, private readonly cache: ICache,
     private container: interfaces.Container) {
-    this.addFromMethods();
-    if (!BaseAlaSQLQueryableProvider.functionsAdded) {
+    if (!BaseAlaSQLQueryableProvider._alasqlInitialized) {
+      this.addFromMethods();
       this.addFunctions();
+      BaseAlaSQLQueryableProvider._alasqlInitialized = true;
     }
   }
 
@@ -87,7 +88,6 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
         return func.callback(...parameters);
       };
     });
-    BaseAlaSQLQueryableProvider.functionsAdded = true;
   }
 
   public query<TRow>(query: string, cacheKey: string | boolean | null, ...parameters: any[]):
