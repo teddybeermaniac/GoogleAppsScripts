@@ -22,6 +22,5 @@
 export interface IExportedMethodProvider {
   getExportedMethods(): string[];
   getExportedMethodName(symbol: symbol, name: string): string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   callExportedMethod(exportedName: string, args: any[]): any;
 }

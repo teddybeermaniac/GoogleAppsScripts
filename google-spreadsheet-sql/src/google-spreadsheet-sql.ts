@@ -35,7 +35,6 @@ export class GoogleSpreadsheetSQL {
   }
 
   @exporting.exportMethod(true)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public sql(query: string, cacheKey: string | boolean | null, ...parameters: any[]): any[][] {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
     const queryableProvider = this.queryable.fromCurrentSpreadsheet();
@@ -44,7 +43,6 @@ export class GoogleSpreadsheetSQL {
   }
 
   @exporting.exportMethod(true)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public cacheKey(...parameters: any[]): string {
     this.logger.debug('Calculating cache key');
 

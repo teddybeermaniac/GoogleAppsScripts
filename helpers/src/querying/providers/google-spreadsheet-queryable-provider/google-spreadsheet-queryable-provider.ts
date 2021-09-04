@@ -41,7 +41,6 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
 
   private initialized = false;
 
-  // eslint-disable-next-line class-methods-use-this
   public get providerType(): ProviderType {
     return ProviderType.GoogleSpreadsheet;
   }
@@ -62,7 +61,6 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
   }
 
   @fromMethod('NAMEDRANGE')
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public fromNamedRange(tableName: string): any[] {
     this.logger.trace(`Getting contents of named range '${tableName}'`);
     const range = this.spreadsheet.getRangeByName(tableName);
@@ -93,7 +91,6 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
 
         return true;
       }).reverse()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .map((row) => Object.fromEntries(row.map((column, index) => [names[index]!, column])));
   }
 

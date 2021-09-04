@@ -29,13 +29,11 @@ import type { IAlaSQLFunction } from './ialasql-function';
 @injectable()
 @bindSymbol(IAlaSQLFunctionSymbol)
 export class AlaSQLMomentFunction implements IAlaSQLFunction {
-  // eslint-disable-next-line class-methods-use-this
   public get name(): string {
     return 'moment';
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, class-methods-use-this
-  public callback(input?: moment.MomentInput): any {
+  public callback(input?: moment.MomentInput): moment.Moment {
     return moment(input);
   }
 }

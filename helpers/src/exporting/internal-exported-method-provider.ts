@@ -36,7 +36,6 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
   constructor(private readonly container: interfaces.Container,
     private readonly logger: ILogger | undefined) { }
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
   protected prepare(constructors: interfaces.Newable<Object>[]): void {
     this.logger?.trace(`Found ${constructors.length} exported method containers`);
     constructors.forEach((constructor) => {
@@ -72,7 +71,6 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
     return exportedMethod.exportedName;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public callExportedMethod(exportedName: string, args: any[]): any {
     this.logger?.debug(`Calling exported method '${exportedName}'`);
 
@@ -82,8 +80,7 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
       throw new NotExportedMethodError(exportedName);
     }
 
-    // eslint-disable-next-line max-len
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const instance: any = this.container.get(exportedMethod.symbol);
 
     return exportedMethod.callback.bind(instance)(...args);

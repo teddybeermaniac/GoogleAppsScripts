@@ -42,7 +42,6 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
 
   private readonly SHORTCUT_MIME_TYPE = 'application/vnd.google-apps.shortcut';
 
-  // eslint-disable-next-line class-methods-use-this
   public get providerType(): ProviderType {
     return ProviderType.GoogleDrive;
   }
@@ -89,14 +88,12 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     for (let i = 0; i < segments.length; i += 1) {
       let childIterator: { hasNext: () => boolean; };
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       childIterator = segmentFolder.getFoldersByName(segments[i]!);
       if (!childIterator.hasNext()) {
         if (i < segments.length - 1) {
           throw new NotFoundPathError(path);
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         childIterator = segmentFolder.getFilesByName(segments[i]!);
         if (!childIterator.hasNext()) {
           throw new NotFoundPathError(path);
@@ -145,7 +142,6 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
           items.push(new GoogleDriveFile(file, `${path}/${file.getName()}`));
         } else {
           items.push(new GoogleDriveShortcut(file, `${path}/${file.getName()}`,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.getPathFromId(file.getTargetId()!)));
         }
       });
@@ -176,7 +172,6 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     let file = DriveApp.getFileById(id);
     let mimeType = file.getMimeType();
     if (mimeType === this.SHORTCUT_MIME_TYPE) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const targetId = file.getTargetId()!;
       if (resolve) {
         file = DriveApp.getFileById(targetId);

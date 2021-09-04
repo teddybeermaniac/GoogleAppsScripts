@@ -25,7 +25,6 @@ import { getSymbol } from '../binding/get-symbol';
 
 export function getOwnerType<TContainer>(context: interfaces.Context,
   constructor: interfaces.Newable<TContainer>):
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   interfaces.Newable<any> {
   const symbol = getSymbol(constructor);
   let request = context.currentRequest;

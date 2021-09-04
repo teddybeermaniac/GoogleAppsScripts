@@ -32,7 +32,6 @@ import type { IGoogleAppsScriptLoggerProviderSettings } from './igoogle-apps-scr
 @injectable()
 @bindSymbol(ILoggerProviderSymbol)
 export class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
-  // eslint-disable-next-line class-methods-use-this
   public get providerType(): ProviderType {
     return ProviderType.GoogleAppsScript;
   }

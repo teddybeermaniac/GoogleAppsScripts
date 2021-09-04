@@ -22,6 +22,5 @@
 export interface IAlaSQLFunction {
   readonly name: string;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   callback(...parameters: any[]): any;
 }

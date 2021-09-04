@@ -28,7 +28,6 @@ export class GoogleDriveShortcut extends GoogleDriveItem implements IShortcut {
 
   public get targetId(): string {
     if (this._targetId === undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this._targetId = this.file.getTargetId()!;
     }
 

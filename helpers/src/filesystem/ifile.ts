@@ -21,7 +21,6 @@
  */
 import type { IItem } from './iitem';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IFile extends IItem {
   readonly size: number;
   readonly mimeType: string;
