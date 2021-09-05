@@ -1,6 +1,7 @@
 {
     "dependencies": {
         "@types/google-apps-script": "^1.0.37",
+        "dependency-resolver": "^2.0.1",
         "inversify": "^5.1.1",
         "reflect-metadata": "^0.1.13"
     },
@@ -17,7 +18,9 @@
     },
     "license": "MIT",
     "scripts": {
-        "build": "eslint . --ext .ts && tsc"
+        "build-helpers": "NODE_PATH=${PWD}/node_modules node ../_common/build-helper-dependencies.js",
+        "build-only": "eslint . --ext .ts && tsc",
+        "build": "yarn run build-helpers && yarn run build-only"
     },
     "version": "1.0.0"
 }

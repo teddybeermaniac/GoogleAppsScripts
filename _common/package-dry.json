@@ -21,20 +21,8 @@
     },
     "license": "MIT",
     "scripts": {
-        "build-helpers-utilities": "yarn --cwd ../helpers-utilities && yarn --cwd ../helpers-utilities run build",
-        "build-helpers-logging": "yarn --cwd ../helpers-logging && yarn --cwd ../helpers-logging run build",
-        "build-helpers-caching": "yarn --cwd ../helpers-caching && yarn --cwd ../helpers-caching run build",
-        "build-helpers-exchange": "yarn --cwd ../helpers-exchange && yarn --cwd ../helpers-exchange run build",
-        "build-helpers-exporting": "yarn --cwd ../helpers-exporting && yarn --cwd ../helpers-exporting run build",
-        "build-helpers-triggering": "yarn --cwd ../helpers-triggering && yarn --cwd ../helpers-triggering run build",
-        "build-helpers-iteration": "yarn --cwd ../helpers-iteration && yarn --cwd ../helpers-iteration run build",
-        "build-helpers-filesystem": "yarn --cwd ../helpers-filesystem && yarn --cwd ../helpers-filesystem run build",
-        "build-helpers-querying": "yarn --cwd ../helpers-querying && yarn --cwd ../helpers-querying run build",
-        "build-helpers": "yarn run build-helpers-utilities && yarn run build-helpers-logging && yarn run build-helpers-caching && yarn run build-helpers-exchange && yarn run build-helpers-exporting && yarn run build-helpers-triggering && yarn run build-helpers-iteration && yarn run build-helpers-filesystem && yarn run build-helpers-querying",
         "build-only": "eslint . --ext .ts && rollup -c",
-        "build": "yarn run build-helpers && yarn run build-only",
-        "push-only": "clasp push",
-        "push": "yarn run build && yarn run push-only"
+        "push": "dry run build && clasp push"
     },
     "version": "1.0.0"
 }
