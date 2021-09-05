@@ -1,11 +1,11 @@
 {
     "dry": {
-        "extends": "../_common/package-dry.json"
+        "extends": "../_common/package-dry.base.json"
     },
     "dependencies": {
-        "helpers-exporting": "link:../helpers-exporting",
-        "helpers-logging": "link:../helpers-logging",
-        "helpers-utilities": "link:../helpers-utilities"
+        "helpers-exporting": "link:../helpers-exporting/build/src",
+        "helpers-logging": "link:../helpers-logging/build/src",
+        "helpers-utilities": "link:../helpers-utilities/build/src"
     },
     "name": "helpers-triggering"
 }

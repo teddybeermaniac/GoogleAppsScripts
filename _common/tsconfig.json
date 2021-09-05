@@ -25,55 +25,13 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "outDir": "./build",
-        "paths": {
-            "helpers-caching": [
-                "./node_modules/helpers-caching/src"
-            ],
-            "helpers-exchange": [
-                "./node_modules/helpers-exchange/src"
-            ],
-            "helpers-exporting": [
-                "./node_modules/helpers-exporting/src"
-            ],
-            "helpers-filesystem": [
-                "./node_modules/helpers-filesystem/src"
-            ],
-            "helpers-iteration": [
-                "./node_modules/helpers-iteration/src"
-            ],
-            "helpers-logging": [
-                "./node_modules/helpers-logging/src"
-            ],
-            "helpers-querying": [
-                "./node_modules/helpers-querying/src"
-            ],
-            "helpers-triggering": [
-                "./node_modules/helpers-triggering/src"
-            ],
-            "helpers-utilities": [
-                "./node_modules/helpers-utilities/src"
-            ]
-        },
         "removeComments": true,
         "resolveJsonModule": true,
         "strict": true,
         "target": "ES2019",
         "types": [
             "google-apps-script",
-            "node",
             "reflect-metadata"
         ]
-    },
-    "include": [
-        "./src/**/*",
-        "./node_modules/helpers-caching/src/**/*",
-        "./node_modules/helpers-exchange/src/**/*",
-        "./node_modules/helpers-exporting/src/**/*",
-        "./node_modules/helpers-filesystem/src/**/*",
-        "./node_modules/helpers-iteration/src/**/*",
-        "./node_modules/helpers-logging/src/**/*",
-        "./node_modules/helpers-querying/src/**/*",
-        "./node_modules/helpers-triggering/src/**/*",
-        "./node_modules/helpers-utilities/src/**/*"
-    ]
+    }
 }

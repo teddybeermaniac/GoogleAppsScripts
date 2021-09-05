@@ -1,10 +1,10 @@
 {
     "dry": {
-        "extends": "../_common/package-dry.json"
+        "extends": "../_common/package-dry.base.json"
     },
     "dependencies": {
-        "helpers-logging": "link:../helpers-logging",
-        "helpers-utilities": "link:../helpers-utilities"
+        "helpers-logging": "link:../helpers-logging/build/src",
+        "helpers-utilities": "link:../helpers-utilities/build/src"
     },
     "name": "helpers-caching"
 }

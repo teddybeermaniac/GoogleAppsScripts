@@ -1,13 +1,13 @@
 {
     "dry": {
-        "extends": "../_common/package-dry.json"
+        "extends": "../_common/package-dry.base.json"
     },
     "dependencies": {
-        "helpers-caching": "link:../helpers-caching",
-        "helpers-exporting": "link:../helpers-exporting",
-        "helpers-logging": "link:../helpers-logging",
-        "helpers-triggering": "link:../helpers-triggering",
-        "helpers-utilities": "link:../helpers-utilities"
+        "helpers-caching": "link:../helpers-caching/build/src",
+        "helpers-exporting": "link:../helpers-exporting/build/src",
+        "helpers-logging": "link:../helpers-logging/build/src",
+        "helpers-triggering": "link:../helpers-triggering/build/src",
+        "helpers-utilities": "link:../helpers-utilities/build/src"
     },
     "name": "helpers-iteration"
 }

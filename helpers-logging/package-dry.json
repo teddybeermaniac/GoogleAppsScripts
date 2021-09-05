@@ -1,9 +1,9 @@
 {
     "dry": {
-        "extends": "../_common/package-dry.json"
+        "extends": "../_common/package-dry.base.json"
     },
     "dependencies": {
-        "helpers-utilities": "link:../helpers-utilities"
+        "helpers-utilities": "link:../helpers-utilities/build/src"
     },
     "name": "helpers-logging"
 }
