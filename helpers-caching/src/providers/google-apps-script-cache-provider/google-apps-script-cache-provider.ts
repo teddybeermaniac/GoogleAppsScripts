@@ -19,10 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
+import { bindSymbol } from 'helpers-utilities';
 import { inject, injectable } from 'inversify';
 
-import { ILogger, TYPES as LOGGING_TYPES } from '../../../logging';
-import { bindSymbol } from '../../../utilities';
 import { ICacheProviderSymbol } from '../../symbols';
 import type { ICacheProvider } from '../icache-provider';
 import { ProviderType } from '../provider-type';

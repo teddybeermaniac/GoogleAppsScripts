@@ -19,32 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { errors as utilities_errors, getSymbol } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { getSymbol, onInitializableActivation } from '../utilities';
-import { Cache } from './cache';
-import { CachingBuilder } from './caching-builder';
-import type { ICache } from './icache';
-import { ProviderType } from './providers/provider-type';
-import { ICacheSymbol } from './symbols';
+import { GoogleAppsScriptCacheProvider } from './providers/google-apps-script-cache-provider/google-apps-script-cache-provider';
+import type { ICacheProvider } from './providers/icache-provider';
 
-export function add(container: interfaces.Container,
-  build: (builder: CachingBuilder) => void): void {
-  const builder = new CachingBuilder(container);
-  build(builder);
+export class CachingBuilder {
+  private provider = false;
 
-  container.bind<ICache>(getSymbol(Cache)).to(Cache).inTransientScope()
-    .onActivation(onInitializableActivation);
+  constructor(private readonly container: interfaces.Container) { }
+
+  public addGoogleAppsScriptProvider(): CachingBuilder {
+    if (this.provider) {
+      throw new utilities_errors.BuilderError('CachingBuilder', 'A caching provider was already added');
+    }
+
+    this.container.bind<ICacheProvider>(getSymbol(GoogleAppsScriptCacheProvider))
+      .to(GoogleAppsScriptCacheProvider).inSingletonScope();
+    this.provider = true;
+
+    return this;
+  }
 }
-
-export const TYPES = {
-  ICache: ICacheSymbol,
-};
-
-export type {
-  ICache,
-};
-
-export {
-  ProviderType,
-};

@@ -19,7 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { IInitializable } from '../utilities';
+import type { IInitializable } from 'helpers-utilities';
+
 import type { ProviderType } from './providers/provider-type';
 
 export interface ICache extends IInitializable {

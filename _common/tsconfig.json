@@ -26,6 +26,9 @@
         "noUnusedParameters": true,
         "outDir": "./build",
         "paths": {
+            "helpers-caching": [
+                "./node_modules/helpers-caching/src"
+            ],
             "helpers-exporting": [
                 "./node_modules/helpers-exporting/src"
             ],
@@ -51,6 +54,7 @@
     },
     "include": [
         "./src/**/*",
+        "./node_modules/helpers-caching/src/**/*",
         "./node_modules/helpers-exporting/src/**/*",
         "./node_modules/helpers-logging/src/**/*",
         "./node_modules/helpers-triggering/src/**/*",
