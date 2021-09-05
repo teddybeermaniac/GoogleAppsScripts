@@ -26,11 +26,8 @@ import type { IFromMethod } from './ifrom-method';
 
 export function fromMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: string):
 (target: TTarget, propertyKey: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   descriptor: TypedPropertyDescriptor<(tableName: string) => any[]>) => void {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return (target: TTarget, propertyKey: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     descriptor: TypedPropertyDescriptor<(tableName: string) => any[]>):
   void => {
     if (!descriptor.value) {

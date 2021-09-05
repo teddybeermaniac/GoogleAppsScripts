@@ -19,8 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IExportedMethodProvider {
-  getExportedMethods(): string[];
-  getExportedMethodName(symbol: symbol, name: string): string;
-  callExportedMethod(exportedName: string, args: any[]): any;
+import { ExchangeError } from './exchange-error';
+
+export class InvalidCurrencyError extends ExchangeError {
+  constructor(currency: string) {
+    super(`Invalid currency '${currency}'`);
+  }
 }

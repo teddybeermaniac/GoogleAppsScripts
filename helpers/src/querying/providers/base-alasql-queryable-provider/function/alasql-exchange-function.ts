@@ -19,8 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IExportedMethodProvider {
-  getExportedMethods(): string[];
-  getExportedMethodName(symbol: symbol, name: string): string;
-  callExportedMethod(exportedName: string, args: any[]): any;
+import { inject, injectable } from 'inversify';
+
+import { IExchange, TYPES as EXCHANGE_TYPES } from '../../../../exchange';
+import { ILogger, TYPES as LOGGING_TYPES } from '../../../../logging';
+import { bindSymbol } from '../../../../utilities';
+import { IAlaSQLFunctionSymbol } from '../../../symbols';
+import type { IAlaSQLFunction } from './ialasql-function';
+
+@injectable()
+@bindSymbol(IAlaSQLFunctionSymbol)
+export class AlaSQLExchangeFunction implements IAlaSQLFunction {
+  public get name(): string {
+    return 'EXCHANGE';
+  }
+
+  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
+    @inject(EXCHANGE_TYPES.IExchange) private readonly exchange: IExchange) { }
+
+  callback(value: number, from: string, to: string): number {
+    this.logger.trace(`Running EXCHANGE function with value '${value}', from currency '${from}' and to currency '${to}'`);
+    return this.exchange.convert(value, from, to);
+  }
 }

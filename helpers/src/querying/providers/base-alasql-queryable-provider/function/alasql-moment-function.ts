@@ -19,8 +19,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IExportedMethodProvider {
-  getExportedMethods(): string[];
-  getExportedMethodName(symbol: symbol, name: string): string;
-  callExportedMethod(exportedName: string, args: any[]): any;
+import { inject, injectable } from 'inversify';
+import moment from 'moment';
+
+import { ILogger, TYPES as LOGGING_TYPES } from '../../../../logging';
+import { bindSymbol } from '../../../../utilities';
+import { IAlaSQLFunctionSymbol } from '../../../symbols';
+import type { IAlaSQLFunction } from './ialasql-function';
+
+@injectable()
+@bindSymbol(IAlaSQLFunctionSymbol)
+export class AlaSQLMomentFunction implements IAlaSQLFunction {
+  public get name(): string {
+    return 'MOMENT';
+  }
+
+  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) { }
+
+  public callback(input?: moment.MomentInput): moment.Moment {
+    this.logger.trace(`Running MOMENT function${input?.toString() !== undefined ? ` with '${input?.toString()}' input` : ' without input'}`);
+    return moment(input);
+  }
 }

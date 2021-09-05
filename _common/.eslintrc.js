@@ -18,7 +18,11 @@ module.exports = {
   ],
   root: true,
   rules: {
-    "import/no-extraneous-dependencies": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "class-methods-use-this": "off",
     "import/prefer-default-export": "off",
     "no-underscore-dangle": "off",
     "simple-import-sort/imports": "error",

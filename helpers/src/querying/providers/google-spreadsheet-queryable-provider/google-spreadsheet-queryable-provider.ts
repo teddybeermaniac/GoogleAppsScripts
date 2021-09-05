@@ -19,12 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { inject, injectable } from 'inversify';
+import { inject, injectable, interfaces } from 'inversify';
 
 import { ICache, TYPES as CACHING_TYPES } from '../../../caching';
 import type { IFile } from '../../../filesystem';
 import { ILogger, TYPES as LOGGING_TYPES } from '../../../logging';
-import { bindSymbol, errors as utilities_errors } from '../../../utilities';
+import { bindSymbol, errors as utilities_errors, TYPES as UTILITIES_TYPES } from '../../../utilities';
 import { InvalidQueryError, NotASpreadsheetContextError } from '../../errors';
 import { GoogleSpreadsheetQueryableProviderSymbol } from '../../symbols';
 import { BaseAlaSQLQueryableProvider } from '../base-alasql-queryable-provider/base-alasql-queryable-provider';
@@ -41,15 +41,15 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
 
   private initialized = false;
 
-  // eslint-disable-next-line class-methods-use-this
   public get providerType(): ProviderType {
     return ProviderType.GoogleSpreadsheet;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger,
-    @inject(CACHING_TYPES.ICache) cache: ICache) {
-    super(logger, cache);
+    @inject(CACHING_TYPES.ICache) cache: ICache,
+    @inject(UTILITIES_TYPES.Container) container: interfaces.Container) {
+    super(logger, cache, container);
   }
 
   private get spreadsheet(): GoogleAppsScript.Spreadsheet.Spreadsheet {
@@ -61,8 +61,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
   }
 
   @fromMethod('NAMEDRANGE')
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private fromNamedRange(tableName: string): any[] {
+  public fromNamedRange(tableName: string): any[] {
     this.logger.trace(`Getting contents of named range '${tableName}'`);
     const range = this.spreadsheet.getRangeByName(tableName);
     if (!range) {
@@ -92,7 +91,6 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
 
         return true;
       }).reverse()
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .map((row) => Object.fromEntries(row.map((column, index) => [names[index]!, column])));
   }
 

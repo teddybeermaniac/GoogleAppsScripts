@@ -16,7 +16,7 @@ function SQL(query, cacheKey, ...parameters) {
 }
 
 function CACHEKEY(...parameters) {
-  return GoogleSpreadsheetSQL.cachekey(...parameters);
+  return GoogleSpreadsheetSQL.cacheKey(...parameters);
 }
 
 function NOOP(..._) { }

@@ -36,6 +36,7 @@
         "target": "ES2019",
         "types": [
             "google-apps-script",
+            "node",
             "reflect-metadata"
         ]
     },

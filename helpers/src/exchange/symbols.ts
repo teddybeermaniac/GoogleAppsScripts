@@ -19,8 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IExportedMethodProvider {
-  getExportedMethods(): string[];
-  getExportedMethodName(symbol: symbol, name: string): string;
-  callExportedMethod(exportedName: string, args: any[]): any;
-}
+export const IExchangeSymbol = Symbol('IExchange');
+export const IExchangeProviderSymbol = Symbol('IExchangeProvider');
+export const IExchangeRateApiComExchangeProviderSettingsSymbol = Symbol('IExchangeRateApiComExchangeProviderSettings');

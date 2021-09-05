@@ -23,13 +23,10 @@ import { InvalidExportedMethodError } from './errors';
 import type { IExportedMethod } from './iexported-method';
 import { exportedMethodsSymbol } from './symbols';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function exportMethod<TTarget extends Object>(asIs?: boolean, name?: string):
 (target: TTarget, propertyKey: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   descriptor: TypedPropertyDescriptor<(...parameters: any[]) => any>) => void {
   return (target: TTarget, propertyKey: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     descriptor: TypedPropertyDescriptor<(...parameters: any[]) => any>):
   void => {
     if (!descriptor.value) {

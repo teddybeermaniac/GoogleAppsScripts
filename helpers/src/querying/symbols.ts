@@ -20,5 +20,6 @@
  * SOFTWARE.
  */
 export const GoogleSpreadsheetQueryableProviderSymbol = Symbol('GoogleSpreadsheetQueryableProvider');
+export const IAlaSQLFunctionSymbol = Symbol('IAlaSQLFunction');
 export const IQueryableSymbol = Symbol('IQueryable');
 export const fromMethodsSymbol = Symbol('fromMethodsSymbol');

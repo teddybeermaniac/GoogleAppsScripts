@@ -24,8 +24,6 @@ import type { ProviderType } from './provider-type';
 export interface IQueryableProvider {
   readonly providerType: ProviderType;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query<TModel>(query: string, cacheKey: string | boolean | null, ...parameters: any[]): TModel[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   queryAny(query: string, cacheKey: string | boolean | null, ...parameters: any[]): any[][];
 }

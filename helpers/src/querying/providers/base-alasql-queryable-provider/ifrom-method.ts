@@ -20,7 +20,6 @@
  * SOFTWARE.
  */
 export interface IFromMethod {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   callback: (tableName: string) => any[];
   name: string;
 }

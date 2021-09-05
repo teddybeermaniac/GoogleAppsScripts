@@ -19,8 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IExportedMethodProvider {
-  getExportedMethods(): string[];
-  getExportedMethodName(symbol: symbol, name: string): string;
-  callExportedMethod(exportedName: string, args: any[]): any;
+import type { Currency } from '../currency';
+import type { ProviderType } from './provider-type';
+
+export interface IExchangeProvider {
+  readonly providerType: ProviderType;
+  readonly supportedCurrencies: Currency[];
+  getRate(from: Currency, to: Currency): number;
 }

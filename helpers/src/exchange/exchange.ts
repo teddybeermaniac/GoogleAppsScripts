@@ -19,33 +19,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import {
-  exporting, logging, querying, utilities,
-} from 'helpers';
 import { inject, injectable } from 'inversify';
-import objectHash from 'object-hash';
 
-import { GoogleSpreadsheetSQLSymbol } from './symbols';
+import type { ILogger } from '../logging';
+import { ILoggerSymbol } from '../logging/symbols';
+import { bindSymbol } from '../utilities';
+import { Currencies, Currency } from './currency';
+import { InvalidCurrencyError } from './errors';
+import type { IExchange } from './iexchange';
+import type { IExchangeProvider } from './providers/iexchange-provider';
+import { IExchangeProviderSymbol, IExchangeSymbol } from './symbols';
 
 @injectable()
-@utilities.bindSymbol(GoogleSpreadsheetSQLSymbol)
-export class GoogleSpreadsheetSQL {
-  constructor(@inject(logging.TYPES.ILogger) private readonly logger: logging.ILogger,
-    @inject(querying.TYPES.IQueryable) private readonly queryable: querying.IQueryable) {
-  }
+@bindSymbol(IExchangeSymbol)
+export class Exchange implements IExchange {
+  constructor(@inject(ILoggerSymbol) private readonly logger: ILogger,
+    @inject(IExchangeProviderSymbol) private readonly provider: IExchangeProvider) { }
 
-  @exporting.exportMethod(true)
-  public sql(query: string, cacheKey: string | boolean | null, ...parameters: any[]): any[][] {
-    this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
-    const queryableProvider = this.queryable.fromCurrentSpreadsheet();
+  convert(value: number, from: string | Currency, to: string | Currency): number {
+    this.logger.debug(`Converting '${value}' from '${from}' to '${to}'`);
+    if (!Currencies.guard(from) || !this.provider.supportedCurrencies.includes(from)) {
+      throw new InvalidCurrencyError(from);
+    }
+    if (!Currencies.guard(to) || !this.provider.supportedCurrencies.includes(to)) {
+      throw new InvalidCurrencyError(to);
+    }
 
-    return queryableProvider.queryAny(query, cacheKey, ...parameters);
-  }
-
-  @exporting.exportMethod(true)
-  public cacheKey(...parameters: any[]): string {
-    this.logger.debug('Calculating cache key');
-
-    return objectHash.sha1(parameters);
+    return value * this.provider.getRate(from, to);
   }
 }

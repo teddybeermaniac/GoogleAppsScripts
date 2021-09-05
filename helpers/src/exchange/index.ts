@@ -19,8 +19,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IExportedMethodProvider {
-  getExportedMethods(): string[];
-  getExportedMethodName(symbol: symbol, name: string): string;
-  callExportedMethod(exportedName: string, args: any[]): any;
+import type { interfaces } from 'inversify';
+
+import { getSymbol } from '../utilities';
+import type { Currency } from './currency';
+import { Exchange } from './exchange';
+import { ExchangeBuilder } from './exchange-builder';
+import type { IExchange } from './iexchange';
+import type { ProviderType } from './providers/provider-type';
+import { IExchangeSymbol } from './symbols';
+
+export function add(container: interfaces.Container,
+  build: (builder: ExchangeBuilder) => void): void {
+  const builder = new ExchangeBuilder(container);
+  build(builder);
+
+  container.bind<IExchange>(getSymbol(Exchange)).to(Exchange).inSingletonScope();
 }
+
+export const TYPES = {
+  IExchange: IExchangeSymbol,
+};
+
+export type {
+  Currency,
+  IExchange,
+};
+
+export {
+  ProviderType,
+};

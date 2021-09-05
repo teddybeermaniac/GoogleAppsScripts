@@ -31,7 +31,6 @@ import { exportedMethodContainerSymbol, RollupExportedMethodProviderSymbol } fro
 @bindSymbol(RollupExportedMethodProviderSymbol)
 export class RollupExportedMethodProvider extends InternalExportedMethodProvider {
   constructor(@inject(UTILITIES_TYPES.Container) container: interfaces.Container,
-    // eslint-disable-next-line @typescript-eslint/ban-types
     @multiInject(exportedMethodContainerSymbol) constructors: interfaces.Newable<Object>[]) {
     super(container, undefined);
     this.prepare(constructors);

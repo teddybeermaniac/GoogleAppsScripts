@@ -1,8 +1,10 @@
 import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
+import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import json from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
+import env from './env.json';
 
 function googleAppsScript() {
   return {
@@ -86,6 +88,8 @@ export default {
       sourceMap: false,
       transformMixedEsModules: true
     }),
+    // EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY
+    injectProcessEnv(env),
     googleAppsScript()
   ],
   strictDeprecations: true
