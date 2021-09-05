@@ -27,7 +27,7 @@ import type { ITriggerManager } from './itrigger-manager';
 import { ITriggerManagerSymbol } from './symbols';
 import { TriggerManger } from './trigger-manager';
 
-export function add(container: interfaces.Container): void {
+export function addTriggering(container: interfaces.Container): void {
   container.bind<ITriggerManager>(getSymbol(TriggerManger)).to(TriggerManger).inTransientScope()
     .onActivation(onInitializableActivation);
 }

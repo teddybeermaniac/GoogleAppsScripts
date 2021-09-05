@@ -29,7 +29,7 @@ import type { IExchange } from './iexchange';
 import type { ProviderType } from './providers/provider-type';
 import { IExchangeSymbol } from './symbols';
 
-export function add(container: interfaces.Container,
+export function addExchange(container: interfaces.Container,
   build: (builder: ExchangeBuilder) => void): void {
   const builder = new ExchangeBuilder(container);
   build(builder);

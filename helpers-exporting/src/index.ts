@@ -30,7 +30,7 @@ import type { IExportedMethodProvider } from './iexported-method-provider';
 import { RollupExportedMethodProvider } from './rollup-exported-method-provider';
 import { IExportedMethodProviderSymbol } from './symbols';
 
-export function add(container: interfaces.Container,
+export function addExporting(container: interfaces.Container,
   build: (builder: ExportingBuilder) => void): void {
   const builder = new ExportingBuilder(container);
   build(builder);

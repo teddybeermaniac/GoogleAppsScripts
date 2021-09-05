@@ -19,22 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import {
-  exporting, logging, querying, utilities,
-} from 'helpers';
+import { exportMethod } from 'helpers-exporting';
+import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
+import { IQueryable, TYPES as QUERYING_TYPES } from 'helpers-querying';
+import { bindSymbol } from 'helpers-utilities';
 import { inject, injectable } from 'inversify';
 import objectHash from 'object-hash';
 
 import { GoogleSpreadsheetSQLSymbol } from './symbols';
 
 @injectable()
-@utilities.bindSymbol(GoogleSpreadsheetSQLSymbol)
+@bindSymbol(GoogleSpreadsheetSQLSymbol)
 export class GoogleSpreadsheetSQL {
-  constructor(@inject(logging.TYPES.ILogger) private readonly logger: logging.ILogger,
-    @inject(querying.TYPES.IQueryable) private readonly queryable: querying.IQueryable) {
+  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
+    @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {
   }
 
-  @exporting.exportMethod(true)
+  @exportMethod(true)
   public sql(query: string, cacheKey: string | boolean | null, ...parameters: any[]): any[][] {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
     const queryableProvider = this.queryable.fromCurrentSpreadsheet();
@@ -42,7 +43,7 @@ export class GoogleSpreadsheetSQL {
     return queryableProvider.queryAny(query, cacheKey, ...parameters);
   }
 
-  @exporting.exportMethod(true)
+  @exportMethod(true)
   public cacheKey(...parameters: any[]): string {
     this.logger.debug('Calculating cache key');
 

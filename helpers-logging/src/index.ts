@@ -29,7 +29,8 @@ import { LoggingBuilder } from './logging-builder';
 import { ProviderType } from './providers/provider-type';
 import { ILoggerSymbol } from './symbols';
 
-export function add(container: interfaces.Container, build: (builder: LoggingBuilder) => void)
+export function addLogging(container: interfaces.Container, build: (builder: LoggingBuilder)
+=> void)
   : void {
   const builder = new LoggingBuilder(container);
   build(builder);

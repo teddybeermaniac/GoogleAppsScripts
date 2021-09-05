@@ -28,7 +28,7 @@ import type { ICache } from './icache';
 import { ProviderType } from './providers/provider-type';
 import { ICacheSymbol } from './symbols';
 
-export function add(container: interfaces.Container,
+export function addCaching(container: interfaces.Container,
   build: (builder: CachingBuilder) => void): void {
   const builder = new CachingBuilder(container);
   build(builder);

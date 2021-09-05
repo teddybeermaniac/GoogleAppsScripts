@@ -33,7 +33,7 @@ import type { ProviderType } from './providers/provider-type';
 import { Queryable } from './queryable';
 import { IQueryableSymbol } from './symbols';
 
-export function add(container: interfaces.Container): void {
+export function addQuerying(container: interfaces.Container): void {
   container.bind<IQueryable>(getSymbol(Queryable)).to(Queryable).inSingletonScope();
   container.bind<IQueryableProvider>(getSymbol(GoogleSpreadsheetQueryableProvider))
     .to(GoogleSpreadsheetQueryableProvider).inTransientScope();

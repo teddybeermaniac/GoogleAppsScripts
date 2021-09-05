@@ -34,7 +34,8 @@ import { ItemType } from './item-type';
 import { ProviderType } from './providers/provider-type';
 import { IFilesystemSymbol } from './symbols';
 
-export function add(container: interfaces.Container, build: (builder: FilesystemBuilder) => void)
+export function addFilesystem(container: interfaces.Container, build: (builder: FilesystemBuilder)
+=> void)
   : void {
   const builder = new FilesystemBuilder(container);
   build(builder);
