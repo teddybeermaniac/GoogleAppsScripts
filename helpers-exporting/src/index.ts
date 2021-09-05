@@ -19,22 +19,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { getSymbol } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { getSymbol } from '../utilities';
-import { exportedMethodContainerSymbol } from './symbols';
+import * as errors from './errors';
+import { exportMethod } from './export-method';
+import { ExportedMethodProvider } from './exported-method-provider';
+import { ExportingBuilder } from './exporting-builder';
+import type { IExportedMethodProvider } from './iexported-method-provider';
+import { RollupExportedMethodProvider } from './rollup-exported-method-provider';
+import { IExportedMethodProviderSymbol } from './symbols';
 
-export class ExportingBuilder {
-  constructor(private readonly container: interfaces.Container) { }
+export function add(container: interfaces.Container,
+  build: (builder: ExportingBuilder) => void): void {
+  const builder = new ExportingBuilder(container);
+  build(builder);
 
-  public addContainer<TContainer>(constructor: interfaces.Newable<TContainer>, bind = false):
-  ExportingBuilder {
-    this.container.bind<interfaces.Newable<TContainer>>(exportedMethodContainerSymbol)
-      .toConstructor(constructor);
-    if (bind) {
-      this.container.bind(getSymbol(constructor)).to(constructor).inSingletonScope();
-    }
-
-    return this;
-  }
+  container.bind<IExportedMethodProvider>(getSymbol(ExportedMethodProvider))
+    .to(ExportedMethodProvider).inSingletonScope();
+  container.bind<IExportedMethodProvider>(getSymbol(RollupExportedMethodProvider))
+    .to(RollupExportedMethodProvider).inSingletonScope();
 }
+
+export const TYPES = {
+  IExportedMethodProvider: IExportedMethodProviderSymbol,
+};
+
+export type {
+  IExportedMethodProvider,
+};
+
+export {
+  errors,
+  exportMethod,
+};

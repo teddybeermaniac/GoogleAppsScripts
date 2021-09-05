@@ -19,37 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { interfaces } from 'inversify';
+import { bindSymbol, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
+import {
+  inject, injectable, interfaces, multiInject,
+} from 'inversify';
 
-import { getSymbol } from '../utilities';
-import * as errors from './errors';
-import { exportMethod } from './export-method';
-import { ExportedMethodProvider } from './exported-method-provider';
-import { ExportingBuilder } from './exporting-builder';
-import type { IExportedMethodProvider } from './iexported-method-provider';
-import { RollupExportedMethodProvider } from './rollup-exported-method-provider';
-import { IExportedMethodProviderSymbol } from './symbols';
+import { InternalExportedMethodProvider } from './internal-exported-method-provider';
+import { exportedMethodContainerSymbol, RollupExportedMethodProviderSymbol } from './symbols';
 
-export function add(container: interfaces.Container,
-  build: (builder: ExportingBuilder) => void): void {
-  const builder = new ExportingBuilder(container);
-  build(builder);
-
-  container.bind<IExportedMethodProvider>(getSymbol(ExportedMethodProvider))
-    .to(ExportedMethodProvider).inSingletonScope();
-  container.bind<IExportedMethodProvider>(getSymbol(RollupExportedMethodProvider))
-    .to(RollupExportedMethodProvider).inSingletonScope();
+@injectable()
+@bindSymbol(RollupExportedMethodProviderSymbol)
+export class RollupExportedMethodProvider extends InternalExportedMethodProvider {
+  constructor(@inject(UTILITIES_TYPES.Container) container: interfaces.Container,
+    @multiInject(exportedMethodContainerSymbol) constructors: interfaces.Newable<Object>[]) {
+    super(container, undefined);
+    this.prepare(constructors);
+  }
 }
-
-export const TYPES = {
-  IExportedMethodProvider: IExportedMethodProviderSymbol,
-};
-
-export type {
-  IExportedMethodProvider,
-};
-
-export {
-  errors,
-  exportMethod,
-};

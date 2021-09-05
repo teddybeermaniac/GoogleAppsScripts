@@ -19,10 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type { ILogger } from 'helpers-logging';
+import { getSymbol } from 'helpers-utilities';
 import { injectable, interfaces } from 'inversify';
 
-import type { ILogger } from '../logging';
-import { getSymbol } from '../utilities';
 import { NotExportedMethodError } from './errors';
 import type { IExportedMethod } from './iexported-method';
 import type { IExportedMethodProvider } from './iexported-method-provider';

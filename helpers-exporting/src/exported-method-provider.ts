@@ -19,12 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
+import { bindSymbol, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
 import {
   inject, injectable, interfaces, multiInject,
 } from 'inversify';
 
-import { ILogger, TYPES as LOGGING_TYPES } from '../logging';
-import { bindSymbol, TYPES as UTILITIES_TYPES } from '../utilities';
 import { InternalExportedMethodProvider } from './internal-exported-method-provider';
 import { exportedMethodContainerSymbol, IExportedMethodProviderSymbol } from './symbols';
 

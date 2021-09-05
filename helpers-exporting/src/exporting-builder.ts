@@ -19,20 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import {
-  inject, injectable, interfaces, multiInject,
-} from 'inversify';
+import { getSymbol } from 'helpers-utilities';
+import type { interfaces } from 'inversify';
 
-import { bindSymbol, TYPES as UTILITIES_TYPES } from '../utilities';
-import { InternalExportedMethodProvider } from './internal-exported-method-provider';
-import { exportedMethodContainerSymbol, RollupExportedMethodProviderSymbol } from './symbols';
+import { exportedMethodContainerSymbol } from './symbols';
 
-@injectable()
-@bindSymbol(RollupExportedMethodProviderSymbol)
-export class RollupExportedMethodProvider extends InternalExportedMethodProvider {
-  constructor(@inject(UTILITIES_TYPES.Container) container: interfaces.Container,
-    @multiInject(exportedMethodContainerSymbol) constructors: interfaces.Newable<Object>[]) {
-    super(container, undefined);
-    this.prepare(constructors);
+export class ExportingBuilder {
+  constructor(private readonly container: interfaces.Container) { }
+
+  public addContainer<TContainer>(constructor: interfaces.Newable<TContainer>, bind = false):
+  ExportingBuilder {
+    this.container.bind<interfaces.Newable<TContainer>>(exportedMethodContainerSymbol)
+      .toConstructor(constructor);
+    if (bind) {
+      this.container.bind(getSymbol(constructor)).to(constructor).inSingletonScope();
+    }
+
+    return this;
   }
 }
