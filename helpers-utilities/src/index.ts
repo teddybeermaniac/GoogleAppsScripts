@@ -19,6 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'core-js';
+
 import { bindSymbol } from './binding/bind-symbol';
 import { getSymbol } from './binding/get-symbol';
 import * as errors from './errors';

@@ -26,8 +26,8 @@
         "noUnusedParameters": true,
         "outDir": "./build",
         "paths": {
-            "helpers": [
-                "./node_modules/helpers/src"
+            "helpers-utilities": [
+                "./node_modules/helpers-utilities/src"
             ]
         },
         "removeComments": true,
@@ -42,6 +42,6 @@
     },
     "include": [
         "./src/**/*",
-        "./node_modules/helpers/src/**/*"
+        "./node_modules/helpers-utilities/src/**/*"
     ]
 }

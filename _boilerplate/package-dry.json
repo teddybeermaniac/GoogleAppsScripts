@@ -3,7 +3,7 @@
         "extends": "../_common/package-dry.json"
     },
     "dependencies": {
-        "helpers": "link:../helpers"
+        "helpers-utilities": "link:../helpers-utilities"
     },
     "name": null
 }
