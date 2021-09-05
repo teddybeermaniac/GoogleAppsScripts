@@ -19,12 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type { ICache } from 'helpers-caching';
+import { exportMethod } from 'helpers-exporting';
+import type { ILogger } from 'helpers-logging';
+import type { ITriggerManager } from 'helpers-triggering';
 import { injectable } from 'inversify';
 
-import type { ICache } from '../caching';
-import { exportMethod } from '../exporting';
-import type { ILogger } from '../logging';
-import type { ITriggerManager } from '../triggering';
 import { AlreadyRunningIterationError } from './errors';
 import type { IInterruptableIterator } from './iinterruptable-iterator';
 
