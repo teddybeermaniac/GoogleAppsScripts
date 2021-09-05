@@ -25,6 +25,7 @@ import type { interfaces } from 'inversify';
 import * as errors from './errors';
 import type { IInterruptableIterator } from './iinterruptable-iterator';
 import { InterruptableIterator } from './interruptable-iterator';
+import { SimpleIterator } from './simple-iterator';
 
 export function addInterruptableIterator<TToken, TIterator extends InterruptableIterator<TToken>>(
   container: interfaces.Container, constructor: interfaces.Newable<TIterator>,
@@ -39,4 +40,5 @@ export type {
 export {
   errors,
   InterruptableIterator,
+  SimpleIterator,
 };

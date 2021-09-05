@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { errors as utilities_errors, getSymbol } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { errors as utilities_errors, getSymbol } from '../utilities';
 import { GoogleDriveFilesystemProvider } from './providers/google-drive-filesystem-provider/google-drive-filesystem-provider';
 import type { IFilesystemProvider } from './providers/ifilesystem-provider';
 

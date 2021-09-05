@@ -19,11 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { SimpleIterator } from 'helpers-iteration';
+import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
+import { bindSymbol } from 'helpers-utilities';
 import { inject, injectable } from 'inversify';
 
-import { SimpleIterator } from '../../../iteration/simple-iterator';
-import { ILogger, TYPES as LOGGING_TYPES } from '../../../logging';
-import { bindSymbol } from '../../../utilities';
 import {
   DuplicatePathError, FilesystemError, InvalidPathError, NotFoundPathError,
 } from '../../errors';

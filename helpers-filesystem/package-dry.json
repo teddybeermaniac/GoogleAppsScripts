@@ -1,0 +1,11 @@
+{
+    "dry": {
+        "extends": "../_common/package-dry.json"
+    },
+    "dependencies": {
+        "helpers-iteration": "link:../helpers-iteration",
+        "helpers-logging": "link:../helpers-logging",
+        "helpers-utilities": "link:../helpers-utilities"
+    },
+    "name": "helpers-filesystem"
+}
