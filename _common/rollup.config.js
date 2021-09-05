@@ -3,6 +3,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import json from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import { terser } from "rollup-plugin-terser";
 import typescript from '@rollup/plugin-typescript';
 import env from './env.json';
 
@@ -98,6 +99,9 @@ export default {
     }),
     // EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY
     injectProcessEnv(env),
+    terser({
+      ecma: 2019
+    }),
     googleAppsScript()
   ],
   strictDeprecations: true
