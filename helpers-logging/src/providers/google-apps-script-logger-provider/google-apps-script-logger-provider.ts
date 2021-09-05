@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 /* eslint-disable no-console */
+import { bindSymbol } from 'helpers-utilities';
 import { inject, injectable, optional } from 'inversify';
 
-import { bindSymbol } from '../../../utilities';
 import { LogLevel } from '../../log-level';
 import { IGoogleAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../../symbols';
 import type { ILoggerProvider } from '../ilogger-provider';

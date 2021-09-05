@@ -19,11 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { bindSymbol, errors as utilities_errors, getOwnerType } from 'helpers-utilities';
 import {
   inject, injectable, interfaces, multiInject, optional,
 } from 'inversify';
 
-import { bindSymbol, errors as utilities_errors, getOwnerType } from '../utilities';
 import type { ILogger } from './ilogger';
 import type { ILoggerSettings } from './ilogger-settings';
 import { LogLevel } from './log-level';

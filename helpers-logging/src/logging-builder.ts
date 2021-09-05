@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { errors as utilities_errors, getSymbol } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { errors as utilities_errors, getSymbol } from '../utilities';
 import type { ILoggerSettings } from './ilogger-settings';
 import { GoogleAppsScriptLoggerProvider } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider';
 import type { IGoogleAppsScriptLoggerProviderSettings } from './providers/google-apps-script-logger-provider/igoogle-apps-script-logger-provider-settings';

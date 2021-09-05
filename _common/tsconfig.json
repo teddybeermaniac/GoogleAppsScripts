@@ -26,6 +26,9 @@
         "noUnusedParameters": true,
         "outDir": "./build",
         "paths": {
+            "helpers-logging": [
+                "./node_modules/helpers-logging/src"
+            ],
             "helpers-utilities": [
                 "./node_modules/helpers-utilities/src"
             ]
@@ -42,6 +45,7 @@
     },
     "include": [
         "./src/**/*",
+        "./node_modules/helpers-logging/src/**/*",
         "./node_modules/helpers-utilities/src/**/*"
     ]
 }
