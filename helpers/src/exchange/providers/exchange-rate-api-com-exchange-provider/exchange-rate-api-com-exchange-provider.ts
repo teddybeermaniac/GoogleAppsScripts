@@ -25,16 +25,16 @@ import { ICache, TYPES as CACHING_TYPES } from '../../../caching';
 import { ILogger, TYPES as LOGGING_TYPES } from '../../../logging';
 import { bindSymbol } from '../../../utilities';
 import type { Currency } from '../../currency';
-import { InvalidCurrencyError, RateFetchError } from '../../errors';
+import { RateFetchError } from '../../errors';
 import { IExchangeProviderSymbol, IExchangeRateApiComExchangeProviderSettingsSymbol } from '../../symbols';
-import type { IExchangeProvider } from '../iexchange-provider';
+import { BaseExchangeProvider } from '../base-exchange-provider';
 import { ProviderType } from '../provider-type';
 import type { IExchangeRateApiComExchangeProviderSettings } from './iexchange-rate-api-com-exchange-provider-settings';
 
 @injectable()
 @bindSymbol(IExchangeProviderSymbol)
-export class ExchangeRateApiComExchangeProvider implements IExchangeProvider {
-  private readonly supportedCurrencies = [
+export class ExchangeRateApiComExchangeProvider extends BaseExchangeProvider {
+  public readonly supportedCurrencies: Currency[] = [
     'AED',
     'AFN',
     'ALL',
@@ -201,47 +201,25 @@ export class ExchangeRateApiComExchangeProvider implements IExchangeProvider {
     return ProviderType.ExchangeRateApiCom;
   }
 
-  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(CACHING_TYPES.ICache) private readonly cache: ICache,
+  constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger,
+    @inject(CACHING_TYPES.ICache) cache: ICache,
     @inject(IExchangeRateApiComExchangeProviderSettingsSymbol) private readonly settings:
-    IExchangeRateApiComExchangeProviderSettings) { }
+    IExchangeRateApiComExchangeProviderSettings) {
+    super(logger, cache);
+  }
 
   getRate(from: Currency, to: Currency): number {
-    this.logger.trace(`Getting rate from '${from}' to '${to}'`);
-    if (!this.supportedCurrencies.includes(from)) {
-      throw new InvalidCurrencyError(from);
-    }
-    if (!this.supportedCurrencies.includes(to)) {
-      throw new InvalidCurrencyError(to);
-    }
-
-    let rates = this.cache.get<{ [currency: string]: number; }>(`rates_${from}`);
-    if (!rates) {
-      this.logger.trace('Rates not found in cache, fetching');
-      const response = UrlFetchApp.fetch(`https://v6.exchangerate-api.com/v6/${encodeURIComponent(this.settings.apiKey)}/latest/${encodeURIComponent(from)}`, {
-        muteHttpExceptions: true,
-      });
-      if (response.getResponseCode() !== 200) {
-        throw new RateFetchError(response.getContentText());
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const result = JSON.parse(response.getContentText());
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (result.result !== 'success') {
+    return this.getRateInternal(from, to,
+      `https://v6.exchangerate-api.com/v6/${encodeURIComponent(this.settings.apiKey)}/latest/${encodeURIComponent(from)}`,
+      86400, (result) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        throw new RateFetchError(result.result);
-      }
+        if (result.result !== 'success') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          throw new RateFetchError(result.result);
+        }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      rates = <{ [currency: string]: number; }>result.conversion_rates;
-      this.cache.set(`rates_${from}`, rates, 86400);
-    }
-
-    if (rates[to] === undefined) {
-      throw new InvalidCurrencyError(to);
-    }
-
-    return rates[to]!;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        return <{ [currency: string]: number; }>result.conversion_rates;
+      });
   }
 }

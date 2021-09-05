@@ -25,16 +25,14 @@ import { ICache, TYPES as CACHING_TYPES } from '../../../caching';
 import { ILogger, TYPES as LOGGING_TYPES } from '../../../logging';
 import { bindSymbol } from '../../../utilities';
 import type { Currency } from '../../currency';
-import { InvalidCurrencyError } from '../../errors';
-import { RateFetchError } from '../../errors/rate-fetch-error';
 import { IExchangeProviderSymbol } from '../../symbols';
-import type { IExchangeProvider } from '../iexchange-provider';
+import { BaseExchangeProvider } from '../base-exchange-provider';
 import { ProviderType } from '../provider-type';
 
 @injectable()
 @bindSymbol(IExchangeProviderSymbol)
-export class ExchangeRateHostExchangeProvider implements IExchangeProvider {
-  private readonly supportedCurrencies = [
+export class ExchangeRateHostExchangeProvider extends BaseExchangeProvider {
+  public readonly supportedCurrencies: Currency[] = [
     'AED',
     'AFN',
     'ALL',
@@ -211,37 +209,15 @@ export class ExchangeRateHostExchangeProvider implements IExchangeProvider {
     return ProviderType.ExchangeRateHost;
   }
 
-  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(CACHING_TYPES.ICache) private readonly cache: ICache) { }
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
+  constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger,
+    @inject(CACHING_TYPES.ICache) cache: ICache) {
+    super(logger, cache);
+  }
 
   getRate(from: Currency, to: Currency): number {
-    this.logger.trace(`Getting rate from '${from}' to '${to}'`);
-    if (!this.supportedCurrencies.includes(from)) {
-      throw new InvalidCurrencyError(from);
-    }
-    if (!this.supportedCurrencies.includes(to)) {
-      throw new InvalidCurrencyError(to);
-    }
-
-    let rates = this.cache.get<{ [currency: string]: number; }>(`rates_${from}`);
-    if (!rates) {
-      this.logger.trace('Rates not found in cache, fetching');
-      const response = UrlFetchApp.fetch(`https://api.exchangerate.host/latest?base=${encodeURIComponent(from)}`, {
-        muteHttpExceptions: true,
-      });
-      if (response.getResponseCode() !== 200) {
-        throw new RateFetchError(response.getContentText());
-      }
-
+    return this.getRateInternal(from, to, `https://api.exchangerate.host/latest?base=${encodeURIComponent(from)}`,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      rates = <{ [currency: string]: number; }>JSON.parse(response.getContentText()).rates;
-      this.cache.set(`rates_${from}`, rates, 3600);
-    }
-
-    if (rates[to] === undefined) {
-      throw new InvalidCurrencyError(to);
-    }
-
-    return rates[to]!;
+      3600, (result) => <{ [currency: string]: number; }>result.rates);
   }
 }

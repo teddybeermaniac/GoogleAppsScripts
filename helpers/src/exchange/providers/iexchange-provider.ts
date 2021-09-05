@@ -24,5 +24,6 @@ import type { ProviderType } from './provider-type';
 
 export interface IExchangeProvider {
   readonly providerType: ProviderType;
+  readonly supportedCurrencies: Currency[];
   getRate(from: Currency, to: Currency): number;
 }

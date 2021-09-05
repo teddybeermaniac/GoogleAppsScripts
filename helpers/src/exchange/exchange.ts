@@ -38,10 +38,10 @@ export class Exchange implements IExchange {
 
   convert(value: number, from: string | Currency, to: string | Currency): number {
     this.logger.debug(`Converting '${value}' from '${from}' to '${to}'`);
-    if (!Currencies.guard(from)) {
+    if (!Currencies.guard(from) || !this.provider.supportedCurrencies.includes(from)) {
       throw new InvalidCurrencyError(from);
     }
-    if (!Currencies.guard(to)) {
+    if (!Currencies.guard(to) || !this.provider.supportedCurrencies.includes(to)) {
       throw new InvalidCurrencyError(to);
     }
 
