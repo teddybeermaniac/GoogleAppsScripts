@@ -1,3 +1,5 @@
+/_common/env.json
+
 **/.rollup.cache
 **/build
 **/node_modules

@@ -24,6 +24,7 @@ import 'core-js';
 import { Container, interfaces } from 'inversify';
 
 import * as caching from './caching';
+import * as exchange from './exchange';
 import * as exporting from './exporting';
 import * as filesystem from './filesystem';
 import * as iteration from './iteration';
@@ -42,6 +43,7 @@ export function createContainer(): interfaces.Container {
 
 export {
   caching,
+  exchange,
   exporting,
   filesystem,
   iteration,

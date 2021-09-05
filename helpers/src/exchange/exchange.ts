@@ -19,38 +19,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { inject, injectable } from 'inversify';
 
-import {
-  caching, createContainer, exchange, exporting, logging, querying,
-} from 'helpers';
-import type { interfaces } from 'inversify';
+import type { ILogger } from '../logging';
+import { ILoggerSymbol } from '../logging/symbols';
+import { bindSymbol } from '../utilities';
+import { Currencies, Currency } from './currency';
+import { InvalidCurrencyError } from './errors';
+import type { IExchange } from './iexchange';
+import type { IExchangeProvider } from './providers/iexchange-provider';
+import { IExchangeProviderSymbol, IExchangeSymbol } from './symbols';
 
-import { GoogleSpreadsheetSQL } from './google-spreadsheet-sql';
+@injectable()
+@bindSymbol(IExchangeSymbol)
+export class Exchange implements IExchange {
+  constructor(@inject(ILoggerSymbol) private readonly logger: ILogger,
+    @inject(IExchangeProviderSymbol) private readonly provider: IExchangeProvider) { }
 
-const container: interfaces.Container = createContainer();
-caching.add(container, (builder) => {
-  builder.addGoogleAppsScriptProvider();
-});
-exchange.add(container, (builder) => {
-  if (process.env['EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY'] === undefined) {
-    throw new Error('EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY is not defined');
+  convert(value: number, from: string | Currency, to: string | Currency): number {
+    this.logger.debug(`Converting '${value}' from '${from}' to '${to}'`);
+    if (!Currencies.guard(from)) {
+      throw new InvalidCurrencyError(from);
+    }
+    if (!Currencies.guard(to)) {
+      throw new InvalidCurrencyError(to);
+    }
+
+    return value * this.provider.getRate(from, to);
   }
-
-  builder.addExchangeRateApiComProvider({
-    apiKey: process.env['EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY'],
-  });
-});
-exporting.add(container, (builder) => {
-  builder.addContainer(GoogleSpreadsheetSQL, true);
-});
-logging.add(container, (builder) => {
-  builder.addSettings({
-    level: logging.LogLevel.Information,
-  });
-  builder.addGoogleAppsScriptProvider();
-});
-querying.add(container);
-
-export {
-  container,
-};
+}

@@ -19,38 +19,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-import {
-  caching, createContainer, exchange, exporting, logging, querying,
-} from 'helpers';
 import type { interfaces } from 'inversify';
 
-import { GoogleSpreadsheetSQL } from './google-spreadsheet-sql';
+import { getSymbol } from '../utilities';
+import type { Currency } from './currency';
+import { Exchange } from './exchange';
+import { ExchangeBuilder } from './exchange-builder';
+import type { IExchange } from './iexchange';
+import type { ProviderType } from './providers/provider-type';
+import { IExchangeSymbol } from './symbols';
 
-const container: interfaces.Container = createContainer();
-caching.add(container, (builder) => {
-  builder.addGoogleAppsScriptProvider();
-});
-exchange.add(container, (builder) => {
-  if (process.env['EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY'] === undefined) {
-    throw new Error('EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY is not defined');
-  }
+export function add(container: interfaces.Container,
+  build: (builder: ExchangeBuilder) => void): void {
+  const builder = new ExchangeBuilder(container);
+  build(builder);
 
-  builder.addExchangeRateApiComProvider({
-    apiKey: process.env['EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY'],
-  });
-});
-exporting.add(container, (builder) => {
-  builder.addContainer(GoogleSpreadsheetSQL, true);
-});
-logging.add(container, (builder) => {
-  builder.addSettings({
-    level: logging.LogLevel.Information,
-  });
-  builder.addGoogleAppsScriptProvider();
-});
-querying.add(container);
+  container.bind<IExchange>(getSymbol(Exchange)).to(Exchange).inSingletonScope();
+}
+
+export const TYPES = {
+  IExchange: IExchangeSymbol,
+};
+
+export type {
+  Currency,
+  IExchange,
+};
 
 export {
-  container,
+  ProviderType,
 };

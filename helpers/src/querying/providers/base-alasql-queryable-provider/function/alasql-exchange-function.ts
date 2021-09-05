@@ -19,38 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { inject, injectable } from 'inversify';
 
-import {
-  caching, createContainer, exchange, exporting, logging, querying,
-} from 'helpers';
-import type { interfaces } from 'inversify';
+import { IExchange, TYPES as EXCHANGE_TYPES } from '../../../../exchange';
+import { ILogger, TYPES as LOGGING_TYPES } from '../../../../logging';
+import { bindSymbol } from '../../../../utilities';
+import { IAlaSQLFunctionSymbol } from '../../../symbols';
+import type { IAlaSQLFunction } from './ialasql-function';
 
-import { GoogleSpreadsheetSQL } from './google-spreadsheet-sql';
-
-const container: interfaces.Container = createContainer();
-caching.add(container, (builder) => {
-  builder.addGoogleAppsScriptProvider();
-});
-exchange.add(container, (builder) => {
-  if (process.env['EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY'] === undefined) {
-    throw new Error('EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY is not defined');
+@injectable()
+@bindSymbol(IAlaSQLFunctionSymbol)
+export class AlaSQLExchangeFunction implements IAlaSQLFunction {
+  public get name(): string {
+    return 'EXCHANGE';
   }
 
-  builder.addExchangeRateApiComProvider({
-    apiKey: process.env['EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY'],
-  });
-});
-exporting.add(container, (builder) => {
-  builder.addContainer(GoogleSpreadsheetSQL, true);
-});
-logging.add(container, (builder) => {
-  builder.addSettings({
-    level: logging.LogLevel.Information,
-  });
-  builder.addGoogleAppsScriptProvider();
-});
-querying.add(container);
+  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
+    @inject(EXCHANGE_TYPES.IExchange) private readonly exchange: IExchange) { }
 
-export {
-  container,
-};
+  callback(value: number, from: string, to: string): number {
+    this.logger.trace(`Running EXCHANGE function with value '${value}', from currency '${from}' and to currency '${to}'`);
+    return this.exchange.convert(value, from, to);
+  }
+}

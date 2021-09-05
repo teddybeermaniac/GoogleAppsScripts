@@ -24,6 +24,7 @@ import type { interfaces } from 'inversify';
 import { getSymbol } from '../utilities';
 import * as errors from './errors';
 import type { IQueryable } from './iqueryable';
+import { AlaSQLExchangeFunction } from './providers/base-alasql-queryable-provider/function/alasql-exchange-function';
 import { AlaSQLMomentFunction } from './providers/base-alasql-queryable-provider/function/alasql-moment-function';
 import type { IAlaSQLFunction } from './providers/base-alasql-queryable-provider/function/ialasql-function';
 import { GoogleSpreadsheetQueryableProvider } from './providers/google-spreadsheet-queryable-provider/google-spreadsheet-queryable-provider';
@@ -36,6 +37,8 @@ export function add(container: interfaces.Container): void {
   container.bind<IQueryable>(getSymbol(Queryable)).to(Queryable).inSingletonScope();
   container.bind<IQueryableProvider>(getSymbol(GoogleSpreadsheetQueryableProvider))
     .to(GoogleSpreadsheetQueryableProvider).inTransientScope();
+  container.bind<IAlaSQLFunction>(getSymbol(AlaSQLExchangeFunction)).to(AlaSQLExchangeFunction)
+    .inSingletonScope();
   container.bind<IAlaSQLFunction>(getSymbol(AlaSQLMomentFunction)).to(AlaSQLMomentFunction)
     .inSingletonScope();
 }

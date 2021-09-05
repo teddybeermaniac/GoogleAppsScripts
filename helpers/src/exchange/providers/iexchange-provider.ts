@@ -19,38 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type { Currency } from '../currency';
+import type { ProviderType } from './provider-type';
 
-import {
-  caching, createContainer, exchange, exporting, logging, querying,
-} from 'helpers';
-import type { interfaces } from 'inversify';
-
-import { GoogleSpreadsheetSQL } from './google-spreadsheet-sql';
-
-const container: interfaces.Container = createContainer();
-caching.add(container, (builder) => {
-  builder.addGoogleAppsScriptProvider();
-});
-exchange.add(container, (builder) => {
-  if (process.env['EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY'] === undefined) {
-    throw new Error('EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY is not defined');
-  }
-
-  builder.addExchangeRateApiComProvider({
-    apiKey: process.env['EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY'],
-  });
-});
-exporting.add(container, (builder) => {
-  builder.addContainer(GoogleSpreadsheetSQL, true);
-});
-logging.add(container, (builder) => {
-  builder.addSettings({
-    level: logging.LogLevel.Information,
-  });
-  builder.addGoogleAppsScriptProvider();
-});
-querying.add(container);
-
-export {
-  container,
-};
+export interface IExchangeProvider {
+  readonly providerType: ProviderType;
+  getRate(from: Currency, to: Currency): number;
+}
