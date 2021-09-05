@@ -1,0 +1,17 @@
+{
+    "dry": {
+        "extends": "../_common/package-dry.json"
+    },
+    "dependencies": {
+        "@types/object-hash": "^2.1.1",
+        "alasql": "^1.7.3",
+        "helpers-caching": "link:../helpers-caching",
+        "helpers-exchange": "link:../helpers-exchange",
+        "helpers-filesystem": "link:../helpers-filesystem",
+        "helpers-logging": "link:../helpers-logging",
+        "helpers-utilities": "link:../helpers-utilities",
+        "moment": "^2.29.1",
+        "object-hash": "^2.2.0"
+    },
+    "name": "helpers-querying"
+}

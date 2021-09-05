@@ -44,6 +44,9 @@
             "helpers-logging": [
                 "./node_modules/helpers-logging/src"
             ],
+            "helpers-querying": [
+                "./node_modules/helpers-querying/src"
+            ],
             "helpers-triggering": [
                 "./node_modules/helpers-triggering/src"
             ],
@@ -69,6 +72,7 @@
         "./node_modules/helpers-filesystem/src/**/*",
         "./node_modules/helpers-iteration/src/**/*",
         "./node_modules/helpers-logging/src/**/*",
+        "./node_modules/helpers-querying/src/**/*",
         "./node_modules/helpers-triggering/src/**/*",
         "./node_modules/helpers-utilities/src/**/*"
     ]

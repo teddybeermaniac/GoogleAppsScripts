@@ -20,14 +20,14 @@
  * SOFTWARE.
  */
 import {
+  IFile, IFilesystem, ItemType, TYPES as FILESYSTEM_TYPES,
+} from 'helpers-filesystem';
+import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
+import { bindSymbol, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
+import {
   inject, injectable, interfaces, optional,
 } from 'inversify';
 
-import {
-  IFile, IFilesystem, ItemType, TYPES as FILESYSTEM_TYPES,
-} from '../filesystem';
-import { ILogger, TYPES as LOGGING_TYPES } from '../logging';
-import { bindSymbol, TYPES as UTILITIES_TYPES } from '../utilities';
 import { NotAQueryableFileError, NotConfiguredFilesystemError } from './errors';
 import type { IQueryable } from './iqueryable';
 import type { ICurrentQueryableProvider } from './providers/icurrent-queryable-provider';

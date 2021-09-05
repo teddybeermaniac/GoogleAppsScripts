@@ -22,11 +22,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import alasql from 'alasql';
+import type { ICache } from 'helpers-caching';
+import type { ILogger } from 'helpers-logging';
 import { injectable, interfaces } from 'inversify';
 import objectHash from 'object-hash';
 
-import type { ICache } from '../../../caching';
-import type { ILogger } from '../../../logging';
 import { fromMethodsSymbol, IAlaSQLFunctionSymbol } from '../../symbols';
 import type { IQueryableProvider } from '../iqueryable-provider';
 import type { ProviderType } from '../provider-type';

@@ -19,9 +19,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { IFile } from '../../filesystem';
-import type { IQueryableProvider } from './iqueryable-provider';
+import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
+import { bindSymbol } from 'helpers-utilities';
+import { inject, injectable } from 'inversify';
+import moment from 'moment';
 
-export interface IFileQueryableProvider extends IQueryableProvider {
-  loadFile(file: IFile): void;
+import { IAlaSQLFunctionSymbol } from '../../../symbols';
+import type { IAlaSQLFunction } from './ialasql-function';
+
+@injectable()
+@bindSymbol(IAlaSQLFunctionSymbol)
+export class AlaSQLMomentFunction implements IAlaSQLFunction {
+  public get name(): string {
+    return 'MOMENT';
+  }
+
+  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) { }
+
+  public callback(input?: moment.MomentInput): moment.Moment {
+    this.logger.trace(`Running MOMENT function${input?.toString() !== undefined ? ` with '${input?.toString()}' input` : ' without input'}`);
+    return moment(input);
+  }
 }

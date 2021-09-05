@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { getSymbol } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { getSymbol } from '../utilities';
 import * as errors from './errors';
 import type { IQueryable } from './iqueryable';
 import { AlaSQLExchangeFunction } from './providers/base-alasql-queryable-provider/function/alasql-exchange-function';

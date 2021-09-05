@@ -19,12 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { ICache, TYPES as CACHING_TYPES } from 'helpers-caching';
+import type { IFile } from 'helpers-filesystem';
+import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
+import { bindSymbol, errors as utilities_errors, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
 import { inject, injectable, interfaces } from 'inversify';
 
-import { ICache, TYPES as CACHING_TYPES } from '../../../caching';
-import type { IFile } from '../../../filesystem';
-import { ILogger, TYPES as LOGGING_TYPES } from '../../../logging';
-import { bindSymbol, errors as utilities_errors, TYPES as UTILITIES_TYPES } from '../../../utilities';
 import { InvalidQueryError, NotASpreadsheetContextError } from '../../errors';
 import { GoogleSpreadsheetQueryableProviderSymbol } from '../../symbols';
 import { BaseAlaSQLQueryableProvider } from '../base-alasql-queryable-provider/base-alasql-queryable-provider';

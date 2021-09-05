@@ -84,6 +84,7 @@ export default {
         '../helpers-filesystem/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
         '../helpers-iteration/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
         '../helpers-logging/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        '../helpers-querying/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
         '../helpers-triggering/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
         '../helpers-utilities/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
         'node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
