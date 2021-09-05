@@ -79,6 +79,7 @@ export default {
     commonjs({
       dynamicRequireTargets: [
         '../helpers-caching/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        '../helpers-exchange/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
         '../helpers-exporting/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
         '../helpers-iteration/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
         '../helpers-logging/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',

@@ -19,11 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
+import { bindSymbol } from 'helpers-utilities';
 import { inject, injectable } from 'inversify';
 
-import type { ILogger } from '../logging';
-import { ILoggerSymbol } from '../logging/symbols';
-import { bindSymbol } from '../utilities';
 import { Currencies, Currency } from './currency';
 import { InvalidCurrencyError } from './errors';
 import type { IExchange } from './iexchange';
@@ -33,7 +32,7 @@ import { IExchangeProviderSymbol, IExchangeSymbol } from './symbols';
 @injectable()
 @bindSymbol(IExchangeSymbol)
 export class Exchange implements IExchange {
-  constructor(@inject(ILoggerSymbol) private readonly logger: ILogger,
+  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(IExchangeProviderSymbol) private readonly provider: IExchangeProvider) { }
 
   convert(value: number, from: string | Currency, to: string | Currency): number {

@@ -29,6 +29,9 @@
             "helpers-caching": [
                 "./node_modules/helpers-caching/src"
             ],
+            "helpers-exchange": [
+                "./node_modules/helpers-exchange/src"
+            ],
             "helpers-exporting": [
                 "./node_modules/helpers-exporting/src"
             ],
@@ -58,6 +61,7 @@
     "include": [
         "./src/**/*",
         "./node_modules/helpers-caching/src/**/*",
+        "./node_modules/helpers-exchange/src/**/*",
         "./node_modules/helpers-exporting/src/**/*",
         "./node_modules/helpers-iteration/src/**/*",
         "./node_modules/helpers-logging/src/**/*",

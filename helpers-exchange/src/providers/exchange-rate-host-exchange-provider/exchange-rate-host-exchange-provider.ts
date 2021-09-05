@@ -19,11 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { ICache, TYPES as CACHING_TYPES } from 'helpers-caching';
+import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
+import { bindSymbol } from 'helpers-utilities';
 import { inject, injectable } from 'inversify';
 
-import { ICache, TYPES as CACHING_TYPES } from '../../../caching';
-import { ILogger, TYPES as LOGGING_TYPES } from '../../../logging';
-import { bindSymbol } from '../../../utilities';
 import type { Currency } from '../../currency';
 import { IExchangeProviderSymbol } from '../../symbols';
 import { BaseExchangeProvider } from '../base-exchange-provider';

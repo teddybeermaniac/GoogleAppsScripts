@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { getSymbol } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { getSymbol } from '../utilities';
 import type { Currency } from './currency';
 import { Exchange } from './exchange';
 import { ExchangeBuilder } from './exchange-builder';

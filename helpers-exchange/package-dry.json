@@ -1,0 +1,12 @@
+{
+    "dry": {
+        "extends": "../_common/package-dry.json"
+    },
+    "dependencies": {
+        "helpers-caching": "link:../helpers-caching",
+        "helpers-logging": "link:../helpers-logging",
+        "helpers-utilities": "link:../helpers-utilities",
+        "runtypes": "^6.3.2"
+    },
+    "name": "helpers-exchange"
+}

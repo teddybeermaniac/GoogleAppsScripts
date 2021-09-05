@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { errors as utilities_errors, getSymbol } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { errors as utilities_errors, getSymbol } from '../utilities';
 import { ExchangeRateApiComExchangeProvider } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider';
 import type { IExchangeRateApiComExchangeProviderSettings } from './providers/exchange-rate-api-com-exchange-provider/iexchange-rate-api-com-exchange-provider-settings';
 import { ExchangeRateHostExchangeProvider } from './providers/exchange-rate-host-exchange-provider/exchange-rate-host-exchange-provider';

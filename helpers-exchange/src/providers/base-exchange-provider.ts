@@ -19,10 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type { ICache } from 'helpers-caching';
+import type { ILogger } from 'helpers-logging';
 import { injectable } from 'inversify';
 
-import type { ICache } from '../../caching';
-import type { ILogger } from '../../logging';
 import type { Currency } from '../currency';
 import { InvalidCurrencyError, RateFetchError } from '../errors';
 import type { IExchangeProvider } from './iexchange-provider';
