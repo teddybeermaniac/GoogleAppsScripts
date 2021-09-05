@@ -80,6 +80,7 @@ export default {
       dynamicRequireTargets: [
         '../helpers-exporting/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
         '../helpers-logging/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        '../helpers-triggering/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
         '../helpers-utilities/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
         'node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
       ],

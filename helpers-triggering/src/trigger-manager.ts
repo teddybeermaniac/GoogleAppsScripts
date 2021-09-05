@@ -19,13 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { inject, injectable, interfaces } from 'inversify';
-
-import { IExportedMethodProvider, TYPES as EXPORTING_TYPES } from '../exporting';
-import { ILogger, TYPES as LOGGING_TYPES } from '../logging';
+import { IExportedMethodProvider, TYPES as EXPORTING_TYPES } from 'helpers-exporting';
+import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import {
   bindSymbol, errors as utilities_errors, getOwnerType, getSymbol,
-} from '../utilities';
+} from 'helpers-utilities';
+import { inject, injectable, interfaces } from 'inversify';
+
 import { AlreadyExistsTriggerError, TriggeringError } from './errors';
 import type { ITriggerManager } from './itrigger-manager';
 import { ITriggerManagerSymbol } from './symbols';

@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { getSymbol, onInitializableActivation } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { getSymbol, onInitializableActivation } from '../utilities';
 import * as errors from './errors';
 import type { ITriggerManager } from './itrigger-manager';
 import { ITriggerManagerSymbol } from './symbols';

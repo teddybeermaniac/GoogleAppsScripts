@@ -32,6 +32,9 @@
             "helpers-logging": [
                 "./node_modules/helpers-logging/src"
             ],
+            "helpers-triggering": [
+                "./node_modules/helpers-triggering/src"
+            ],
             "helpers-utilities": [
                 "./node_modules/helpers-utilities/src"
             ]
@@ -50,6 +53,7 @@
         "./src/**/*",
         "./node_modules/helpers-exporting/src/**/*",
         "./node_modules/helpers-logging/src/**/*",
+        "./node_modules/helpers-triggering/src/**/*",
         "./node_modules/helpers-utilities/src/**/*"
     ]
 }

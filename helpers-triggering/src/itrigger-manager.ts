@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { IInitializable } from '../utilities';
+import type { IInitializable } from 'helpers-utilities';
 
 export interface ITriggerManager extends IInitializable {
   addEveryMinutes(method: () => void, minutes: number, replace?: boolean): void;
