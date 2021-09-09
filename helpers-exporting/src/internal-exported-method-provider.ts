@@ -38,11 +38,21 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
     private readonly logger: ILogger | undefined) { }
 
   private logDebug(message: string): void {
-    (this.logger?.debug ?? console.log)(message);
+    if (!this.logger) {
+      console.log(message);
+      return;
+    }
+
+    this.logger.debug(message);
   }
 
   private logTrace(message: string): void {
-    (this.logger?.trace ?? console.log)(message);
+    if (!this.logger) {
+      console.log(message);
+      return;
+    }
+
+    this.logger.trace(message);
   }
 
   protected prepare(constructors: interfaces.Newable<Object>[]): void {
