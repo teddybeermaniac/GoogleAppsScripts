@@ -108,7 +108,8 @@ export default {
     injectProcessEnv(env),
     googleAppsScript(),
     terser({
-      ecma: 2019
+      ecma: 2019,
+      keep_classnames: true
     })
   ],
   strictDeprecations: true
