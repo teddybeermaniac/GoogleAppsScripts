@@ -19,39 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
+import { SettingsError } from '../errors/settings-error';
 
-import { Container, interfaces } from 'inversify';
+declare let process: any;
 
-import { bindSymbol } from './binding/bind-symbol';
-import { getSymbol } from './binding/get-symbol';
-import * as errors from './errors';
-import { getOwnerType } from './initialization/get-owner-type';
-import type { IInitializable } from './initialization/iinitializable';
-import { onInitializableActivation } from './initialization/on-initializable-activation';
-import { getEnvironmentVariable } from './settings/get-environment-variable';
-import { ContainerSymbol } from './symbols';
+export function getEnvironmentVariable(name: string, optional?: boolean)
+  : string | null | undefined {
+  // eslint-disable-next-line max-len
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  const value = process.env[name];
+  if (value === undefined || value === null) {
+    if (!optional) {
+      throw new SettingsError(`${name} is not defined`);
+    }
 
-export function createContainer(): interfaces.Container {
-  const container = new Container();
-  container.bind<interfaces.Container>(ContainerSymbol).toConstantValue(container);
+    return <string | null | undefined>value;
+  }
 
-  return container;
+  return <string>value;
 }
-
-export const TYPES = {
-  Container: ContainerSymbol,
-};
-
-export type {
-  IInitializable,
-};
-
-export {
-  bindSymbol,
-  errors,
-  getEnvironmentVariable,
-  getOwnerType,
-  getSymbol,
-  onInitializableActivation,
-};

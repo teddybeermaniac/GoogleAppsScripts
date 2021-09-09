@@ -18,7 +18,7 @@
     },
     "license": "MIT",
     "scripts": {
-        "build-helpers": "NODE_PATH=${PWD}/node_modules node ../_common/build-helper-dependencies.js",
+        "build-helpers": "node ../_common/build-helper-dependencies.js",
         "build-only": "eslint . --ext .ts && tsc",
         "build": "yarn run build-helpers && yarn run build-only"
     },

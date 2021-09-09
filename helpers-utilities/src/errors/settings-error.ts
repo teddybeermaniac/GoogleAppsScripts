@@ -19,39 +19,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'core-js';
-
-import { Container, interfaces } from 'inversify';
-
-import { bindSymbol } from './binding/bind-symbol';
-import { getSymbol } from './binding/get-symbol';
-import * as errors from './errors';
-import { getOwnerType } from './initialization/get-owner-type';
-import type { IInitializable } from './initialization/iinitializable';
-import { onInitializableActivation } from './initialization/on-initializable-activation';
-import { getEnvironmentVariable } from './settings/get-environment-variable';
-import { ContainerSymbol } from './symbols';
-
-export function createContainer(): interfaces.Container {
-  const container = new Container();
-  container.bind<interfaces.Container>(ContainerSymbol).toConstantValue(container);
-
-  return container;
-}
-
-export const TYPES = {
-  Container: ContainerSymbol,
-};
-
-export type {
-  IInitializable,
-};
-
-export {
-  bindSymbol,
-  errors,
-  getEnvironmentVariable,
-  getOwnerType,
-  getSymbol,
-  onInitializableActivation,
-};
+export class SettingsError extends Error { }

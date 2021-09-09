@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 var child_process = require('child_process');
-var DependencyResolver = require('dependency-resolver');
+var DependencyResolver = require(`${__dirname}/../${process.env.npm_package_name}/node_modules/dependency-resolver`);
 var fs = require('fs');
 
 function addUsedHelpers(packageName) {

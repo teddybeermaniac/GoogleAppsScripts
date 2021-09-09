@@ -29,22 +29,12 @@ import type { interfaces } from 'inversify';
 
 import { GoogleSpreadsheetSQL } from './google-spreadsheet-sql';
 
-declare let process: any;
-
 const container: interfaces.Container = createContainer();
 addCaching(container, (builder) => {
   builder.addGoogleAppsScriptProvider();
 });
 addExchange(container, (builder) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  if (process.env.EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY === undefined) {
-    throw new Error('EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY is not defined');
-  }
-
-  builder.addExchangeRateApiComProvider({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    apiKey: <string>process.env.EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY,
-  });
+  builder.addExchangeRateHostProvider();
 });
 addExporting(container, (builder) => {
   builder.addContainer(GoogleSpreadsheetSQL, true);
