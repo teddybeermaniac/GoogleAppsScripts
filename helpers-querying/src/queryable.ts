@@ -44,7 +44,7 @@ export class Queryable implements IQueryable {
     private readonly filesystem?: IFilesystem) { }
 
   public fromFile(path: string): IQueryableProvider {
-    this.logger.debug(`Creating a queryable from file '${path}'`);
+    this.logger.information(`Creating a queryable from file '${path}'`);
     if (!this.filesystem) {
       throw new NotConfiguredFilesystemError();
     }
@@ -58,7 +58,7 @@ export class Queryable implements IQueryable {
     let provider: IFileQueryableProvider;
     switch (file.mimeType) {
       case 'application/vnd.google-apps.spreadsheet':
-        this.logger.trace(`File '${path}' is a Google Spreadsheet`);
+        this.logger.debug(`File '${path}' is a Google Spreadsheet`);
         provider = this.container.get<IFileQueryableProvider>(
           GoogleSpreadsheetQueryableProviderSymbol,
         );
@@ -73,7 +73,7 @@ export class Queryable implements IQueryable {
   }
 
   public fromCurrentSpreadsheet(): IQueryableProvider {
-    this.logger.debug('Creating a queryable from current Google Spreadsheet');
+    this.logger.information('Creating a queryable from current Google Spreadsheet');
     const provider = this.container.get<ICurrentQueryableProvider>(
       GoogleSpreadsheetQueryableProviderSymbol,
     );

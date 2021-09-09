@@ -82,20 +82,21 @@ export abstract class InterruptableIterator<TToken> implements IInterruptableIte
 
   @exportMethod()
   public continue(): void {
+    this.logger.information('Restarting iteration');
     if (this.isRunning()) {
       this.logger.information('Iteration currently running; exiting');
       return;
     }
 
     if (this.isFinished()) {
-      this.logger.information('Iteration already ended; exiting');
+      this.logger.information('Iteration already finished; exiting');
       // eslint-disable-next-line @typescript-eslint/unbound-method
       this.triggerManager.remove(this.continue);
 
       return;
     }
 
-    this.logger.information('Continuing iteration');
+    this.logger.debug('Continuing iteration');
     this.cache.set(InterruptableIterator.RUNNING_KEY, true,
       InterruptableIterator.MAXIMUM_RUNTIME_SECONDS);
     let iterationToken = this.cache.get<TToken>(InterruptableIterator.ITERATION_TOKEN_KEY);
@@ -118,7 +119,7 @@ export abstract class InterruptableIterator<TToken> implements IInterruptableIte
 
     this.cache.set(InterruptableIterator.RUNNING_KEY, false);
     if (iterationToken === null) {
-      this.logger.information('Iteration ended; exiting');
+      this.logger.information('Iteration finished; exiting');
       this.cache.clear();
       // eslint-disable-next-line @typescript-eslint/unbound-method
       this.triggerManager.remove(this.continue);
@@ -126,12 +127,13 @@ export abstract class InterruptableIterator<TToken> implements IInterruptableIte
   }
 
   public tryStart(iterationToken?: TToken): boolean {
+    this.logger.information('Starting iteration');
     if (this.isRunning()) {
       this.logger.information('Iteration currently running');
       return false;
     }
 
-    this.logger.information('Starting iteration; registering trigger');
+    this.logger.debug('Starting iteration; registering trigger');
     this.cache.clear();
     if (iterationToken !== undefined) {
       this.cache.set(InterruptableIterator.ITERATION_TOKEN_KEY, iterationToken,
@@ -151,10 +153,12 @@ export abstract class InterruptableIterator<TToken> implements IInterruptableIte
   }
 
   public isRunning(): boolean {
+    this.logger.trace('Checking if iteration is running');
     return this.cache.get<boolean>(InterruptableIterator.RUNNING_KEY, false);
   }
 
   public isFinished(): boolean {
+    this.logger.trace('Checking if iteration was finished');
     return !this.isRunning()
       && this.cache.get<TToken>(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY) === null
       && this.cache.get<TToken>(InterruptableIterator.ITERATION_TOKEN_KEY) === null;

@@ -40,15 +40,16 @@ export abstract class BaseExchangeProvider implements IExchangeProvider {
 
   protected getRateInternal(from: Currency, to: Currency, url: string, cacheTtl: number,
     callback: (result: any) => { [currency: string]: number; }): number {
-    this.logger.trace(`Getting rate from '${from}' to '${to}'`);
+    this.logger.debug(`Getting conversion rate from '${from}' to '${to}'`);
     let rates = this.cache.get<{ [currency: string]: number; }>(`rates_${from}`);
     if (!rates) {
-      this.logger.trace('Rates not found in cache, fetching');
+      this.logger.trace('Conversion rates not found in cache; fetching');
       const response = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
       if (response.getResponseCode() !== 200) {
         throw new RateFetchError(response.getContentText());
       }
 
+      this.logger.trace('Fetched conversion rates');
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = JSON.parse(response.getContentText());
       rates = callback(result);

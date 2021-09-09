@@ -39,7 +39,8 @@ export class Filesystem implements IFilesystem {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(IFilesystemProviderSymbol) private readonly provider: IFilesystemProvider) { }
 
-  private static sanitizePath(path: string): string {
+  private sanitizePath(path: string): string {
+    this.logger.trace(`Sanitizing path '${path}'`);
     let sanitizedPath = path;
     if (!sanitizedPath.startsWith('/')) {
       sanitizedPath = `/${sanitizedPath}`;
@@ -48,16 +49,17 @@ export class Filesystem implements IFilesystem {
       sanitizedPath = sanitizedPath.substring(0, sanitizedPath.length - 1);
     }
 
+    this.logger.trace(`Sanitized path '${sanitizedPath}`);
     return sanitizedPath;
   }
 
   public list(path: string): IItem[] {
     this.logger.debug(`Listing path '${path}'`);
-    return this.provider.list(Filesystem.sanitizePath(path));
+    return this.provider.list(this.sanitizePath(path));
   }
 
   public stat(path: string, resolve: boolean): IItem | null {
     this.logger.debug(`Stat'ing${resolve ? ' and resolving' : ''} path '${path}'`);
-    return this.provider.stat(Filesystem.sanitizePath(path), resolve);
+    return this.provider.stat(this.sanitizePath(path), resolve);
   }
 }

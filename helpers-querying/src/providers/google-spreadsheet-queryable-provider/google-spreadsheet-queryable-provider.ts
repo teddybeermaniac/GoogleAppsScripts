@@ -62,7 +62,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
 
   @fromMethod('NAMEDRANGE')
   public fromNamedRange(tableName: string): any[] {
-    this.logger.trace(`Getting contents of named range '${tableName}'`);
+    this.logger.debug(`Getting contents of named range '${tableName}'`);
     const range = this.spreadsheet.getRangeByName(tableName);
     if (!range) {
       throw new InvalidQueryError(`Named range '${tableName}' does not exist`);

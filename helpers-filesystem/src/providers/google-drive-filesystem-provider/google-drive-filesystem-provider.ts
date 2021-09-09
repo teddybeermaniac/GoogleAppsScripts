@@ -172,6 +172,7 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     let file = DriveApp.getFileById(id);
     let mimeType = file.getMimeType();
     if (mimeType === this.SHORTCUT_MIME_TYPE) {
+      this.logger.trace(`Path '${path}' is a shortcut`);
       const targetId = file.getTargetId()!;
       if (resolve) {
         file = DriveApp.getFileById(targetId);
@@ -182,11 +183,13 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     }
 
     if (mimeType === this.FOLDER_MIME_TYPE) {
+      this.logger.trace(`Path '${path}' is a folder`);
       const folder = DriveApp.getFolderById(id);
 
       return new GoogleDriveFolder(folder, path);
     }
 
+    this.logger.trace(`Path '${path}' is a file with MIME type '${mimeType}'`);
     return new GoogleDriveFile(file, path);
   }
 }

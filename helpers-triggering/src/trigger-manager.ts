@@ -52,10 +52,18 @@ export class TriggerManger implements ITriggerManager {
   }
 
   private getExistingTrigger(method: () => void): GoogleAppsScript.Script.Trigger | null {
+    this.logger.trace(`Getting existing trigger for method '${method.name}'${this.symbol.description
+      ? ` from '${this.symbol.description}'`
+      : ''}`);
     const exportedName = this.exportedMethodProvider
       .getExportedMethodName(this.symbol, method.name);
     const existingTrigger = ScriptApp.getProjectTriggers()
       .filter((trigger) => trigger.getHandlerFunction() === exportedName)[0];
+    if (existingTrigger === undefined) {
+      this.logger.trace(`Trigger for method '${method.name}'${this.symbol.description
+        ? ` from '${this.symbol.description}'`
+        : ''} does not exist`);
+    }
 
     return existingTrigger ?? null;
   }
@@ -63,6 +71,9 @@ export class TriggerManger implements ITriggerManager {
   private build(method: () => void,
     builder: (trigger: GoogleAppsScript.Script.ClockTriggerBuilder) => void,
     replace: boolean | undefined): void {
+    this.logger.trace(`Building trigger for method '${method.name}'${this.symbol.description
+      ? ` from '${this.symbol.description}'`
+      : ''}`);
     if (this.exists(method)) {
       if (replace) {
         this.logger.debug(`Trigger for method '${method.name}'${this.symbol.description
@@ -99,7 +110,7 @@ export class TriggerManger implements ITriggerManager {
     }
 
     this.build(method, (builder) => {
-      this.logger.debug(`Adding trigger for method '${method.name}'${this.symbol.description
+      this.logger.information(`Adding trigger for method '${method.name}'${this.symbol.description
         ? ` from '${this.symbol.description}'`
         : ''} running every ${minutes} minutes`);
       builder.everyMinutes(minutes);
@@ -108,7 +119,7 @@ export class TriggerManger implements ITriggerManager {
 
   public addEveryHours(method: () => void, hours: number, replace?: boolean): void {
     this.build(method, (builder) => {
-      this.logger.debug(`Adding trigger for method '${method.name}'${this.symbol.description
+      this.logger.information(`Adding trigger for method '${method.name}'${this.symbol.description
         ? ` from '${this.symbol.description}'`
         : ''} running every ${hours} hours`);
       builder.everyHours(hours)
@@ -118,7 +129,7 @@ export class TriggerManger implements ITriggerManager {
 
   public addEveryDays(method: () => void, days: number, replace?: boolean): void {
     this.build(method, (builder) => {
-      this.logger.debug(`Adding trigger for method '${method.name}'${this.symbol.description
+      this.logger.information(`Adding trigger for method '${method.name}'${this.symbol.description
         ? ` from '${this.symbol.description}'`
         : ''} running every ${days} days`);
       builder.everyDays(days)
@@ -136,7 +147,7 @@ export class TriggerManger implements ITriggerManager {
   }
 
   public remove(method: () => void): void {
-    this.logger.debug(`Removing trigger for method '${method.name}'${this.symbol.description
+    this.logger.information(`Removing trigger for method '${method.name}'${this.symbol.description
       ? ` from '${this.symbol.description}'`
       : ''}`);
     const existingTrigger = this.getExistingTrigger(method);

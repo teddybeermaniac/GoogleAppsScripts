@@ -50,18 +50,18 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
 
   private getCache<TValue>(query: string, cacheKey: string | boolean, parameters: any[]):
   any | null {
-    this.logger.trace(`Getting result of '${query}' query from cache`);
+    this.logger.debug(`Getting result of '${query}' query from cache`);
     return this.cache.get<TValue>(objectHash.sha1([query, cacheKey, parameters]));
   }
 
   private putCache<TValue>(query: string, cacheKey: string | boolean, parameters: any[],
     result: any) {
-    this.logger.trace(`Putting result of '${query}' query into cache`);
+    this.logger.debug(`Putting result of '${query}' query into cache`);
     this.cache.set<TValue>(objectHash.sha1([query, cacheKey, parameters]), result);
   }
 
   private addFromMethods(): void {
-    this.logger.trace('Adding FROM methods');
+    this.logger.debug('Adding FROM methods');
     const fromMethods = <IFromMethod[]>Reflect.getMetadata(fromMethodsSymbol, this.constructor);
     fromMethods?.forEach((method) => {
       this.logger.trace(`Adding '${method.name}' method`);
@@ -79,7 +79,7 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
   }
 
   private addFunctions(): void {
-    this.logger.trace('Adding custom functions');
+    this.logger.debug('Adding custom functions');
     this.container.getAll<IAlaSQLFunction>(IAlaSQLFunctionSymbol).forEach((func) => {
       this.logger.trace(`Adding '${func.name.toUpperCase()}' function`);
       alasql.fn[func.name.toUpperCase()] = (...parameters: any[]) => func.callback(...parameters);

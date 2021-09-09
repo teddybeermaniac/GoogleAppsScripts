@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/* eslint-disable no-console */
 import type { ILogger } from 'helpers-logging';
 import { getSymbol } from 'helpers-utilities';
 import { injectable, interfaces } from 'inversify';
@@ -36,13 +37,21 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
   constructor(private readonly container: interfaces.Container,
     private readonly logger: ILogger | undefined) { }
 
+  private logDebug(message: string): void {
+    (this.logger?.debug ?? console.log)(message);
+  }
+
+  private logTrace(message: string): void {
+    (this.logger?.trace ?? console.log)(message);
+  }
+
   protected prepare(constructors: interfaces.Newable<Object>[]): void {
-    this.logger?.trace(`Found ${constructors.length} exported method containers`);
+    this.logTrace(`Found ${constructors.length} exported method containers`);
     constructors.forEach((constructor) => {
-      this.logger?.trace(`Processing '${constructor.name}'`);
+      this.logTrace(`Processing '${constructor.name}'`);
       const methods = <IExportedMethod[]>Reflect.getMetadata(exportedMethodsSymbol, constructor);
 
-      this.logger?.trace(
+      this.logTrace(
         `Found ${methods.length} exported methods on container '${constructor.name}'`,
       );
 
@@ -50,7 +59,7 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
         const exportedName = method.asIs ? method.name : `zzz_${constructor.name}_${method.name}`;
         this.exportedMethods.push({ ...method, exportedName, symbol: getSymbol(constructor) });
 
-        this.logger?.debug(
+        this.logDebug(
           `Method '${method.name}' from '${constructor.name}' is exported as '${exportedName}'`,
         );
       });
@@ -72,7 +81,7 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
   }
 
   public callExportedMethod(exportedName: string, args: any[]): any {
-    this.logger?.debug(`Calling exported method '${exportedName}'`);
+    this.logDebug(`Calling exported method '${exportedName}'`);
 
     const exportedMethod = this.exportedMethods
       .filter((method) => method.exportedName === exportedName)[0];

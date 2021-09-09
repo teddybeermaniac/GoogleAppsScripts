@@ -47,6 +47,7 @@ export class GoogleAppsScriptCacheProvider implements ICacheProvider {
   }
 
   private getAllKeys(prefix: string): string[] {
+    this.logger.trace(`Getting all keys with prefix '${prefix}'`);
     const allKeysJson = this.get(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY);
 
     return allKeysJson ? <string[]>JSON.parse(allKeysJson) : [];

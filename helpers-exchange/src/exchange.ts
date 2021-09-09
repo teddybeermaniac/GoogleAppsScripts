@@ -44,6 +44,9 @@ export class Exchange implements IExchange {
       throw new InvalidCurrencyError(to);
     }
 
-    return value * this.provider.getRate(from, to);
+    const convertedValue = value * this.provider.getRate(from, to);
+
+    this.logger.trace(`Value '${value} ${from}' converts to '${convertedValue} ${to}'`);
+    return convertedValue;
   }
 }
