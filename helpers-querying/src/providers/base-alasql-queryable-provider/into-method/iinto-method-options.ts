@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IFromMethod {
-  callback: (tableName: string) => any[];
-  name: string;
+export interface IIntoMethodOptions {
+  append?: boolean;
 }

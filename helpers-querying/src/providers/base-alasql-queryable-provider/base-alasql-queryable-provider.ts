@@ -27,11 +27,14 @@ import type { ILogger } from 'helpers-logging';
 import { injectable, interfaces } from 'inversify';
 import objectHash from 'object-hash';
 
-import { fromMethodsSymbol, IAlaSQLFunctionSymbol } from '../../symbols';
+import { fromMethodsSymbol, IAlaSQLFunctionSymbol, intoMethodsSymbol } from '../../symbols';
 import type { IQueryableProvider } from '../iqueryable-provider';
 import type { ProviderType } from '../provider-type';
+import type { IFromMethod } from './from-method/ifrom-method';
+import type { IFromMethodOptions } from './from-method/ifrom-method-options';
 import type { IAlaSQLFunction } from './function/ialasql-function';
-import type { IFromMethod } from './ifrom-method';
+import type { IIntoMethod } from './into-method/iinto-method';
+import type { IIntoMethodOptions } from './into-method/iinto-method-options';
 
 @injectable()
 export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider {
@@ -43,6 +46,7 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
     private container: interfaces.Container) {
     if (!BaseAlaSQLQueryableProvider._alasqlInitialized) {
       this.addFromMethods();
+      this.addIntoMethods();
       this.addFunctions();
       BaseAlaSQLQueryableProvider._alasqlInitialized = true;
     }
@@ -66,11 +70,29 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
     fromMethods?.forEach((method) => {
       this.logger.trace(`Adding '${method.name}' method`);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      (<any>alasql).from[method.name] = (tableName: string, _: any,
+      (<any>alasql).from[method.name] = (tableName: string, options: IFromMethodOptions,
         callback: (data: any[], idx: number, query: any) => any, idx: number, query: any) => {
-        const data = method.callback.bind(this)(tableName);
+        const data = method.callback.bind(this)(tableName, options);
         if (callback) {
           return callback(data, idx, query);
+        }
+
+        return data;
+      };
+    });
+  }
+
+  private addIntoMethods(): void {
+    this.logger.debug('Adding INTO methods');
+    const intoMethods = <IIntoMethod[]>Reflect.getMetadata(intoMethodsSymbol, this.constructor);
+    intoMethods?.forEach((method) => {
+      this.logger.trace(`Adding '${method.name}' method`);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      (<any>alasql).into[method.name] = (tableName: string, options: IIntoMethodOptions,
+        data: any[], _: any, callback: (data: any[]) => any) => {
+        method.callback.bind(this)(tableName, options, data);
+        if (callback) {
+          return callback(data);
         }
 
         return data;

@@ -19,8 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const GoogleSpreadsheetQueryableProviderSymbol = Symbol('GoogleSpreadsheetQueryableProvider');
-export const IAlaSQLFunctionSymbol = Symbol('IAlaSQLFunction');
-export const IQueryableSymbol = Symbol('IQueryable');
-export const fromMethodsSymbol = Symbol('fromMethods');
-export const intoMethodsSymbol = Symbol('intoMethods');
+import { QueryingError } from './querying-error';
+
+export class InvalidIntoMethodError extends QueryingError {
+  constructor(public readonly method: string, public readonly container: string) {
+    super(`Invalid INTO method '${method}' on '${container}'`);
+  }
+}

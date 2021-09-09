@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import { InvalidFromMethodError } from './invalid-from-method-error';
+import { InvalidIntoMethodError } from './invalid-into-method-error';
 import { InvalidQueryError } from './invalid-query-error';
 import { NotAQueryableFileError } from './not-a-queryable-file-error';
 import { NotASpreadsheetContextError } from './not-a-spreadsheet-context-error';
@@ -28,6 +29,7 @@ import { QueryingError } from './querying-error';
 
 export {
   InvalidFromMethodError,
+  InvalidIntoMethodError,
   InvalidQueryError,
   NotAQueryableFileError,
   NotASpreadsheetContextError,

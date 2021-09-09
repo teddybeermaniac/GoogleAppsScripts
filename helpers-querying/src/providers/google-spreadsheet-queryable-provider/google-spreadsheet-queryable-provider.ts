@@ -28,7 +28,8 @@ import { inject, injectable, interfaces } from 'inversify';
 import { InvalidQueryError, NotASpreadsheetContextError } from '../../errors';
 import { GoogleSpreadsheetQueryableProviderSymbol } from '../../symbols';
 import { BaseAlaSQLQueryableProvider } from '../base-alasql-queryable-provider/base-alasql-queryable-provider';
-import { fromMethod } from '../base-alasql-queryable-provider/from-method';
+import { fromMethod } from '../base-alasql-queryable-provider/from-method/from-method';
+import type { IFromMethodOptions } from '../base-alasql-queryable-provider/from-method/ifrom-method-options';
 import type { ICurrentQueryableProvider } from '../icurrent-queryable-provider';
 import type { IFileQueryableProvider } from '../ifile-queryable-provider';
 import { ProviderType } from '../provider-type';
@@ -61,7 +62,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
   }
 
   @fromMethod('NAMEDRANGE')
-  public fromNamedRange(tableName: string): any[] {
+  public fromNamedRange(tableName: string, _?: IFromMethodOptions): any[] {
     this.logger.debug(`Getting contents of named range '${tableName}'`);
     const range = this.spreadsheet.getRangeByName(tableName);
     if (!range) {
@@ -76,7 +77,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
     const names = data[0].map((column) => <string>column);
     const values = data.slice(1);
 
-    this.logger.trace(`Converting named range '${tableName}' to a list of objects`);
+    this.logger.trace(`Converting a range '${tableName}' to a list of objects`);
     let filterEmpty = true;
     return values
       .reverse()
