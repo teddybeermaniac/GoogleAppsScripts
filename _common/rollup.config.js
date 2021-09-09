@@ -3,6 +3,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import json from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import { terser } from "rollup-plugin-terser";
 import typescript from '@rollup/plugin-typescript';
 import env from './env.json';
 
@@ -78,7 +79,15 @@ export default {
     }),
     commonjs({
       dynamicRequireTargets: [
-        '../helpers/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        '../helpers-caching/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        '../helpers-exchange/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        '../helpers-exporting/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        '../helpers-filesystem/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        '../helpers-iteration/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        '../helpers-logging/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        '../helpers-querying/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        '../helpers-triggering/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
+        '../helpers-utilities/node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
         'node_modules/inversify/lib/syntax/binding_{on,when}_syntax.js',
       ],
       extensions: [
@@ -90,6 +99,9 @@ export default {
     }),
     // EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY
     injectProcessEnv(env),
+    terser({
+      ecma: 2019
+    }),
     googleAppsScript()
   ],
   strictDeprecations: true

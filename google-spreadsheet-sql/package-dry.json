@@ -4,7 +4,12 @@
     },
     "dependencies": {
         "@types/object-hash": "^2.1.1",
-        "helpers": "link:../helpers",
+        "helpers-caching": "link:../helpers-caching/build/src",
+        "helpers-exchange": "link:../helpers-exchange/build/src",
+        "helpers-exporting": "link:../helpers-exporting/build/src",
+        "helpers-logging": "link:../helpers-logging/build/src",
+        "helpers-querying": "link:../helpers-querying/build/src",
+        "helpers-utilities": "link:../helpers-utilities/build/src",
         "object-hash": "^2.2.0"
     },
     "name": "google-spreadsheet-sql"

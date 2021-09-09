@@ -1,10 +1,6 @@
 {
-    "dependencies": {
-        "@types/google-apps-script": "^1.0.37",
-        "@types/node": "^16.7.10",
-        "core-js": "3",
-        "inversify": "^5.1.1",
-        "reflect-metadata": "^0.1.13"
+    "dry": {
+        "extends": "../_common/package-dry.base.json"
     },
     "devDependencies": {
         "@babel/core": "^7.15.0",
@@ -16,23 +12,15 @@
         "@rollup/plugin-json": "^4.1.0",
         "@rollup/plugin-node-resolve": "^13.0.4",
         "@rollup/plugin-typescript": "^8.2.5",
-        "@typescript-eslint/eslint-plugin": "^4.29.3",
-        "@typescript-eslint/parser": "^4.29.3",
-        "eslint": "^7.32.0",
-        "eslint-config-airbnb-base": "^14.2.1",
-        "eslint-config-airbnb-typescript": "^13.0.0",
-        "eslint-plugin-import": "^2.24.1",
-        "eslint-plugin-simple-import-sort": "^7.0.0",
         "regenerator-runtime": "^0.13.9",
         "rollup": "^2.56.3",
         "rollup-plugin-inject-process-env": "^1.3.1",
-        "tslib": "^2.3.1",
-        "typescript": "^4.3.5"
+        "rollup-plugin-terser": "^7.0.2"
     },
     "license": "MIT",
     "scripts": {
-        "build": "eslint . --ext .ts && rollup -c",
-        "push": "eslint . --ext .ts && rollup -c && clasp push"
+        "build-only": "eslint . --ext .ts && rollup -c",
+        "push": "dry run build && clasp push"
     },
     "version": "1.0.0"
 }

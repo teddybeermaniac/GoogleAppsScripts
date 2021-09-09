@@ -1,0 +1,9 @@
+{
+    "dry": {
+        "extends": "../_common/package-dry.base.json"
+    },
+    "dependencies": {
+        "core-js": "3"
+    },
+    "name": "helpers-utilities"
+}
