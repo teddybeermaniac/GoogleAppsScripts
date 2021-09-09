@@ -36,6 +36,13 @@ function googleAppsScript() {
 
 export default {
   input: './src/index.ts',
+  onwarn: function(warning, defaultHandler) {
+    if (['THIS_IS_UNDEFINED'].includes(warning.code)) {
+      return;
+    }
+
+    defaultHandler(warning);
+  },
   output: {
     dir: '.',
     format: 'iife',
@@ -99,10 +106,10 @@ export default {
     }),
     // EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY
     injectProcessEnv(env),
+    googleAppsScript(),
     terser({
       ecma: 2019
-    }),
-    googleAppsScript()
+    })
   ],
   strictDeprecations: true
 };

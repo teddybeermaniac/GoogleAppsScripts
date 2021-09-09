@@ -19,11 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { Currency } from '../currency';
 import type { ProviderType } from './provider-type';
 
 export interface IExchangeProvider {
   readonly providerType: ProviderType;
-  readonly supportedCurrencies: Currency[];
-  getRate(from: Currency, to: Currency): number;
+  readonly supportedCurrencies: string[];
+  getRate(from: string, to: string): number;
 }
