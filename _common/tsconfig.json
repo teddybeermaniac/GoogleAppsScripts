@@ -33,5 +33,9 @@
             "google-apps-script",
             "reflect-metadata"
         ]
-    }
+    },
+    "include": [
+        "./src/**/*.json",
+        "./src/**/*.ts"
+    ]
 }

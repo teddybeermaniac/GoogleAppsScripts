@@ -5,8 +5,7 @@
     "dependencies": {
         "helpers-caching": "link:../helpers-caching/build/src",
         "helpers-logging": "link:../helpers-logging/build/src",
-        "helpers-utilities": "link:../helpers-utilities/build/src",
-        "runtypes": "^6.3.2"
+        "helpers-utilities": "link:../helpers-utilities/build/src"
     },
     "name": "helpers-exchange"
 }

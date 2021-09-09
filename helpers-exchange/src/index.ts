@@ -22,7 +22,6 @@
 import { getSymbol } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import type { Currency } from './currency';
 import { Exchange } from './exchange';
 import { ExchangeBuilder } from './exchange-builder';
 import type { IExchange } from './iexchange';
@@ -42,7 +41,6 @@ export const TYPES = {
 };
 
 export type {
-  Currency,
   IExchange,
 };
 

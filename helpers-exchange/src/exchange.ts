@@ -23,7 +23,7 @@ import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { bindSymbol } from 'helpers-utilities';
 import { inject, injectable } from 'inversify';
 
-import { Currencies, Currency } from './currency';
+import currencies from './currencies.json';
 import { InvalidCurrencyError } from './errors';
 import type { IExchange } from './iexchange';
 import type { IExchangeProvider } from './providers/iexchange-provider';
@@ -35,12 +35,12 @@ export class Exchange implements IExchange {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(IExchangeProviderSymbol) private readonly provider: IExchangeProvider) { }
 
-  convert(value: number, from: string | Currency, to: string | Currency): number {
+  convert(value: number, from: string, to: string): number {
     this.logger.debug(`Converting '${value}' from '${from}' to '${to}'`);
-    if (!Currencies.guard(from) || !this.provider.supportedCurrencies.includes(from)) {
+    if (!currencies.includes(from) || !this.provider.supportedCurrencies.includes(from)) {
       throw new InvalidCurrencyError(from);
     }
-    if (!Currencies.guard(to) || !this.provider.supportedCurrencies.includes(to)) {
+    if (!currencies.includes(to) || !this.provider.supportedCurrencies.includes(to)) {
       throw new InvalidCurrencyError(to);
     }
 

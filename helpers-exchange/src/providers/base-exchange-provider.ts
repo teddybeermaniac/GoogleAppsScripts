@@ -23,7 +23,6 @@ import type { ICache } from 'helpers-caching';
 import type { ILogger } from 'helpers-logging';
 import { injectable } from 'inversify';
 
-import type { Currency } from '../currency';
 import { InvalidCurrencyError, RateFetchError } from '../errors';
 import type { IExchangeProvider } from './iexchange-provider';
 import type { ProviderType } from './provider-type';
@@ -32,13 +31,13 @@ import type { ProviderType } from './provider-type';
 export abstract class BaseExchangeProvider implements IExchangeProvider {
   public abstract providerType: ProviderType;
 
-  public abstract supportedCurrencies: Currency[];
+  public abstract supportedCurrencies: string[];
 
   constructor(protected readonly logger: ILogger, protected readonly cache: ICache) { }
 
-  public abstract getRate(from: Currency, to: Currency): number;
+  public abstract getRate(from: string, to: string): number;
 
-  protected getRateInternal(from: Currency, to: Currency, url: string, cacheTtl: number,
+  protected getRateInternal(from: string, to: string, url: string, cacheTtl: number,
     callback: (result: any) => { [currency: string]: number; }): number {
     this.logger.debug(`Getting conversion rate from '${from}' to '${to}'`);
     let rates = this.cache.get<{ [currency: string]: number; }>(`rates_${from}`);
