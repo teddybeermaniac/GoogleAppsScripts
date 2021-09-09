@@ -4,12 +4,13 @@ This script adds a `SQL` function, which allows to query spreadsheet's named ran
 ## Installation
 To install this script:
 1. Remove the `.clasp.json` file.
-2. Run `yarn` to install dependencies.
-3. Run `yarn exec clasp login` to log-in into your Google account *(if you used **clasp** previously, you don't neet to do this)*.
-4. Run `yarn exec clasp create -- --title GoogleAppsScript` to create a new script on Google Apps Script.
-5. Run `yarn run push` to build and push the script.
-6. In your Spreadsheet's script file add the reference to the script created in step **4**.
-7. Then in that script add:
+2. Run `dry -v --dry-keep-package-json` to generate `package.json`.
+3. Run `yarn` to install dependencies.
+4. Run `yarn exec clasp login` to log-in into your Google account *(if you used **clasp** previously, you don't neet to do this)*.
+5. Run `yarn exec clasp create -- --title GoogleSpreadsheetSQL` to create a new script on Google Apps Script.
+6. Run `yarn run push` to build and push the script.
+7. In your Spreadsheet's script file add the reference to the script created in step **5**.
+8. Then in that script add:
 ```js
 function SQL(query, cacheKey, ...parameters) {
   return GoogleSpreadsheetSQL.sql(query, cacheKey, ...parameters);
