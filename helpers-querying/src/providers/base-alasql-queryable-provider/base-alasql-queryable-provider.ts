@@ -38,6 +38,12 @@ import type { IIntoMethodOptions } from './into-method/iinto-method-options';
 
 @injectable()
 export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider {
+  private static readonly defaultFromMethodOptions: IFromMethodOptions = {};
+
+  private static readonly defaultIntoMethodOptions: IIntoMethodOptions = {
+    append: false,
+  };
+
   private static _alasqlInitialized = false;
 
   public abstract get providerType(): ProviderType;
@@ -72,7 +78,11 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (<any>alasql).from[method.name] = (tableName: string, options: IFromMethodOptions,
         callback: (data: any[], idx: number, query: any) => any, idx: number, query: any) => {
-        const data = method.callback.bind(this)(tableName, options);
+        const mergedOptions = {
+          ...BaseAlaSQLQueryableProvider.defaultFromMethodOptions,
+          ...options,
+        };
+        const data = method.callback.bind(this)(tableName, mergedOptions);
         if (callback) {
           return callback(data, idx, query);
         }
@@ -90,7 +100,11 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (<any>alasql).into[method.name] = (tableName: string, options: IIntoMethodOptions,
         data: any[], _: any, callback: (data: any[]) => any) => {
-        method.callback.bind(this)(tableName, options, data);
+        const mergedOptions = {
+          ...BaseAlaSQLQueryableProvider.defaultIntoMethodOptions,
+          ...options,
+        };
+        method.callback.bind(this)(tableName, mergedOptions, data);
         if (callback) {
           return callback(data);
         }

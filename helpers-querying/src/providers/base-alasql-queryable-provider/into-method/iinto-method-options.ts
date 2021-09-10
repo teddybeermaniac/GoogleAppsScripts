@@ -20,5 +20,5 @@
  * SOFTWARE.
  */
 export interface IIntoMethodOptions {
-  append?: boolean;
+  append: boolean;
 }
