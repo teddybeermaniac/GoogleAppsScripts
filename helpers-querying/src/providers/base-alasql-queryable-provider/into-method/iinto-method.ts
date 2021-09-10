@@ -23,5 +23,6 @@ import type { IIntoMethodOptions } from './iinto-method-options';
 
 export interface IIntoMethod {
   name: string;
-  callback: (tableName: string, options: IIntoMethodOptions, data: any[]) => void;
+  callback: (tableName: string, options: IIntoMethodOptions, columns: string[], data: any[])
+  => void;
 }

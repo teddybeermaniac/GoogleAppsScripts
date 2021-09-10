@@ -99,17 +99,19 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
       this.logger.trace(`Adding '${method.name}' method`);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (<any>alasql).into[method.name] = (tableName: string, options: IIntoMethodOptions,
-        data: any[], _: any, callback: (data: any[]) => any) => {
+        data: any[], columns: any[], callback: (data: undefined) => void) => {
         const mergedOptions = {
           ...BaseAlaSQLQueryableProvider.defaultIntoMethodOptions,
           ...options,
         };
-        method.callback.bind(this)(tableName, mergedOptions, data);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const mappedColumns = columns.map((column) => <string>column.columnid);
+        method.callback.bind(this)(tableName, mergedOptions, mappedColumns, data);
         if (callback) {
-          return callback(data);
+          return callback(undefined);
         }
 
-        return data;
+        return undefined;
       };
     });
   }
