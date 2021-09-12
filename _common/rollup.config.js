@@ -5,7 +5,7 @@ import json from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import { terser } from "rollup-plugin-terser";
 import typescript from '@rollup/plugin-typescript';
-import env from './env.json';
+import fs from 'fs';
 
 function googleAppsScript() {
   return {
@@ -32,6 +32,19 @@ function googleAppsScript() {
       return `${code}\n\n${methodsCode}`;
     }
   }
+}
+
+function getEnvironment() {
+  var fileEnvironment = {};
+  try {
+    fileEnvironment = JSON.parse(fs.readFileSync(`${__dirname}/../_common/env.json`));
+  } catch { }
+  var processEnvironment = Object.fromEntries(Object.entries(process.env).filter(([key, _]) => key.startsWith('GAS_')));
+
+  return {
+    ...fileEnvironment,
+    ...processEnvironment
+  };
 }
 
 export default {
@@ -104,8 +117,7 @@ export default {
       sourceMap: false,
       transformMixedEsModules: true
     }),
-    // EXCHANGE_RATE_API_COM_EXCHANGE_PROVIDER_API_KEY
-    injectProcessEnv(env),
+    injectProcessEnv(getEnvironment()),
     googleAppsScript(),
     terser({
       ecma: 2019,

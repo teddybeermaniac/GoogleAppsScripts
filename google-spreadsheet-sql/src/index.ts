@@ -22,7 +22,7 @@
 import { addCaching } from 'helpers-caching';
 import { addExchange } from 'helpers-exchange';
 import { addExporting } from 'helpers-exporting';
-import { addLogging, LogLevel } from 'helpers-logging';
+import { addLogging } from 'helpers-logging';
 import { addQuerying } from 'helpers-querying';
 import { createContainer } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
@@ -34,15 +34,13 @@ addCaching(container, (builder) => {
   builder.addGoogleAppsScriptProvider();
 });
 addExchange(container, (builder) => {
-  builder.addExchangeRateHostProvider();
+  builder.addExchangeRateApiComProvider();
 });
 addExporting(container, (builder) => {
   builder.addContainer(GoogleSpreadsheetSQL, true);
 });
 addLogging(container, (builder) => {
-  builder.addSettings({
-    level: LogLevel.Information,
-  });
+  builder.addSettings();
   builder.addGoogleAppsScriptProvider();
 });
 addQuerying(container);

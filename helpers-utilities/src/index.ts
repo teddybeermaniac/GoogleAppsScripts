@@ -29,7 +29,7 @@ import * as errors from './errors';
 import { getOwnerType } from './initialization/get-owner-type';
 import type { IInitializable } from './initialization/iinitializable';
 import { onInitializableActivation } from './initialization/on-initializable-activation';
-import { getEnvironmentVariable } from './settings/get-environment-variable';
+import { getSettings } from './settings/get-settings';
 import { ContainerSymbol } from './symbols';
 
 export function createContainer(): interfaces.Container {
@@ -50,8 +50,8 @@ export type {
 export {
   bindSymbol,
   errors,
-  getEnvironmentVariable,
   getOwnerType,
+  getSettings,
   getSymbol,
   onInitializableActivation,
 };

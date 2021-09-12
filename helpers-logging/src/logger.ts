@@ -21,15 +21,15 @@
  */
 import { bindSymbol, errors as utilities_errors, getOwnerType } from 'helpers-utilities';
 import {
-  inject, injectable, interfaces, multiInject, optional,
+  inject, injectable, interfaces, multiInject,
 } from 'inversify';
 
 import type { ILogger } from './ilogger';
-import type { ILoggerSettings } from './ilogger-settings';
-import { LogLevel } from './log-level';
+import { LogLevel, logLevelValues } from './log-level';
+import type { LoggerSettings } from './logger-settings';
 import type { ILoggerProvider } from './providers/ilogger-provider';
 import type { ProviderType } from './providers/provider-type';
-import { ILoggerProviderSymbol, ILoggerSettingsSymbol, ILoggerSymbol } from './symbols';
+import { ILoggerProviderSymbol, ILoggerSymbol, LoggerSettingsSymbol } from './symbols';
 
 @injectable()
 @bindSymbol(ILoggerSymbol)
@@ -42,9 +42,8 @@ export class Logger implements ILogger {
     return this.providers.map((provider) => provider.providerType);
   }
 
-  constructor(@inject(ILoggerSettingsSymbol) @optional()
-  private readonly settings: ILoggerSettings,
-  @multiInject(ILoggerProviderSymbol) private readonly providers: ILoggerProvider[]) { }
+  constructor(@inject(LoggerSettingsSymbol) private readonly settings: LoggerSettings,
+    @multiInject(ILoggerProviderSymbol) private readonly providers: ILoggerProvider[]) { }
 
   private get name(): string {
     if (!this.initialized || this._name === undefined) {
@@ -55,7 +54,7 @@ export class Logger implements ILogger {
   }
 
   private log(level: LogLevel, message: string | (() => string), error: Error | undefined) {
-    if (this.settings && this.settings.level !== undefined && level < this.settings.level) {
+    if (logLevelValues[level]! < logLevelValues[this.settings.level]!) {
       return;
     }
 
@@ -64,7 +63,7 @@ export class Logger implements ILogger {
         provider.log(this.name, level, message, error);
       } catch (providerError) {
         // eslint-disable-next-line no-console
-        console.error(providerError);
+        console.error(<Error>providerError);
       }
     });
   }
@@ -80,22 +79,22 @@ export class Logger implements ILogger {
   }
 
   public trace(message: string | (() => string)): void {
-    this.log(LogLevel.Trace, message, undefined);
+    this.log('Trace', message, undefined);
   }
 
   public debug(message: string | (() => string)): void {
-    this.log(LogLevel.Debug, message, undefined);
+    this.log('Debug', message, undefined);
   }
 
   public information(message: string | (() => string)): void {
-    this.log(LogLevel.Information, message, undefined);
+    this.log('Information', message, undefined);
   }
 
   public warning(message: string | (() => string)): void {
-    this.log(LogLevel.Warning, message, undefined);
+    this.log('Warning', message, undefined);
   }
 
   public error(message: string | (() => string), error?: Error): void {
-    this.log(LogLevel.Error, message, error);
+    this.log('Error', message, error);
   }
 }

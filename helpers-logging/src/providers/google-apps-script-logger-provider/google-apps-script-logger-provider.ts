@@ -21,13 +21,13 @@
  */
 /* eslint-disable no-console */
 import { bindSymbol } from 'helpers-utilities';
-import { inject, injectable, optional } from 'inversify';
+import { inject, injectable } from 'inversify';
 
-import { LogLevel } from '../../log-level';
-import { IGoogleAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../../symbols';
+import { LogLevel, logLevelValues } from '../../log-level';
+import { GoogleAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../../symbols';
 import type { ILoggerProvider } from '../ilogger-provider';
 import { ProviderType } from '../provider-type';
-import type { IGoogleAppsScriptLoggerProviderSettings } from './igoogle-apps-script-logger-provider-settings';
+import type { GoogleAppsScriptLoggerProviderSettings } from './google-apps-script-logger-provider-settings';
 
 @injectable()
 @bindSymbol(ILoggerProviderSymbol)
@@ -36,12 +36,12 @@ export class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
     return ProviderType.GoogleAppsScript;
   }
 
-  constructor(@inject(IGoogleAppsScriptLoggerProviderSettingsSymbol) @optional()
-  private readonly settings: IGoogleAppsScriptLoggerProviderSettings) { }
+  constructor(@inject(GoogleAppsScriptLoggerProviderSettingsSymbol)
+  private readonly settings: GoogleAppsScriptLoggerProviderSettings) { }
 
   public log(name: string, level: LogLevel, message: string | (() => string),
     error: Error | undefined): void {
-    if (this.settings && this.settings.level !== undefined && level < this.settings.level) {
+    if (logLevelValues[level]! < logLevelValues[this.settings.level]!) {
       return;
     }
 
@@ -49,23 +49,23 @@ export class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
     let prefix: string;
     // eslint-disable-next-line default-case
     switch (level) {
-      case LogLevel.Trace:
+      case 'Trace':
         method = console.log;
         prefix = 'TRC';
         break;
-      case LogLevel.Debug:
+      case 'Debug':
         method = console.log;
         prefix = 'DBG';
         break;
-      case LogLevel.Information:
+      case 'Information':
         method = console.info;
         prefix = 'INF';
         break;
-      case LogLevel.Warning:
+      case 'Warning':
         method = console.warn;
         prefix = 'WRN';
         break;
-      case LogLevel.Error:
+      case 'Error':
         method = console.error;
         prefix = 'ERR';
         break;
@@ -73,7 +73,7 @@ export class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
 
     const fullMessage = `[${prefix}][${name}] ${message instanceof Function
       ? message()
-      : message}${level === LogLevel.Error && error
+      : message}${level === 'Error' && error
       ? `; ${error.name}: ${error.message}${error.stack ? `; ${error.stack}` : ''}`
       : ''}`;
 

@@ -19,29 +19,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { errors as utilities_errors, getSymbol } from 'helpers-utilities';
+import { errors as utilities_errors, getSettings, getSymbol } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import { ExchangeRateApiComExchangeProvider } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider';
-import type { IExchangeRateApiComExchangeProviderSettings } from './providers/exchange-rate-api-com-exchange-provider/iexchange-rate-api-com-exchange-provider-settings';
+import type { ExchangeRateApiComExchangeProviderSettings } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider-settings';
+import { ExchangeRateApiComExchangeProviderSettings as ExchangeRateApiComExchangeProviderSettingsRuntype } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider-settings';
 import { ExchangeRateHostExchangeProvider } from './providers/exchange-rate-host-exchange-provider/exchange-rate-host-exchange-provider';
 import type { IExchangeProvider } from './providers/iexchange-provider';
-import { IExchangeRateApiComExchangeProviderSettingsSymbol } from './symbols';
+import { ExchangeRateApiComExchangeProviderSettingsSymbol } from './symbols';
 
 export class ExchangeBuilder {
   private provider = false;
 
   constructor(private readonly container: interfaces.Container) { }
 
-  public addExchangeRateApiComProvider(settings: IExchangeRateApiComExchangeProviderSettings)
-    : ExchangeBuilder {
+  public addExchangeRateApiComProvider(
+    settings?: Partial<ExchangeRateApiComExchangeProviderSettings>,
+  ) : ExchangeBuilder {
     if (this.provider) {
       throw new utilities_errors.BuilderError('ExchangeBuilder', 'An exchange provider was already added');
     }
 
-    this.container.bind<IExchangeRateApiComExchangeProviderSettings>(
-      IExchangeRateApiComExchangeProviderSettingsSymbol,
-    ).toConstantValue(settings);
+    const defaults: Partial<ExchangeRateApiComExchangeProviderSettings> = { };
+    this.container.bind<ExchangeRateApiComExchangeProviderSettings>(
+      ExchangeRateApiComExchangeProviderSettingsSymbol,
+    ).toConstantValue(getSettings('ExchangeRateApiComExchangeProvider',
+      ExchangeRateApiComExchangeProviderSettingsRuntype, defaults, settings));
     this.container.bind<IExchangeProvider>(getSymbol(ExchangeRateApiComExchangeProvider))
       .to(ExchangeRateApiComExchangeProvider).inSingletonScope();
     this.provider = true;

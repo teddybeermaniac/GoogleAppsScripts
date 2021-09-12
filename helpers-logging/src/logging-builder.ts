@@ -19,38 +19,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { errors as utilities_errors, getSymbol } from 'helpers-utilities';
+import { errors as utilities_errors, getSettings, getSymbol } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import type { ILoggerSettings } from './ilogger-settings';
+import type { LoggerSettings } from './logger-settings';
+import { LoggerSettings as LoggerSettingsRuntype } from './logger-settings';
 import { GoogleAppsScriptLoggerProvider } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider';
-import type { IGoogleAppsScriptLoggerProviderSettings } from './providers/google-apps-script-logger-provider/igoogle-apps-script-logger-provider-settings';
+import type { GoogleAppsScriptLoggerProviderSettings } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider-settings';
+import { GoogleAppsScriptLoggerProviderSettings as GoogleAppsScriptLoggerProviderSettingsRuntype } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider-settings';
 import type { ILoggerProvider } from './providers/ilogger-provider';
-import { IGoogleAppsScriptLoggerProviderSettingsSymbol, ILoggerSettingsSymbol } from './symbols';
+import { GoogleAppsScriptLoggerProviderSettingsSymbol, LoggerSettingsSymbol } from './symbols';
 
 export class LoggingBuilder {
   private appScriptProvider = false;
 
   constructor(private readonly container: interfaces.Container) { }
 
-  public addSettings(settings: ILoggerSettings): LoggingBuilder {
-    this.container.bind<ILoggerSettings>(ILoggerSettingsSymbol).toConstantValue(settings);
+  public addSettings(settings?: Partial<LoggerSettings>): LoggingBuilder {
+    const defaults: Partial<LoggerSettings> = {
+      level: 'Information',
+    };
+    this.container.bind<LoggerSettings>(LoggerSettingsSymbol).toConstantValue(
+      getSettings('Logger', LoggerSettingsRuntype, defaults, settings),
+    );
 
     return this;
   }
 
-  public addGoogleAppsScriptProvider(settings?: IGoogleAppsScriptLoggerProviderSettings):
+  public addGoogleAppsScriptProvider(settings?: Partial<GoogleAppsScriptLoggerProviderSettings>):
   LoggingBuilder {
     if (this.appScriptProvider) {
       throw new utilities_errors.BuilderError('LoggingBuilder', 'GoogleAppsScript logger provider already added');
     }
 
-    if (settings) {
-      this.container
-        .bind<IGoogleAppsScriptLoggerProviderSettings>(
-        IGoogleAppsScriptLoggerProviderSettingsSymbol,
-      ).toConstantValue(settings);
-    }
+    const defaults: Partial<GoogleAppsScriptLoggerProviderSettings> = {
+      level: 'Trace',
+    };
+    this.container.bind<GoogleAppsScriptLoggerProviderSettings>(
+      GoogleAppsScriptLoggerProviderSettingsSymbol,
+    ).toConstantValue(getSettings('GoogleAppsScriptLoggerProvider',
+      GoogleAppsScriptLoggerProviderSettingsRuntype, defaults, settings));
+
     this.container.bind<ILoggerProvider>(getSymbol(GoogleAppsScriptLoggerProvider))
       .to(GoogleAppsScriptLoggerProvider).inSingletonScope();
     this.appScriptProvider = true;
