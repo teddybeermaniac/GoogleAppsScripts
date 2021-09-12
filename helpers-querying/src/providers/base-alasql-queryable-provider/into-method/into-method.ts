@@ -27,9 +27,9 @@ import type { IIntoMethodOptions } from './iinto-method-options';
 
 export function intoMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: string):
 // eslint-disable-next-line max-len
-(target: TTarget, propertyKey: string, descriptor: TypedPropertyDescriptor<(tableName: string, options: IIntoMethodOptions, columns: string[], data: any[]) => void>) => void {
+(target: TTarget, propertyKey: string, descriptor: TypedPropertyDescriptor<(tableName: string, options: IIntoMethodOptions, columnNames: string[], data: any[]) => void>) => void {
   // eslint-disable-next-line max-len
-  return (target: TTarget, propertyKey: string, descriptor: TypedPropertyDescriptor<(tableName: string, options: IIntoMethodOptions, columns: string[], data: any[]) => void>):
+  return (target: TTarget, propertyKey: string, descriptor: TypedPropertyDescriptor<(tableName: string, options: IIntoMethodOptions, columnNames: string[], data: any[]) => void>):
   void => {
     if (!descriptor.value) {
       throw new InvalidIntoMethodError(propertyKey, target.constructor.name);

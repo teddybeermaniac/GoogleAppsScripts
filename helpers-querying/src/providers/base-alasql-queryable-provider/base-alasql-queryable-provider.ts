@@ -105,8 +105,8 @@ export abstract class BaseAlaSQLQueryableProvider implements IQueryableProvider 
           ...options,
         };
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const mappedColumns = columns.map((column) => <string>column.columnid);
-        method.callback.bind(this)(tableName, mergedOptions, mappedColumns, data);
+        const columnNames = columns.map((column) => <string>column.columnid);
+        method.callback.bind(this)(tableName, mergedOptions, columnNames, data);
         if (callback) {
           return callback(undefined);
         }
