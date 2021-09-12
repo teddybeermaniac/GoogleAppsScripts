@@ -24,5 +24,6 @@ import type { ProviderType } from './provider-type';
 
 export interface ILoggerProvider {
   readonly providerType: ProviderType;
-  log(name: string, level: LogLevel, message: string, error: Error | undefined): void;
+  log(name: string, level: LogLevel, message: string | (() => string), error: Error | undefined):
+  void;
 }

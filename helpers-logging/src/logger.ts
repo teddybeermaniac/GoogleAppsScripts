@@ -54,7 +54,7 @@ export class Logger implements ILogger {
     return this._name;
   }
 
-  private log(level: LogLevel, message: string, error: Error | undefined) {
+  private log(level: LogLevel, message: string | (() => string), error: Error | undefined) {
     if (this.settings && this.settings.level !== undefined && level < this.settings.level) {
       return;
     }
@@ -79,23 +79,23 @@ export class Logger implements ILogger {
     this.initialized = true;
   }
 
-  public trace(message: string): void {
+  public trace(message: string | (() => string)): void {
     this.log(LogLevel.Trace, message, undefined);
   }
 
-  public debug(message: string): void {
+  public debug(message: string | (() => string)): void {
     this.log(LogLevel.Debug, message, undefined);
   }
 
-  public information(message: string): void {
+  public information(message: string | (() => string)): void {
     this.log(LogLevel.Information, message, undefined);
   }
 
-  public warning(message: string): void {
+  public warning(message: string | (() => string)): void {
     this.log(LogLevel.Warning, message, undefined);
   }
 
-  public error(message: string, error?: Error): void {
+  public error(message: string | (() => string), error?: Error): void {
     this.log(LogLevel.Error, message, error);
   }
 }

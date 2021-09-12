@@ -97,7 +97,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
     }
     const sheetRows = sheet.getMaxRows();
     if (originRow + rows - 1 > sheetRows) {
-      this.logger.warning(`Named range '${name}' rows go outside of sheet '${sheet.getName()}'`);
+      this.logger.warning(() => `Named range '${name}' rows go outside of sheet '${sheet.getName()}'`);
       rows = sheetRows - originRow + 1;
     }
 
@@ -108,7 +108,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
     }
     const sheetColumns = sheet.getMaxColumns();
     if (originColumn + columns - 1 > sheetColumns) {
-      this.logger.warning(`Named range '${name}' columns go outside of sheet '${sheet.getName()}'`);
+      this.logger.warning(() => `Named range '${name}' columns go outside of sheet '${sheet.getName()}'`);
       columns = sheetColumns - originColumn + 1;
     }
 
