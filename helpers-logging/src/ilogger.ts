@@ -25,9 +25,9 @@ import type { ProviderType } from './providers/provider-type';
 
 export interface ILogger extends IInitializable {
   readonly providerTypes: ProviderType[];
-  trace(name: string): void;
-  debug(message: string): void;
-  information(message: string): void;
-  warning(message: string): void;
-  error(message: string, error?: Error): void;
+  trace(name: string | (() => string)): void;
+  debug(message: string | (() => string)): void;
+  information(message: string | (() => string)): void;
+  warning(message: string | (() => string)): void;
+  error(message: string | (() => string), error?: Error): void;
 }

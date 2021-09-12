@@ -48,9 +48,10 @@ export abstract class BaseExchangeProvider implements IExchangeProvider {
         throw new RateFetchError(response.getContentText());
       }
 
-      this.logger.trace('Fetched conversion rates');
+      const responseText = response.getContentText();
+      this.logger.trace(`Fetched conversion rates: ${responseText}`);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const result = JSON.parse(response.getContentText());
+      const result = JSON.parse(responseText);
       rates = callback(result);
 
       if (!rates) {

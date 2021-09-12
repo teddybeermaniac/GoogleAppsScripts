@@ -100,9 +100,7 @@ export class GoogleAppsScriptCacheProvider implements ICacheProvider {
     let allKeys = this.getAllKeys(prefix);
     allKeys = [...allKeys, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY];
 
-    this.logger.trace(
-      `Deleting cache keys '${allKeys.join('\', \'')}' with a prefix '${prefix}'`,
-    );
+    this.logger.trace(() => `Deleting cache keys '${allKeys.join('\', \'')}' with a prefix '${prefix}'`);
     this.cache.removeAll(allKeys.map((key) => GoogleAppsScriptCacheProvider.getKey(prefix, key)));
   }
 }

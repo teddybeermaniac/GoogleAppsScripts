@@ -39,8 +39,8 @@ export class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
   constructor(@inject(IGoogleAppsScriptLoggerProviderSettingsSymbol) @optional()
   private readonly settings: IGoogleAppsScriptLoggerProviderSettings) { }
 
-  public log(name: string, level: LogLevel, message: string, error: Error | undefined):
-  void {
+  public log(name: string, level: LogLevel, message: string | (() => string),
+    error: Error | undefined): void {
     if (this.settings && this.settings.level !== undefined && level < this.settings.level) {
       return;
     }
@@ -71,7 +71,9 @@ export class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
         break;
     }
 
-    const fullMessage = `[${prefix}][${name}] ${message}${level === LogLevel.Error && error
+    const fullMessage = `[${prefix}][${name}] ${message instanceof Function
+      ? message()
+      : message}${level === LogLevel.Error && error
       ? `; ${error.name}: ${error.message}${error.stack ? `; ${error.stack}` : ''}`
       : ''}`;
 

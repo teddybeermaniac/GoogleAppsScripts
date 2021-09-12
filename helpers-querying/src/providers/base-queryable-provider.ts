@@ -66,7 +66,7 @@ export abstract class BaseQueryableProvider implements IQueryableProvider {
     }
 
     if (result !== null && result !== undefined) {
-      this.logger.trace(`The result of the query is '${JSON.stringify(result)}'`);
+      this.logger.trace(() => `The result of the query is '${JSON.stringify(result)}'`);
       return result;
     }
 
