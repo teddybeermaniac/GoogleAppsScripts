@@ -19,6 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+export const ExchangeRateApiComExchangeProviderSettingsSymbol = Symbol('ExchangeRateApiComExchangeProviderSettings');
 export const IExchangeSymbol = Symbol('IExchange');
 export const IExchangeProviderSymbol = Symbol('IExchangeProvider');
-export const IExchangeRateApiComExchangeProviderSettingsSymbol = Symbol('IExchangeRateApiComExchangeProviderSettings');

@@ -19,6 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ILoggerProviderSettings } from './providers/ilogger-provider-settings';
+import { camelCase, constantCase } from 'change-case';
+import type { RuntypeBase } from 'runtypes/lib/runtype';
 
-export type ILoggerSettings = ILoggerProviderSettings;
+declare let process: {
+  env: { [key: string]: string }
+};
+
+export function getSettings<TSettings>(name: string, runtype: RuntypeBase<TSettings>,
+  defaults: Partial<TSettings>, statics?: Partial<TSettings>): TSettings {
+  const prefixRegex = new RegExp(`^GAS_${constantCase(name)}_`);
+  const environment = Object.fromEntries(Object.entries(process.env)
+    .filter(([key, _]) => prefixRegex.test(key))
+    .map(([key, value]) => [camelCase(key.replace(prefixRegex, '')), value]));
+  const settings = { ...defaults, ...statics, ...environment };
+
+  return runtype.check(settings);
+}

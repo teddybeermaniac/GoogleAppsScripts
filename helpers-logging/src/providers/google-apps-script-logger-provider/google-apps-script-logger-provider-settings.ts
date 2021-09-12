@@ -19,6 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ILoggerProviderSettings } from '../ilogger-provider-settings';
+import { Record, Static } from 'runtypes';
 
-export type IGoogleAppsScriptLoggerProviderSettings = ILoggerProviderSettings;
+import { LogLevel } from '../../log-level';
+
+export const GoogleAppsScriptLoggerProviderSettings = Record({
+  level: LogLevel,
+});
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type GoogleAppsScriptLoggerProviderSettings
+  = Static<typeof GoogleAppsScriptLoggerProviderSettings>;

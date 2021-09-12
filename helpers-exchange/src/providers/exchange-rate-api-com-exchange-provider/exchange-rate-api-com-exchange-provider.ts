@@ -25,11 +25,11 @@ import { bindSymbol } from 'helpers-utilities';
 import { inject, injectable } from 'inversify';
 
 import { RateFetchError } from '../../errors';
-import { IExchangeProviderSymbol, IExchangeRateApiComExchangeProviderSettingsSymbol } from '../../symbols';
+import { ExchangeRateApiComExchangeProviderSettingsSymbol, IExchangeProviderSymbol } from '../../symbols';
 import { BaseExchangeProvider } from '../base-exchange-provider';
 import { ProviderType } from '../provider-type';
 import currencies from './currencies.json';
-import type { IExchangeRateApiComExchangeProviderSettings } from './iexchange-rate-api-com-exchange-provider-settings';
+import type { ExchangeRateApiComExchangeProviderSettings } from './exchange-rate-api-com-exchange-provider-settings';
 
 @injectable()
 @bindSymbol(IExchangeProviderSymbol)
@@ -42,8 +42,8 @@ export class ExchangeRateApiComExchangeProvider extends BaseExchangeProvider {
 
   constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger,
     @inject(CACHING_TYPES.ICache) cache: ICache,
-    @inject(IExchangeRateApiComExchangeProviderSettingsSymbol) private readonly settings:
-    IExchangeRateApiComExchangeProviderSettings) {
+    @inject(ExchangeRateApiComExchangeProviderSettingsSymbol) private readonly settings:
+    ExchangeRateApiComExchangeProviderSettings) {
     super(logger, cache);
   }
 

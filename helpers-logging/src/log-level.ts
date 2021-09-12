@@ -19,10 +19,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export enum LogLevel {
-  Trace,
-  Debug,
-  Information,
-  Warning,
-  Error,
-}
+
+import { Literal, Static, Union } from 'runtypes';
+
+export const LogLevel = Union(
+  Literal('Trace'),
+  Literal('Debug'),
+  Literal('Information'),
+  Literal('Warning'),
+  Literal('Error'),
+);
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type LogLevel = Static<typeof LogLevel>;
+
+export const logLevelValues: { [key: string]: number; } = {
+  Trace: 0,
+  Debug: 1,
+  Information: 2,
+  Warning: 3,
+  Error: 4,
+};

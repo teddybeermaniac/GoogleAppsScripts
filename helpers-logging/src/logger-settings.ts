@@ -19,22 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { SettingsError } from '../errors/settings-error';
+import { Record, Static } from 'runtypes';
 
-declare let process: any;
+import { LogLevel } from './log-level';
 
-export function getEnvironmentVariable(name: string, optional?: boolean)
-  : string | null | undefined {
-  // eslint-disable-next-line max-len
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-  const value = process.env[name];
-  if (value === undefined || value === null) {
-    if (!optional) {
-      throw new SettingsError(`${name} is not defined`);
-    }
+export const LoggerSettings = Record({
+  level: LogLevel,
+});
 
-    return <string | null | undefined>value;
-  }
-
-  return <string>value;
-}
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type LoggerSettings = Static<typeof LoggerSettings>;

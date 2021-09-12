@@ -19,8 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { LogLevel } from '../log-level';
+import { Record, Static, String } from 'runtypes';
 
-export interface ILoggerProviderSettings {
-  readonly level?: LogLevel;
-}
+export const ExchangeRateApiComExchangeProviderSettings = Record({
+  apiKey: String,
+});
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type ExchangeRateApiComExchangeProviderSettings
+  = Static<typeof ExchangeRateApiComExchangeProviderSettings>;

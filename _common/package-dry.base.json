@@ -3,7 +3,8 @@
         "@types/google-apps-script": "^1.0.37",
         "dependency-resolver": "^2.0.1",
         "inversify": "^5.1.1",
-        "reflect-metadata": "^0.1.13"
+        "reflect-metadata": "^0.1.13",
+        "runtypes": "^6.4.0"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^4.29.3",

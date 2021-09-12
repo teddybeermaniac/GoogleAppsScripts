@@ -21,8 +21,10 @@
  */
 import { BuilderError } from './builder-error';
 import { InitializationError } from './initialization-error';
+import { SettingsError } from './settings-error';
 
 export {
   BuilderError,
   InitializationError,
+  SettingsError,
 };
