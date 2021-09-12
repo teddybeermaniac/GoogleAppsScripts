@@ -36,7 +36,8 @@ export class GoogleSpreadsheetSQL {
   }
 
   @exportMethod(true)
-  public sql(query: string, cacheKey: string | boolean | null, ...parameters: any[]): any[][] {
+  public sql(query: string, cacheKey: string | boolean | null, ...parameters: any[]):
+  any[][] | undefined {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
     const queryableProvider = this.queryable.fromCurrentSpreadsheet();
 

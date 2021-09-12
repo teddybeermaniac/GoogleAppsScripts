@@ -19,31 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { InvalidFromMethodError } from '../../errors';
-import { fromMethodsSymbol } from '../../symbols';
-import type { BaseAlaSQLQueryableProvider } from './base-alasql-queryable-provider';
-import type { IFromMethod } from './ifrom-method';
+import { QueryingError } from './querying-error';
 
-export function fromMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: string):
-(target: TTarget, propertyKey: string,
-  descriptor: TypedPropertyDescriptor<(tableName: string) => any[]>) => void {
-  return (target: TTarget, propertyKey: string,
-    descriptor: TypedPropertyDescriptor<(tableName: string) => any[]>):
-  void => {
-    if (!descriptor.value) {
-      throw new InvalidFromMethodError(propertyKey, target.constructor.name);
-    }
-
-    const fromMethodDefinition = {
-      callback: descriptor.value,
-      name,
-    };
-
-    const fromMethods = <IFromMethod[]>Reflect.getMetadata(fromMethodsSymbol, target.constructor);
-    if (fromMethods) {
-      fromMethods.push(fromMethodDefinition);
-    } else {
-      Reflect.defineMetadata(fromMethodsSymbol, [fromMethodDefinition], target.constructor);
-    }
-  };
+export class InvalidIntoMethodError extends QueryingError {
+  constructor(public readonly method: string, public readonly container: string) {
+    super(`Invalid INTO method '${method}' on '${container}'`);
+  }
 }
