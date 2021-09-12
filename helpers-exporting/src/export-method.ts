@@ -26,9 +26,7 @@ import { exportedMethodsSymbol } from './symbols';
 export function exportMethod<TTarget extends Object>(asIs?: boolean, name?: string):
 (target: TTarget, propertyKey: string,
   descriptor: TypedPropertyDescriptor<(...parameters: any[]) => any>) => void {
-  return (target: TTarget, propertyKey: string,
-    descriptor: TypedPropertyDescriptor<(...parameters: any[]) => any>):
-  void => {
+  return (target, propertyKey, descriptor) => {
     if (!descriptor.value) {
       throw new InvalidExportedMethodError(propertyKey, target.constructor.name);
     }

@@ -25,7 +25,7 @@ import { BindSymbolSymbol } from '../symbols';
 
 export function bindSymbol<TContainer>(symbol: symbol):
 (constructor: interfaces.Newable<TContainer>) => void {
-  return (constructor: interfaces.Newable<TContainer>) => {
+  return (constructor) => {
     Reflect.defineMetadata(BindSymbolSymbol, symbol, constructor);
   };
 }

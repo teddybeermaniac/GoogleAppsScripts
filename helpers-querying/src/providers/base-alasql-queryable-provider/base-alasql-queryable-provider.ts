@@ -108,7 +108,7 @@ export abstract class BaseAlaSQLQueryableProvider extends BaseQueryableProvider 
     this.logger.debug('Adding custom functions');
     this.container.getAll<IAlaSQLFunction>(IAlaSQLFunctionSymbol).forEach((func) => {
       this.logger.trace(`Adding '${func.name.toUpperCase()}' function`);
-      alasql.fn[func.name.toUpperCase()] = (...parameters: any[]) => func.callback(...parameters);
+      alasql.fn[func.name.toUpperCase()] = (...parameters) => func.callback(...parameters);
     });
   }
 

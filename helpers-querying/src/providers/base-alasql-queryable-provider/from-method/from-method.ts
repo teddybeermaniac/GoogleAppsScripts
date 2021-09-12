@@ -28,9 +28,7 @@ import type { IFromMethodOptions } from './ifrom-method-options';
 export function fromMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: string):
 // eslint-disable-next-line max-len
 (target: TTarget, propertyKey: string, descriptor: TypedPropertyDescriptor<(tableName: string, options?: IFromMethodOptions) => any[]>) => void {
-  // eslint-disable-next-line max-len
-  return (target: TTarget, propertyKey: string, descriptor: TypedPropertyDescriptor<(tableName: string, options?: IFromMethodOptions) => any[]>):
-  void => {
+  return (target, propertyKey, descriptor) => {
     if (!descriptor.value) {
       throw new InvalidFromMethodError(propertyKey, target.constructor.name);
     }
