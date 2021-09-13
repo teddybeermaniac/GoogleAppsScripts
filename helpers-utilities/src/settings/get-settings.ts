@@ -22,6 +22,8 @@
 import { camelCase, constantCase } from 'change-case';
 import type { RuntypeBase } from 'runtypes/lib/runtype';
 
+import { SettingsError } from '../errors';
+
 declare let process: {
   env: { [key: string]: string }
 };
@@ -34,5 +36,13 @@ export function getSettings<TSettings>(name: string, runtype: RuntypeBase<TSetti
     .map(([key, value]) => [camelCase(key.replace(prefixRegex, '')), value]));
   const settings = { ...defaults, ...statics, ...environment };
 
-  return runtype.check(settings);
+  try {
+    return runtype.check(settings);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new SettingsError(`Error loading '${name}' settings; ${error.message}`);
+    }
+
+    throw error;
+  }
 }
