@@ -19,5 +19,5 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const BindSymbolSymbol = Symbol('BindSymbol');
+export const bindMetadataSymbol = Symbol('bindMetadata');
 export const ContainerSymbol = Symbol('Container');

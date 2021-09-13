@@ -21,8 +21,8 @@
  */
 import { SimpleIterator } from 'helpers-iteration';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol } from 'helpers-utilities';
-import { inject, injectable } from 'inversify';
+import { Scope, setBindMetadata } from 'helpers-utilities';
+import { inject } from 'inversify';
 
 import {
   DuplicatePathError, FilesystemError, InvalidPathError, NotFoundPathError,
@@ -35,8 +35,7 @@ import { GoogleDriveFile } from './google-drive-file';
 import { GoogleDriveFolder } from './google-drive-folder';
 import { GoogleDriveShortcut } from './google-drive-shortcut';
 
-@injectable()
-@bindSymbol(IFilesystemProviderSymbol)
+@setBindMetadata(IFilesystemProviderSymbol, Scope.Singleton)
 export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
   private readonly FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
 

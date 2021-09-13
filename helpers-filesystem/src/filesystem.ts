@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol } from 'helpers-utilities';
-import { inject, injectable } from 'inversify';
+import { Scope, setBindMetadata } from 'helpers-utilities';
+import { inject } from 'inversify';
 
 import type { IFilesystem } from './ifilesystem';
 import type { IItem } from './iitem';
@@ -29,8 +29,7 @@ import type { IFilesystemProvider } from './providers/ifilesystem-provider';
 import type { ProviderType } from './providers/provider-type';
 import { IFilesystemProviderSymbol, IFilesystemSymbol } from './symbols';
 
-@injectable()
-@bindSymbol(IFilesystemSymbol)
+@setBindMetadata(IFilesystemSymbol, Scope.Singleton)
 export class Filesystem implements IFilesystem {
   public get providerType(): ProviderType {
     return this.provider.providerType;

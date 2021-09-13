@@ -19,25 +19,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol } from 'helpers-utilities';
-import { inject, injectable } from 'inversify';
-import moment from 'moment';
+import { camelCase, constantCase } from 'change-case';
+import type { interfaces } from 'inversify';
+import type { RuntypeBase } from 'runtypes/lib/runtype';
 
-import { IAlaSQLFunctionSymbol } from '../../../symbols';
-import type { IAlaSQLFunction } from './ialasql-function';
+import { SettingsError } from '../errors';
 
-@injectable()
-@bindSymbol(IAlaSQLFunctionSymbol)
-export class AlaSQLMomentFunction implements IAlaSQLFunction {
-  public get name(): string {
-    return 'MOMENT';
+declare let process: {
+  env: { [key: string]: string }
+};
+
+export function bindSettings<TSettings>(container: interfaces.Container, symbol: symbol,
+  name: string, runtype: RuntypeBase<TSettings>, defaults: Partial<TSettings>,
+  statics?: Partial<TSettings>): void {
+  const prefixRegex = new RegExp(`^GAS_${constantCase(name)}_`);
+  const environment = Object.fromEntries(Object.entries(process.env)
+    .filter(([key, _]) => prefixRegex.test(key))
+    .map(([key, value]) => [camelCase(key.replace(prefixRegex, '')), value]));
+  const settings = { ...defaults, ...statics, ...environment };
+
+  let strongSettings: TSettings;
+  try {
+    strongSettings = runtype.check(settings);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new SettingsError(`Error loading '${name}' settings; ${error.message}`);
+    }
+
+    throw error;
   }
 
-  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) { }
-
-  public callback(input?: moment.MomentInput): moment.Moment {
-    this.logger.trace(() => `Running MOMENT function${input?.toString() !== undefined ? ` with '${input?.toString()}' input` : ' without input'}`);
-    return moment(input);
-  }
+  container.bind<TSettings>(symbol).toConstantValue(strongSettings);
 }

@@ -19,16 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bindSymbol, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
-import {
-  inject, injectable, interfaces, multiInject,
-} from 'inversify';
+import { Scope, setBindMetadata, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
+import { inject, interfaces, multiInject } from 'inversify';
 
 import { InternalExportedMethodProvider } from './internal-exported-method-provider';
 import { exportedMethodContainerSymbol, RollupExportedMethodProviderSymbol } from './symbols';
 
-@injectable()
-@bindSymbol(RollupExportedMethodProviderSymbol)
+@setBindMetadata(RollupExportedMethodProviderSymbol, Scope.Singleton)
 export class RollupExportedMethodProvider extends InternalExportedMethodProvider {
   constructor(@inject(UTILITIES_TYPES.Container) container: interfaces.Container,
     @multiInject(exportedMethodContainerSymbol) constructors: interfaces.Newable<Object>[]) {

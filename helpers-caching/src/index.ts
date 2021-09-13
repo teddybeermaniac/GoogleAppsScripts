@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { getSymbol, onInitializableActivation } from 'helpers-utilities';
+import { bindInitializable } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import { Cache } from './cache';
@@ -33,8 +33,7 @@ export function addCaching(container: interfaces.Container,
   const builder = new CachingBuilder(container);
   build(builder);
 
-  container.bind<ICache>(getSymbol(Cache)).to(Cache).inTransientScope()
-    .onActivation(onInitializableActivation);
+  bindInitializable(container, Cache);
 }
 
 export const TYPES = {

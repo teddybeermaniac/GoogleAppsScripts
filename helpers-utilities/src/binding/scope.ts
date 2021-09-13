@@ -19,13 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { interfaces } from 'inversify';
-
-import { BindSymbolSymbol } from '../symbols';
-
-export function bindSymbol<TContainer>(symbol: symbol):
-(constructor: interfaces.Newable<TContainer>) => void {
-  return (constructor) => {
-    Reflect.defineMetadata(BindSymbolSymbol, symbol, constructor);
-  };
+export enum Scope {
+  Transient,
+  Request,
+  Singleton,
 }

@@ -19,12 +19,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ProviderType } from './provider-type';
+export class JSONEx {
+  private static dateRegex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
 
-export interface IQueryableProvider {
-  readonly providerType: ProviderType;
+  private static reviver(this: void, _: string, value: any): any {
+    if (typeof value === 'string') {
+      if (JSONEx.dateRegex.test(value)) {
+        return new Date(value);
+      }
+    }
 
-  query<TModel>(query: string, cacheKey: string | boolean | null, parameters: any):
-  TModel[] | undefined;
-  queryAny(query: string, cacheKey: string | boolean | null, parameters: any): any[][] | undefined;
+    return value;
+  }
+
+  public static parse<TModel = any>(value: string): TModel {
+    return <TModel>JSON.parse(value, JSONEx.reviver);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  public static stringify(value: any): string {
+    return JSON.stringify(value);
+  }
 }

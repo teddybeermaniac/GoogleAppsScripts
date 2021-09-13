@@ -21,8 +21,16 @@
  */
 import type { interfaces } from 'inversify';
 
-import { BindSymbolSymbol } from '../symbols';
+import { NoBindMetadataDefinedError } from '../errors';
+import { bindMetadataSymbol } from '../symbols';
+import type { IBindMetadata } from './ibind-metadata';
 
-export function getSymbol<TContainer>(constructor: interfaces.Newable<TContainer>): symbol {
-  return <symbol>Reflect.getMetadata(BindSymbolSymbol, constructor);
+export function getBindMetadata<TConstructor>(constructor: interfaces.Newable<TConstructor>):
+IBindMetadata {
+  const metadata = <IBindMetadata>Reflect.getMetadata(bindMetadataSymbol, constructor);
+  if (!metadata) {
+    throw new NoBindMetadataDefinedError(constructor.name);
+  }
+
+  return metadata;
 }

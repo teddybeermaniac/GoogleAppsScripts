@@ -19,11 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { errors as utilities_errors, getSymbol } from 'helpers-utilities';
+import { bind, errors as utilities_errors } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import { GoogleDriveFilesystemProvider } from './providers/google-drive-filesystem-provider/google-drive-filesystem-provider';
-import type { IFilesystemProvider } from './providers/ifilesystem-provider';
 
 export class FilesystemBuilder {
   private provider = false;
@@ -35,8 +34,7 @@ export class FilesystemBuilder {
       throw new utilities_errors.BuilderError('FilesystemBuilder', 'A filesystem provider was already added');
     }
 
-    this.container.bind<IFilesystemProvider>(getSymbol(GoogleDriveFilesystemProvider))
-      .to(GoogleDriveFilesystemProvider).inSingletonScope();
+    bind(this.container, GoogleDriveFilesystemProvider);
     this.provider = true;
 
     return this;

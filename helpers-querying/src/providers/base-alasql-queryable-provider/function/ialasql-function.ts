@@ -20,7 +20,5 @@
  * SOFTWARE.
  */
 export interface IAlaSQLFunction {
-  readonly name: string;
-
   callback(...parameters: any[]): any;
 }

@@ -19,12 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ProviderType } from './provider-type';
+import type { BaseAlaSQLQueryableProvider } from './base-alasql-queryable-provider';
 
-export interface IQueryableProvider {
-  readonly providerType: ProviderType;
-
-  query<TModel>(query: string, cacheKey: string | boolean | null, parameters: any):
-  TModel[] | undefined;
-  queryAny(query: string, cacheKey: string | boolean | null, parameters: any): any[][] | undefined;
+export interface IExecutionContext {
+  readonly id: string;
+  readonly data: { [key: string]: any; };
+  readonly provider: BaseAlaSQLQueryableProvider;
+  execute<TReturn>(provider: BaseAlaSQLQueryableProvider, callback: () => TReturn): TReturn;
 }

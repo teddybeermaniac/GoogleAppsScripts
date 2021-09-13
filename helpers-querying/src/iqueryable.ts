@@ -22,6 +22,7 @@
 import type { IQueryableProvider } from './providers/iqueryable-provider';
 
 export interface IQueryable {
+  fromMemory(): IQueryableProvider;
   fromFile(path: string): IQueryableProvider;
   fromCurrentSpreadsheet(): IQueryableProvider;
 }

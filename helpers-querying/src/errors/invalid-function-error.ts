@@ -19,12 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ProviderType } from './provider-type';
+import { QueryingError } from './querying-error';
 
-export interface IQueryableProvider {
-  readonly providerType: ProviderType;
-
-  query<TModel>(query: string, cacheKey: string | boolean | null, parameters: any):
-  TModel[] | undefined;
-  queryAny(query: string, cacheKey: string | boolean | null, parameters: any): any[][] | undefined;
+export class InvalidFunctionError extends QueryingError {
+  constructor(public readonly container: string) {
+    super(`Invalid function '${container}'`);
+  }
 }

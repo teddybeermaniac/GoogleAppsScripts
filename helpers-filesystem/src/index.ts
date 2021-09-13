@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { getSymbol } from 'helpers-utilities';
+import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import * as errors from './errors';
@@ -40,7 +40,7 @@ export function addFilesystem(container: interfaces.Container, build: (builder: 
   const builder = new FilesystemBuilder(container);
   build(builder);
 
-  container.bind<IFilesystem>(getSymbol(Filesystem)).to(Filesystem).inSingletonScope();
+  bind(container, Filesystem);
 }
 
 export const TYPES = {

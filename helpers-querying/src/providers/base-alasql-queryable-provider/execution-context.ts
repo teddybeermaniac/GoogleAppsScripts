@@ -19,26 +19,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { IExchange, TYPES as EXCHANGE_TYPES } from 'helpers-exchange';
-import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol } from 'helpers-utilities';
-import { inject, injectable } from 'inversify';
+import createContext from 'context';
+import { Scope, setBindMetadata } from 'helpers-utilities';
+import { v4 } from 'uuid';
 
-import { IAlaSQLFunctionSymbol } from '../../../symbols';
-import type { IAlaSQLFunction } from './ialasql-function';
+import { IExecutionContextSymbol } from '../../symbols';
+import type { BaseAlaSQLQueryableProvider } from './base-alasql-queryable-provider';
+import type { IExecutionContext } from './iexecution-context';
 
-@injectable()
-@bindSymbol(IAlaSQLFunctionSymbol)
-export class AlaSQLExchangeFunction implements IAlaSQLFunction {
-  public get name(): string {
-    return 'EXCHANGE';
+@setBindMetadata(IExecutionContextSymbol, Scope.Singleton)
+export class ExecutionContext implements IExecutionContext {
+  private readonly context = createContext<{
+    id: string,
+    data: { [key: string]: any; },
+    provider: BaseAlaSQLQueryableProvider
+  }>();
+
+  public get id(): string {
+    return this.context.use()!.id;
   }
 
-  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(EXCHANGE_TYPES.IExchange) private readonly exchange: IExchange) { }
+  public get data(): { [key: string]: any; } {
+    return this.context.use()!.data;
+  }
 
-  callback(value: number, from: string, to: string): number {
-    this.logger.trace(`Running EXCHANGE function with value '${value}', from currency '${from}' and to currency '${to}'`);
-    return this.exchange.convert(value, from, to);
+  public get provider(): BaseAlaSQLQueryableProvider {
+    return this.context.use()!.provider;
+  }
+
+  public execute<TReturn>(provider: BaseAlaSQLQueryableProvider, callback: () => TReturn): TReturn {
+    return this.context.run(
+      {
+        id: v4({ random: Array(16).fill(null).map(() => Math.floor(Math.random() * 255)) }),
+        data: {},
+        provider,
+      }, callback,
+    );
   }
 }

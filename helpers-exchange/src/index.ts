@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { getSymbol } from 'helpers-utilities';
+import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import { Exchange } from './exchange';
@@ -33,7 +33,7 @@ export function addExchange(container: interfaces.Container,
   const builder = new ExchangeBuilder(container);
   build(builder);
 
-  container.bind<IExchange>(getSymbol(Exchange)).to(Exchange).inSingletonScope();
+  bind(container, Exchange);
 }
 
 export const TYPES = {

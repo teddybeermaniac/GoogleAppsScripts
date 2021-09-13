@@ -20,16 +20,17 @@
  * SOFTWARE.
  */
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol, errors as utilities_errors, getOwnerType } from 'helpers-utilities';
-import { inject, injectable, interfaces } from 'inversify';
+import {
+  errors as utilities_errors, getOwnerType, JSONEx, Scope, setBindMetadata,
+} from 'helpers-utilities';
+import { inject, interfaces } from 'inversify';
 
 import type { ICache } from './icache';
 import type { ICacheProvider } from './providers/icache-provider';
 import type { ProviderType } from './providers/provider-type';
 import { ICacheProviderSymbol, ICacheSymbol } from './symbols';
 
-@injectable()
-@bindSymbol(ICacheSymbol)
+@setBindMetadata(ICacheSymbol, Scope.Transient)
 export class Cache implements ICache {
   private _prefix: string | undefined;
 
@@ -72,7 +73,7 @@ export class Cache implements ICache {
     }
 
     this.logger.debug(`Key '${key}' found in cache with value '${json}'`);
-    return <TValue>JSON.parse(json);
+    return JSONEx.parse<TValue>(json);
   }
 
   public pop<TValue>(key: string): TValue | null;
@@ -85,7 +86,7 @@ export class Cache implements ICache {
   }
 
   public set<TValue>(key: string, value: TValue, ttl?: number): void {
-    const json = JSON.stringify(value);
+    const json = JSONEx.stringify(value);
     this.logger.debug(
       `Setting cache key '${key}'${ttl !== undefined ? ` with a TTL of ${ttl}s` : ''} to value '${json}'`,
     );

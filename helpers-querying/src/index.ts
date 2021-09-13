@@ -19,28 +19,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { getSymbol } from 'helpers-utilities';
+import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import * as errors from './errors';
 import type { IQueryable } from './iqueryable';
-import { AlaSQLExchangeFunction } from './providers/base-alasql-queryable-provider/function/alasql-exchange-function';
-import { AlaSQLMomentFunction } from './providers/base-alasql-queryable-provider/function/alasql-moment-function';
+import { ExecutionContext } from './providers/base-alasql-queryable-provider/execution-context';
+import { ExchangeFunction } from './providers/base-alasql-queryable-provider/function/exchange-function';
 import type { IAlaSQLFunction } from './providers/base-alasql-queryable-provider/function/ialasql-function';
+import { MomentFunction } from './providers/base-alasql-queryable-provider/function/moment-function';
+import { WindowFunction } from './providers/base-alasql-queryable-provider/function/window-function';
+import { MemoryQueryableProvider } from './providers/base-alasql-queryable-provider/memory-queryable-provider/memory-queryable-provider';
 import { GoogleSpreadsheetQueryableProvider } from './providers/google-spreadsheet-queryable-provider/google-spreadsheet-queryable-provider';
 import type { IQueryableProvider } from './providers/iqueryable-provider';
 import type { ProviderType } from './providers/provider-type';
 import { Queryable } from './queryable';
-import { IQueryableSymbol } from './symbols';
+import { IAlaSQLFunctionConstructorSymbol, IQueryableSymbol } from './symbols';
+
+function bindFunction(container: interfaces.Container,
+  constructor: interfaces.Newable<IAlaSQLFunction>) {
+  container.bind<interfaces.Newable<IAlaSQLFunction>>(IAlaSQLFunctionConstructorSymbol)
+    .toConstructor(constructor);
+  bind(container, constructor);
+}
 
 export function addQuerying(container: interfaces.Container): void {
-  container.bind<IQueryable>(getSymbol(Queryable)).to(Queryable).inSingletonScope();
-  container.bind<IQueryableProvider>(getSymbol(GoogleSpreadsheetQueryableProvider))
-    .to(GoogleSpreadsheetQueryableProvider).inTransientScope();
-  container.bind<IAlaSQLFunction>(getSymbol(AlaSQLExchangeFunction)).to(AlaSQLExchangeFunction)
-    .inSingletonScope();
-  container.bind<IAlaSQLFunction>(getSymbol(AlaSQLMomentFunction)).to(AlaSQLMomentFunction)
-    .inSingletonScope();
+  bind(container, Queryable);
+  bind(container, GoogleSpreadsheetQueryableProvider);
+  bind(container, MemoryQueryableProvider);
+
+  bind(container, ExecutionContext);
+  bindFunction(container, ExchangeFunction);
+  bindFunction(container, MomentFunction);
+  bindFunction(container, WindowFunction);
 }
 
 export const TYPES = {

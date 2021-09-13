@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { getSymbol, onInitializableActivation } from 'helpers-utilities';
+import { bindInitializable } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import * as errors from './errors';
@@ -28,8 +28,7 @@ import { ITriggerManagerSymbol } from './symbols';
 import { TriggerManger } from './trigger-manager';
 
 export function addTriggering(container: interfaces.Container): void {
-  container.bind<ITriggerManager>(getSymbol(TriggerManger)).to(TriggerManger).inTransientScope()
-    .onActivation(onInitializableActivation);
+  bindInitializable(container, TriggerManger);
 }
 
 export const TYPES = {

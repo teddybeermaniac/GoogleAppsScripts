@@ -19,12 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ProviderType } from './provider-type';
-
-export interface IQueryableProvider {
-  readonly providerType: ProviderType;
-
-  query<TModel>(query: string, cacheKey: string | boolean | null, parameters: any):
-  TModel[] | undefined;
-  queryAny(query: string, cacheKey: string | boolean | null, parameters: any): any[][] | undefined;
+export class NoBindMetadataDefinedError extends Error {
+  constructor(public readonly container: string) {
+    super(`No bind metadata defined for '${container}'`);
+  }
 }

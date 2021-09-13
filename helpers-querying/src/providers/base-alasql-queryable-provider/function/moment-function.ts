@@ -19,35 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { exportMethod } from 'helpers-exporting';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { IQueryable, TYPES as QUERYING_TYPES } from 'helpers-querying';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
-import objectHash from 'object-hash';
+import moment from 'moment';
 
-import { GoogleSpreadsheetSQLSymbol } from './symbols';
+import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../symbols';
+import type { IExecutionContext } from '../iexecution-context';
+import type { IAlaSQLFunction } from './ialasql-function';
 
-@setBindMetadata(GoogleSpreadsheetSQLSymbol, Scope.Singleton)
-export class GoogleSpreadsheetSQL {
+@setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'MOMENT')
+export class MomentFunction implements IAlaSQLFunction {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {
-  }
+    @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) { }
 
-  @exportMethod(true, 'SQL')
-  public sql(query: string, cacheKey: string | boolean | null, ...parameters: [[string, any]][]):
-  any[][] | undefined {
-    this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
-    const queryableProvider = this.queryable.fromCurrentSpreadsheet();
-    const entries = parameters.map((parameter) => parameter[0]);
-
-    return queryableProvider.queryAny(query, cacheKey, Object.fromEntries(entries));
-  }
-
-  @exportMethod(true, 'CACHEKEY')
-  public cacheKey(...parameters: any[]): string {
-    this.logger.debug('Calculating cache key');
-
-    return objectHash.sha1(parameters);
+  public callback(input?: moment.MomentInput): moment.Moment {
+    this.logger.trace(() => `Running in context '${this.context.id}'${input?.toString() !== undefined && input.toString() !== '' ? ` with '${input?.toString()}' input` : ' without input'}`);
+    return moment(input);
   }
 }

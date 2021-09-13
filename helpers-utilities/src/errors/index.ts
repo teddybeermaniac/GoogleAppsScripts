@@ -21,10 +21,12 @@
  */
 import { BuilderError } from './builder-error';
 import { InitializationError } from './initialization-error';
+import { NoBindMetadataDefinedError } from './no-bind-metadata-defined-error';
 import { SettingsError } from './settings-error';
 
 export {
   BuilderError,
   InitializationError,
+  NoBindMetadataDefinedError,
   SettingsError,
 };

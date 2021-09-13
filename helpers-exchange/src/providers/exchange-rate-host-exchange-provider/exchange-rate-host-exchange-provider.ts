@@ -21,16 +21,15 @@
  */
 import { ICache, TYPES as CACHING_TYPES } from 'helpers-caching';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol } from 'helpers-utilities';
-import { inject, injectable } from 'inversify';
+import { Scope, setBindMetadata } from 'helpers-utilities';
+import { inject } from 'inversify';
 
 import { IExchangeProviderSymbol } from '../../symbols';
 import { BaseExchangeProvider } from '../base-exchange-provider';
 import { ProviderType } from '../provider-type';
 import currencies from './currencies.json';
 
-@injectable()
-@bindSymbol(IExchangeProviderSymbol)
+@setBindMetadata(IExchangeProviderSymbol, Scope.Singleton)
 export class ExchangeRateHostExchangeProvider extends BaseExchangeProvider {
   public readonly supportedCurrencies = currencies;
 

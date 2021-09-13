@@ -21,8 +21,8 @@
  */
 import { ICache, TYPES as CACHING_TYPES } from 'helpers-caching';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol } from 'helpers-utilities';
-import { inject, injectable } from 'inversify';
+import { Scope, setBindMetadata } from 'helpers-utilities';
+import { inject } from 'inversify';
 
 import { RateFetchError } from '../../errors';
 import { ExchangeRateApiComExchangeProviderSettingsSymbol, IExchangeProviderSymbol } from '../../symbols';
@@ -31,8 +31,7 @@ import { ProviderType } from '../provider-type';
 import currencies from './currencies.json';
 import type { ExchangeRateApiComExchangeProviderSettings } from './exchange-rate-api-com-exchange-provider-settings';
 
-@injectable()
-@bindSymbol(IExchangeProviderSymbol)
+@setBindMetadata(IExchangeProviderSymbol, Scope.Singleton)
 export class ExchangeRateApiComExchangeProvider extends BaseExchangeProvider {
   public readonly supportedCurrencies = currencies;
 

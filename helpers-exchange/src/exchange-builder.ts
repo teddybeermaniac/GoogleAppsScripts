@@ -19,14 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { errors as utilities_errors, getSettings, getSymbol } from 'helpers-utilities';
+import {
+  bind, bindSettings, errors as utilities_errors,
+} from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import { ExchangeRateApiComExchangeProvider } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider';
 import type { ExchangeRateApiComExchangeProviderSettings } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider-settings';
 import { ExchangeRateApiComExchangeProviderSettings as ExchangeRateApiComExchangeProviderSettingsRuntype } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider-settings';
 import { ExchangeRateHostExchangeProvider } from './providers/exchange-rate-host-exchange-provider/exchange-rate-host-exchange-provider';
-import type { IExchangeProvider } from './providers/iexchange-provider';
 import { ExchangeRateApiComExchangeProviderSettingsSymbol } from './symbols';
 
 export class ExchangeBuilder {
@@ -41,13 +42,10 @@ export class ExchangeBuilder {
       throw new utilities_errors.BuilderError('ExchangeBuilder', 'An exchange provider was already added');
     }
 
-    const defaults: Partial<ExchangeRateApiComExchangeProviderSettings> = { };
-    this.container.bind<ExchangeRateApiComExchangeProviderSettings>(
-      ExchangeRateApiComExchangeProviderSettingsSymbol,
-    ).toConstantValue(getSettings('ExchangeRateApiComExchangeProvider',
-      ExchangeRateApiComExchangeProviderSettingsRuntype, defaults, settings));
-    this.container.bind<IExchangeProvider>(getSymbol(ExchangeRateApiComExchangeProvider))
-      .to(ExchangeRateApiComExchangeProvider).inSingletonScope();
+    bindSettings(this.container, ExchangeRateApiComExchangeProviderSettingsSymbol,
+      'ExchangeRateApiComExchangeProvider', ExchangeRateApiComExchangeProviderSettingsRuntype, {
+      }, settings);
+    bind(this.container, ExchangeRateApiComExchangeProvider);
     this.provider = true;
 
     return this;
@@ -58,8 +56,7 @@ export class ExchangeBuilder {
       throw new utilities_errors.BuilderError('ExchangeBuilder', 'An exchange provider was already added');
     }
 
-    this.container.bind<IExchangeProvider>(getSymbol(ExchangeRateHostExchangeProvider))
-      .to(ExchangeRateHostExchangeProvider).inSingletonScope();
+    bind(this.container, ExchangeRateHostExchangeProvider);
     this.provider = true;
 
     return this;

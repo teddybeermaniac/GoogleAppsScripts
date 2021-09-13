@@ -19,12 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ProviderType } from './provider-type';
+import type { Scope } from './scope';
 
-export interface IQueryableProvider {
-  readonly providerType: ProviderType;
-
-  query<TModel>(query: string, cacheKey: string | boolean | null, parameters: any):
-  TModel[] | undefined;
-  queryAny(query: string, cacheKey: string | boolean | null, parameters: any): any[][] | undefined;
+export interface IBindMetadata {
+  symbol: symbol;
+  scope: Scope;
+  name?: string;
 }

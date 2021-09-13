@@ -21,29 +21,41 @@
  */
 import type { interfaces } from 'inversify';
 
-import { getSymbol } from '../binding/get-symbol';
+import { getBindMetadata } from './get-bind-metadata';
+import { Scope } from './scope';
 
-export function getOwnerType<TContainer>(context: interfaces.Context,
-  constructor: interfaces.Newable<TContainer>):
-  interfaces.Newable<any> {
-  const symbol = getSymbol(constructor);
-  let request = context.currentRequest;
-  let found = false;
-  while (!found) {
-    if (request.serviceIdentifier === symbol) {
-      found = true;
+export function bindInternal<TConstructor>(
+  container: interfaces.Container,
+  constructor: interfaces.Newable<TConstructor>,
+): interfaces.BindingOnSyntax<TConstructor> {
+  const metadata = getBindMetadata(constructor);
+  const bindingTo = container
+    .bind<TConstructor>(metadata.symbol)
+    .to(constructor);
+
+  let bindingWhenOn: interfaces.BindingWhenOnSyntax<TConstructor>;
+  switch (metadata.scope) {
+    case Scope.Transient: {
+      bindingWhenOn = bindingTo.inTransientScope();
+      break;
     }
-
-    if (request.parentRequest) {
-      request = request.parentRequest;
-    } else {
-      throw new Error('Unknown error');
+    case Scope.Request: {
+      bindingWhenOn = bindingTo.inRequestScope();
+      break;
+    }
+    case Scope.Singleton: {
+      bindingWhenOn = bindingTo.inSingletonScope();
+      break;
+    }
+    default: {
+      bindingWhenOn = bindingTo;
+      break;
     }
   }
 
-  if (request.bindings[0] === undefined || request.bindings[0].implementationType === null) {
-    throw new Error('Unknown error');
+  if (metadata.name) {
+    return bindingWhenOn.whenTargetNamed(metadata.name);
   }
 
-  return request.bindings[0].implementationType;
+  return bindingWhenOn;
 }
