@@ -19,10 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import type { ICache } from 'helpers-caching';
 import type { ILogger } from 'helpers-logging';
+import { JSONEx } from 'helpers-utilities';
 import objectHash from 'object-hash';
 
 import type { IQueryableProvider } from './iqueryable-provider';
@@ -31,26 +33,26 @@ import type { ProviderType } from './provider-type';
 export abstract class BaseQueryableProvider implements IQueryableProvider {
   public abstract get providerType(): ProviderType;
 
-  protected abstract runQuery<TRow>(query: string, parameters: any[]): TRow[];
+  protected abstract runQuery<TRow>(query: string, parameters: any): TRow[];
 
-  protected abstract runQueryAny(query: string, parameters: any[]): any[][];
+  protected abstract runQueryAny(query: string, parameters: any): any[][];
 
   constructor(protected readonly logger: ILogger, private readonly cache: ICache) { }
 
-  private getCache<TValue>(query: string, cacheKey: string | boolean, parameters: any[]):
+  private getCache<TValue>(query: string, cacheKey: string | boolean, parameters: any):
   any | null {
     this.logger.debug(`Getting result of '${query}' query from cache`);
     return this.cache.get<TValue>(objectHash.sha1([query, cacheKey, parameters]));
   }
 
-  private putCache<TValue>(query: string, cacheKey: string | boolean, parameters: any[],
-    result: any) {
+  private putCache<TValue>(query: string, cacheKey: string | boolean, parameters: any,
+    result: any): void {
     this.logger.debug(`Putting result of '${query}' query into cache`);
     this.cache.set<TValue>(objectHash.sha1([query, cacheKey, parameters]), result);
   }
 
-  private queryInternal<TRow>(query: string, cacheKey: string | boolean | null, parameters: any[],
-    callback: (query: string, parameters: any[]) => TRow[]): TRow[] | undefined {
+  private queryInternal<TRow>(query: string, cacheKey: string | boolean | null, parameters: any,
+    callback: (query: string, parameters: any) => TRow[]): TRow[] | undefined {
     if (cacheKey) {
       const cached = this.getCache<TRow[]>(query, cacheKey, parameters);
       if (cached !== null) {
@@ -66,7 +68,7 @@ export abstract class BaseQueryableProvider implements IQueryableProvider {
     }
 
     if (result !== null && result !== undefined) {
-      this.logger.trace(() => `The result of the query is '${JSON.stringify(result)}'`);
+      this.logger.trace(() => `The result of the query is '${JSONEx.stringify(result)}'`);
       return result;
     }
 
@@ -74,14 +76,14 @@ export abstract class BaseQueryableProvider implements IQueryableProvider {
     return undefined;
   }
 
-  public query<TRow>(query: string, cacheKey: string | boolean | null, ...parameters: any[]):
+  public query<TRow>(query: string, cacheKey: string | boolean | null, parameters: any):
   TRow[] | undefined {
     this.logger.debug(`Querying a model ${cacheKey ? 'with cache' : 'without cache'} with query '${query}'`);
     return this.queryInternal<TRow>(query, cacheKey, parameters,
       (query_, parameters_) => this.runQuery<TRow>(query_, parameters_));
   }
 
-  public queryAny(query: string, cacheKey: string | boolean | null, ...parameters: any[]):
+  public queryAny(query: string, cacheKey: string | boolean | null, parameters: any):
   any[][] | undefined {
     this.logger.debug(`Querying any ${cacheKey ? 'with cache' : 'without cache'} with query '${query}'`);
     return this.queryInternal<any[]>(query, cacheKey, parameters,

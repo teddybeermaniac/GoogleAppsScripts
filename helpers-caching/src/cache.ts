@@ -21,7 +21,7 @@
  */
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import {
-  errors as utilities_errors, getOwnerType, Scope, setBindMetadata,
+  errors as utilities_errors, getOwnerType, JSONEx, Scope, setBindMetadata,
 } from 'helpers-utilities';
 import { inject, interfaces } from 'inversify';
 
@@ -73,7 +73,7 @@ export class Cache implements ICache {
     }
 
     this.logger.debug(`Key '${key}' found in cache with value '${json}'`);
-    return <TValue>JSON.parse(json);
+    return JSONEx.parse<TValue>(json);
   }
 
   public pop<TValue>(key: string): TValue | null;
@@ -86,7 +86,7 @@ export class Cache implements ICache {
   }
 
   public set<TValue>(key: string, value: TValue, ttl?: number): void {
-    const json = JSON.stringify(value);
+    const json = JSONEx.stringify(value);
     this.logger.debug(
       `Setting cache key '${key}'${ttl !== undefined ? ` with a TTL of ${ttl}s` : ''} to value '${json}'`,
     );

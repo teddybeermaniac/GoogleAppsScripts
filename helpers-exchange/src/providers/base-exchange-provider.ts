@@ -21,6 +21,7 @@
  */
 import type { ICache } from 'helpers-caching';
 import type { ILogger } from 'helpers-logging';
+import { JSONEx } from 'helpers-utilities';
 import { injectable } from 'inversify';
 
 import { InvalidCurrencyError, RateFetchError } from '../errors';
@@ -51,7 +52,7 @@ export abstract class BaseExchangeProvider implements IExchangeProvider {
       const responseText = response.getContentText();
       this.logger.trace(`Fetched conversion rates: ${responseText}`);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const result = JSON.parse(responseText);
+      const result = JSONEx.parse(responseText);
       rates = callback(result);
 
       if (!rates) {

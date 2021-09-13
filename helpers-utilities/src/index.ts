@@ -32,6 +32,7 @@ import type { IInitializable } from './binding/iinitializable';
 import { Scope } from './binding/scope';
 import { setBindMetadata } from './binding/set-bind-metadata';
 import * as errors from './errors';
+import { JSONEx } from './jsonex';
 import { ContainerSymbol } from './symbols';
 
 export function createContainer(): interfaces.Container {
@@ -56,6 +57,7 @@ export {
   errors,
   getBindMetadata,
   getOwnerType,
+  JSONEx,
   Scope,
   setBindMetadata,
 };

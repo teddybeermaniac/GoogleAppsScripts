@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { Scope, setBindMetadata } from 'helpers-utilities';
+import { JSONEx, Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
 import { ICacheProviderSymbol } from '../../symbols';
@@ -49,7 +49,7 @@ export class GoogleAppsScriptCacheProvider implements ICacheProvider {
     this.logger.trace(`Getting all keys with prefix '${prefix}'`);
     const allKeysJson = this.get(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY);
 
-    return allKeysJson ? <string[]>JSON.parse(allKeysJson) : [];
+    return allKeysJson ? JSONEx.parse<string[]>(allKeysJson) : [];
   }
 
   public get(prefix: string, key: string): string | null {
@@ -67,7 +67,7 @@ export class GoogleAppsScriptCacheProvider implements ICacheProvider {
       if (allKeys.indexOf(key) === -1) {
         allKeys.push(key);
 
-        this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSON.stringify(allKeys),
+        this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSONEx.stringify(allKeys),
           undefined);
       }
     }
@@ -90,7 +90,7 @@ export class GoogleAppsScriptCacheProvider implements ICacheProvider {
     const keyIndex = allKeys.indexOf(key);
     if (keyIndex !== -1) {
       allKeys.splice(keyIndex, 1);
-      this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSON.stringify(allKeys),
+      this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSONEx.stringify(allKeys),
         undefined);
     }
   }

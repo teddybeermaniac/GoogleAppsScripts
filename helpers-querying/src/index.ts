@@ -25,9 +25,10 @@ import type { interfaces } from 'inversify';
 import * as errors from './errors';
 import type { IQueryable } from './iqueryable';
 import { ExecutionContext } from './providers/base-alasql-queryable-provider/execution-context';
-import { AlaSQLExchangeFunction } from './providers/base-alasql-queryable-provider/function/alasql-exchange-function';
-import { AlaSQLMomentFunction } from './providers/base-alasql-queryable-provider/function/alasql-moment-function';
+import { ExchangeFunction } from './providers/base-alasql-queryable-provider/function/exchange-function';
 import type { IAlaSQLFunction } from './providers/base-alasql-queryable-provider/function/ialasql-function';
+import { MomentFunction } from './providers/base-alasql-queryable-provider/function/moment-function';
+import { WindowFunction } from './providers/base-alasql-queryable-provider/function/window-function';
 import { MemoryQueryableProvider } from './providers/base-alasql-queryable-provider/memory-queryable-provider/memory-queryable-provider';
 import { GoogleSpreadsheetQueryableProvider } from './providers/google-spreadsheet-queryable-provider/google-spreadsheet-queryable-provider';
 import type { IQueryableProvider } from './providers/iqueryable-provider';
@@ -48,8 +49,9 @@ export function addQuerying(container: interfaces.Container): void {
   bind(container, MemoryQueryableProvider);
 
   bind(container, ExecutionContext);
-  bindFunction(container, AlaSQLExchangeFunction);
-  bindFunction(container, AlaSQLMomentFunction);
+  bindFunction(container, ExchangeFunction);
+  bindFunction(container, MomentFunction);
+  bindFunction(container, WindowFunction);
 }
 
 export const TYPES = {

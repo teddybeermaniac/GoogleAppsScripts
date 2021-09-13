@@ -19,23 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { IExchange, TYPES as EXCHANGE_TYPES } from 'helpers-exchange';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
+import moment from 'moment';
 
 import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../symbols';
 import type { IExecutionContext } from '../iexecution-context';
 import type { IAlaSQLFunction } from './ialasql-function';
 
-@setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'EXCHANGE')
-export class AlaSQLExchangeFunction implements IAlaSQLFunction {
+@setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'MOMENT')
+export class MomentFunction implements IAlaSQLFunction {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(EXCHANGE_TYPES.IExchange) private readonly exchange: IExchange,
     @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) { }
 
-  callback(value: number, from: string, to: string): number {
-    this.logger.trace(`Running EXCHANGE function in context '${this.context.id}' with value '${value}', from currency '${from}' and to currency '${to}'`);
-    return this.exchange.convert(value, from, to);
+  public callback(input?: moment.MomentInput): moment.Moment {
+    this.logger.trace(() => `Running in context '${this.context.id}'${input?.toString() !== undefined && input.toString() !== '' ? ` with '${input?.toString()}' input` : ' without input'}`);
+    return moment(input);
   }
 }

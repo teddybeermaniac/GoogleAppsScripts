@@ -26,6 +26,7 @@ import type { ICache } from 'helpers-caching';
 import type { ILogger } from 'helpers-logging';
 import { getBindMetadata } from 'helpers-utilities';
 import { injectable, interfaces } from 'inversify';
+import { v4 } from 'uuid';
 
 import { InvalidFromMethodError, InvalidIntoMethodError } from '../../errors';
 import { InvalidFunctionError } from '../../errors/invalid-function-error';
@@ -139,22 +140,29 @@ export abstract class BaseAlaSQLQueryableProvider extends BaseQueryableProvider 
         }
 
         this.logger.trace(`Adding '${name}' function`);
-        alasql.fn[name] = (...parameters) => {
-          this.container
-            .getNamed<IAlaSQLFunction>(IAlaSQLFunctionSymbol, name).callback(parameters);
-        };
+        alasql.fn[name] = (...parameters) => this.container
+          .getNamed<IAlaSQLFunction>(IAlaSQLFunctionSymbol, name).callback(...parameters);
       });
   }
 
-  protected runQuery<TRow>(query: string, parameters: any[]): TRow[] {
-    const context = this.container.get<IExecutionContext>(IExecutionContextSymbol);
-
-    return context.execute(this, () => (<any[]>alasql(query, parameters)).map((row) => <TRow>row));
+  private prepareQuery(query: string): string {
+    this.logger.trace('Preparing query');
+    return query.replace(/:%GUID%/g,
+      () => `"${v4({ random: Array(16).fill(null).map(() => Math.floor(Math.random() * 255)) })}"`);
   }
 
-  protected runQueryAny(query: string, parameters: any[]): any[][] {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  protected runQuery<TRow>(query: string, parameters: any): TRow[] {
     const context = this.container.get<IExecutionContext>(IExecutionContextSymbol);
 
-    return context.execute(this, () => alasql(query, parameters));
+    return context.execute(this, () => (<any[]>alasql(this.prepareQuery(query), parameters))
+      .map((row) => <TRow>row));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  protected runQueryAny(query: string, parameters: any): any[][] {
+    const context = this.container.get<IExecutionContext>(IExecutionContextSymbol);
+
+    return context.execute(this, () => alasql(this.prepareQuery(query), parameters));
   }
 }
