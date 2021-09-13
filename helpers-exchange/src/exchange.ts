@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol } from 'helpers-utilities';
-import { inject, injectable } from 'inversify';
+import { Scope, setBindMetadata } from 'helpers-utilities';
+import { inject } from 'inversify';
 
 import currencies from './currencies.json';
 import { InvalidCurrencyError } from './errors';
@@ -29,8 +29,7 @@ import type { IExchange } from './iexchange';
 import type { IExchangeProvider } from './providers/iexchange-provider';
 import { IExchangeProviderSymbol, IExchangeSymbol } from './symbols';
 
-@injectable()
-@bindSymbol(IExchangeSymbol)
+@setBindMetadata(IExchangeSymbol, Scope.Singleton)
 export class Exchange implements IExchange {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(IExchangeProviderSymbol) private readonly provider: IExchangeProvider) { }

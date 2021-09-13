@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { getName, getSymbol } from 'helpers-utilities';
+import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import * as errors from './errors';
@@ -28,7 +28,6 @@ import { ExecutionContext } from './providers/base-alasql-queryable-provider/exe
 import { AlaSQLExchangeFunction } from './providers/base-alasql-queryable-provider/function/alasql-exchange-function';
 import { AlaSQLMomentFunction } from './providers/base-alasql-queryable-provider/function/alasql-moment-function';
 import type { IAlaSQLFunction } from './providers/base-alasql-queryable-provider/function/ialasql-function';
-import type { IExecutionContext } from './providers/base-alasql-queryable-provider/iexecution-context';
 import { MemoryQueryableProvider } from './providers/base-alasql-queryable-provider/memory-queryable-provider/memory-queryable-provider';
 import { GoogleSpreadsheetQueryableProvider } from './providers/google-spreadsheet-queryable-provider/google-spreadsheet-queryable-provider';
 import type { IQueryableProvider } from './providers/iqueryable-provider';
@@ -40,19 +39,15 @@ function bindFunction(container: interfaces.Container,
   constructor: interfaces.Newable<IAlaSQLFunction>) {
   container.bind<interfaces.Newable<IAlaSQLFunction>>(IAlaSQLFunctionConstructorSymbol)
     .toConstructor(constructor);
-  container.bind<IAlaSQLFunction>(getSymbol(constructor)).to(constructor)
-    .inTransientScope().whenTargetNamed(getName(constructor));
+  bind(container, constructor);
 }
 
 export function addQuerying(container: interfaces.Container): void {
-  container.bind<IQueryable>(getSymbol(Queryable)).to(Queryable).inSingletonScope();
-  container.bind<IQueryableProvider>(getSymbol(GoogleSpreadsheetQueryableProvider))
-    .to(GoogleSpreadsheetQueryableProvider).inTransientScope();
-  container.bind<IQueryableProvider>(getSymbol(MemoryQueryableProvider))
-    .to(MemoryQueryableProvider).inTransientScope();
+  bind(container, Queryable);
+  bind(container, GoogleSpreadsheetQueryableProvider);
+  bind(container, MemoryQueryableProvider);
 
-  container.bind<IExecutionContext>(getSymbol(ExecutionContext)).to(ExecutionContext)
-    .inSingletonScope();
+  bind(container, ExecutionContext);
   bindFunction(container, AlaSQLExchangeFunction);
   bindFunction(container, AlaSQLMomentFunction);
 }

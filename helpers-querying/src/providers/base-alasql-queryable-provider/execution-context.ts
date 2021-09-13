@@ -20,16 +20,14 @@
  * SOFTWARE.
  */
 import createContext from 'context';
-import { bindSymbol } from 'helpers-utilities';
-import { injectable } from 'inversify';
+import { Scope, setBindMetadata } from 'helpers-utilities';
 import { v4 } from 'uuid';
 
 import { IExecutionContextSymbol } from '../../symbols';
 import type { BaseAlaSQLQueryableProvider } from './base-alasql-queryable-provider';
 import type { IExecutionContext } from './iexecution-context';
 
-@injectable()
-@bindSymbol(IExecutionContextSymbol)
+@setBindMetadata(IExecutionContextSymbol, Scope.Singleton)
 export class ExecutionContext implements IExecutionContext {
   private readonly context = createContext<{
     id: string,

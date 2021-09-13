@@ -20,16 +20,13 @@
  * SOFTWARE.
  */
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
-import {
-  inject, injectable, interfaces, multiInject,
-} from 'inversify';
+import { Scope, setBindMetadata, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
+import { inject, interfaces, multiInject } from 'inversify';
 
 import { InternalExportedMethodProvider } from './internal-exported-method-provider';
 import { exportedMethodContainerSymbol, IExportedMethodProviderSymbol } from './symbols';
 
-@injectable()
-@bindSymbol(IExportedMethodProviderSymbol)
+@setBindMetadata(IExportedMethodProviderSymbol, Scope.Singleton)
 export class ExportedMethodProvider extends InternalExportedMethodProvider {
   constructor(@inject(UTILITIES_TYPES.Container) container: interfaces.Container,
     @multiInject(exportedMethodContainerSymbol) constructors: interfaces.Newable<Object>[],

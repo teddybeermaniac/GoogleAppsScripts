@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 /* eslint-disable no-console */
-import { bindSymbol } from 'helpers-utilities';
-import { inject, injectable } from 'inversify';
+import { Scope, setBindMetadata } from 'helpers-utilities';
+import { inject } from 'inversify';
 
 import { LogLevel, logLevelValues } from '../../log-level';
 import { GoogleAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../../symbols';
@@ -29,8 +29,7 @@ import type { ILoggerProvider } from '../ilogger-provider';
 import { ProviderType } from '../provider-type';
 import type { GoogleAppsScriptLoggerProviderSettings } from './google-apps-script-logger-provider-settings';
 
-@injectable()
-@bindSymbol(ILoggerProviderSymbol)
+@setBindMetadata(ILoggerProviderSymbol, Scope.Singleton)
 export class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
   public get providerType(): ProviderType {
     return ProviderType.GoogleAppsScript;

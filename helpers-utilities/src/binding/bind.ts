@@ -19,30 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { camelCase, constantCase } from 'change-case';
-import type { RuntypeBase } from 'runtypes/lib/runtype';
+import type { interfaces } from 'inversify';
 
-import { SettingsError } from '../errors';
+import { bindInternal } from './bind-internal';
 
-declare let process: {
-  env: { [key: string]: string }
-};
-
-export function getSettings<TSettings>(name: string, runtype: RuntypeBase<TSettings>,
-  defaults: Partial<TSettings>, statics?: Partial<TSettings>): TSettings {
-  const prefixRegex = new RegExp(`^GAS_${constantCase(name)}_`);
-  const environment = Object.fromEntries(Object.entries(process.env)
-    .filter(([key, _]) => prefixRegex.test(key))
-    .map(([key, value]) => [camelCase(key.replace(prefixRegex, '')), value]));
-  const settings = { ...defaults, ...statics, ...environment };
-
-  try {
-    return runtype.check(settings);
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new SettingsError(`Error loading '${name}' settings; ${error.message}`);
-    }
-
-    throw error;
-  }
+export function bind<TConstructor>(container: interfaces.Container,
+  constructor: interfaces.Newable<TConstructor>): void {
+  bindInternal<TConstructor>(container, constructor);
 }

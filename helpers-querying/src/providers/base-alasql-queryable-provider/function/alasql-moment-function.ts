@@ -20,17 +20,15 @@
  * SOFTWARE.
  */
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindName, bindSymbol } from 'helpers-utilities';
-import { inject, injectable } from 'inversify';
+import { Scope, setBindMetadata } from 'helpers-utilities';
+import { inject } from 'inversify';
 import moment from 'moment';
 
 import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../symbols';
 import type { IExecutionContext } from '../iexecution-context';
 import type { IAlaSQLFunction } from './ialasql-function';
 
-@injectable()
-@bindName('MOMENT')
-@bindSymbol(IAlaSQLFunctionSymbol)
+@setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'MOMENT')
 export class AlaSQLMomentFunction implements IAlaSQLFunction {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) { }

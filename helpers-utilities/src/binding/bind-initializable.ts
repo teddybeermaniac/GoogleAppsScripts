@@ -21,9 +21,17 @@
  */
 import type { interfaces } from 'inversify';
 
-import { bindNameSymbol } from '../symbols';
+import { bindInternal } from './bind-internal';
+import type { IInitializable } from './iinitializable';
 
-export function getName<TConstructor>(constructor: interfaces.Newable<TConstructor>):
-  string | undefined {
-  return <string | undefined>Reflect.getMetadata(bindNameSymbol, constructor);
+export function bindInitializable<TConstructor extends IInitializable>(
+  container: interfaces.Container,
+  constructor: interfaces.Newable<TConstructor>,
+): void {
+  bindInternal<TConstructor>(container, constructor)
+    .onActivation((context, instance) => {
+      instance.initialize(context);
+
+      return instance;
+    });
 }

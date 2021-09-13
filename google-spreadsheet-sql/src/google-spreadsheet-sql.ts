@@ -22,14 +22,13 @@
 import { exportMethod } from 'helpers-exporting';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { IQueryable, TYPES as QUERYING_TYPES } from 'helpers-querying';
-import { bindSymbol } from 'helpers-utilities';
-import { inject, injectable } from 'inversify';
+import { Scope, setBindMetadata } from 'helpers-utilities';
+import { inject } from 'inversify';
 import objectHash from 'object-hash';
 
 import { GoogleSpreadsheetSQLSymbol } from './symbols';
 
-@injectable()
-@bindSymbol(GoogleSpreadsheetSQLSymbol)
+@setBindMetadata(GoogleSpreadsheetSQLSymbol, Scope.Singleton)
 export class GoogleSpreadsheetSQL {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {

@@ -21,7 +21,7 @@
  */
 /* eslint-disable no-console */
 import type { ILogger } from 'helpers-logging';
-import { getSymbol } from 'helpers-utilities';
+import { getBindMetadata } from 'helpers-utilities';
 import { injectable, interfaces } from 'inversify';
 
 import { NotExportedMethodError } from './errors';
@@ -66,8 +66,9 @@ export class InternalExportedMethodProvider implements IExportedMethodProvider {
       );
 
       methods.forEach((method) => {
+        const metadata = getBindMetadata(constructor);
         const exportedName = method.asIs ? method.name : `zzz_${constructor.name}_${method.name}`;
-        this.exportedMethods.push({ ...method, exportedName, symbol: getSymbol(constructor) });
+        this.exportedMethods.push({ ...method, exportedName, symbol: metadata.symbol });
 
         this.logDebug(
           `Method '${method.name}' from '${constructor.name}' is exported as '${exportedName}'`,

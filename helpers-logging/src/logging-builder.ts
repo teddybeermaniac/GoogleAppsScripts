@@ -19,7 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { errors as utilities_errors, getSettings, getSymbol } from 'helpers-utilities';
+import {
+  bind, bindSettings, errors as utilities_errors,
+} from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import type { LoggerSettings } from './logger-settings';
@@ -27,7 +29,6 @@ import { LoggerSettings as LoggerSettingsRuntype } from './logger-settings';
 import { GoogleAppsScriptLoggerProvider } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider';
 import type { GoogleAppsScriptLoggerProviderSettings } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider-settings';
 import { GoogleAppsScriptLoggerProviderSettings as GoogleAppsScriptLoggerProviderSettingsRuntype } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider-settings';
-import type { ILoggerProvider } from './providers/ilogger-provider';
 import { GoogleAppsScriptLoggerProviderSettingsSymbol, LoggerSettingsSymbol } from './symbols';
 
 export class LoggingBuilder {
@@ -36,12 +37,9 @@ export class LoggingBuilder {
   constructor(private readonly container: interfaces.Container) { }
 
   public addSettings(settings?: Partial<LoggerSettings>): LoggingBuilder {
-    const defaults: Partial<LoggerSettings> = {
+    bindSettings(this.container, LoggerSettingsSymbol, 'Logger', LoggerSettingsRuntype, {
       level: 'Information',
-    };
-    this.container.bind<LoggerSettings>(LoggerSettingsSymbol).toConstantValue(
-      getSettings('Logger', LoggerSettingsRuntype, defaults, settings),
-    );
+    }, settings);
 
     return this;
   }
@@ -52,16 +50,12 @@ export class LoggingBuilder {
       throw new utilities_errors.BuilderError('LoggingBuilder', 'GoogleAppsScript logger provider already added');
     }
 
-    const defaults: Partial<GoogleAppsScriptLoggerProviderSettings> = {
-      level: 'Trace',
-    };
-    this.container.bind<GoogleAppsScriptLoggerProviderSettings>(
-      GoogleAppsScriptLoggerProviderSettingsSymbol,
-    ).toConstantValue(getSettings('GoogleAppsScriptLoggerProvider',
-      GoogleAppsScriptLoggerProviderSettingsRuntype, defaults, settings));
+    bindSettings(this.container, GoogleAppsScriptLoggerProviderSettingsSymbol,
+      'GoogleAppsScriptLoggerProvider', GoogleAppsScriptLoggerProviderSettingsRuntype, {
+        level: 'Trace',
+      }, settings);
 
-    this.container.bind<ILoggerProvider>(getSymbol(GoogleAppsScriptLoggerProvider))
-      .to(GoogleAppsScriptLoggerProvider).inSingletonScope();
+    bind(this.container, GoogleAppsScriptLoggerProvider);
     this.appScriptProvider = true;
 
     return this;

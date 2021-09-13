@@ -19,10 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bindSymbol, errors as utilities_errors, getOwnerType } from 'helpers-utilities';
 import {
-  inject, injectable, interfaces, multiInject,
-} from 'inversify';
+  errors as utilities_errors, getOwnerType, Scope, setBindMetadata,
+} from 'helpers-utilities';
+import { inject, interfaces, multiInject } from 'inversify';
 
 import type { ILogger } from './ilogger';
 import { LogLevel, logLevelValues } from './log-level';
@@ -31,8 +31,7 @@ import type { ILoggerProvider } from './providers/ilogger-provider';
 import type { ProviderType } from './providers/provider-type';
 import { ILoggerProviderSymbol, ILoggerSymbol, LoggerSettingsSymbol } from './symbols';
 
-@injectable()
-@bindSymbol(ILoggerSymbol)
+@setBindMetadata(ILoggerSymbol, Scope.Transient)
 export class Logger implements ILogger {
   private _name: string | undefined;
 

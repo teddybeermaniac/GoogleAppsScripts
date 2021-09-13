@@ -19,13 +19,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { camelCase, constantCase } from 'change-case';
 import type { interfaces } from 'inversify';
+import type { RuntypeBase } from 'runtypes/lib/runtype';
 
-import { bindNameSymbol } from '../symbols';
+import { SettingsError } from '../errors';
 
-export function bindName<TConstructor>(name: string):
-(constructor: interfaces.Newable<TConstructor>) => void {
-  return (constructor) => {
-    Reflect.defineMetadata(bindNameSymbol, name, constructor);
-  };
+declare let process: {
+  env: { [key: string]: string }
+};
+
+export function bindSettings<TSettings>(container: interfaces.Container, symbol: symbol,
+  name: string, runtype: RuntypeBase<TSettings>, defaults: Partial<TSettings>,
+  statics?: Partial<TSettings>): void {
+  const prefixRegex = new RegExp(`^GAS_${constantCase(name)}_`);
+  const environment = Object.fromEntries(Object.entries(process.env)
+    .filter(([key, _]) => prefixRegex.test(key))
+    .map(([key, value]) => [camelCase(key.replace(prefixRegex, '')), value]));
+  const settings = { ...defaults, ...statics, ...environment };
+
+  let strongSettings: TSettings;
+  try {
+    strongSettings = runtype.check(settings);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new SettingsError(`Error loading '${name}' settings; ${error.message}`);
+    }
+
+    throw error;
+  }
+
+  container.bind<TSettings>(symbol).toConstantValue(strongSettings);
 }

@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { getSymbol } from 'helpers-utilities';
+import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import * as errors from './errors';
@@ -30,7 +30,7 @@ import { SimpleIterator } from './simple-iterator';
 export function addInterruptableIterator<TToken, TIterator extends InterruptableIterator<TToken>>(
   container: interfaces.Container, constructor: interfaces.Newable<TIterator>,
 ): void {
-  container.bind(getSymbol(constructor)).to(constructor).inSingletonScope();
+  bind(container, constructor);
 }
 
 export type {

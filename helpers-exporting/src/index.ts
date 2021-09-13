@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { getSymbol } from 'helpers-utilities';
+import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import * as errors from './errors';
@@ -35,10 +35,8 @@ export function addExporting(container: interfaces.Container,
   const builder = new ExportingBuilder(container);
   build(builder);
 
-  container.bind<IExportedMethodProvider>(getSymbol(ExportedMethodProvider))
-    .to(ExportedMethodProvider).inSingletonScope();
-  container.bind<IExportedMethodProvider>(getSymbol(RollupExportedMethodProvider))
-    .to(RollupExportedMethodProvider).inSingletonScope();
+  bind(container, ExportedMethodProvider);
+  bind(container, RollupExportedMethodProvider);
 }
 
 export const TYPES = {

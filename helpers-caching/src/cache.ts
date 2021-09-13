@@ -20,16 +20,17 @@
  * SOFTWARE.
  */
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol, errors as utilities_errors, getOwnerType } from 'helpers-utilities';
-import { inject, injectable, interfaces } from 'inversify';
+import {
+  errors as utilities_errors, getOwnerType, Scope, setBindMetadata,
+} from 'helpers-utilities';
+import { inject, interfaces } from 'inversify';
 
 import type { ICache } from './icache';
 import type { ICacheProvider } from './providers/icache-provider';
 import type { ProviderType } from './providers/provider-type';
 import { ICacheProviderSymbol, ICacheSymbol } from './symbols';
 
-@injectable()
-@bindSymbol(ICacheSymbol)
+@setBindMetadata(ICacheSymbol, Scope.Transient)
 export class Cache implements ICache {
   private _prefix: string | undefined;
 

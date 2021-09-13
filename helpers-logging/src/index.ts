@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { getSymbol, onInitializableActivation } from 'helpers-utilities';
+import { bindInitializable } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import type { ILogger } from './ilogger';
@@ -35,8 +35,7 @@ export function addLogging(container: interfaces.Container, build: (builder: Log
   const builder = new LoggingBuilder(container);
   build(builder);
 
-  container.bind<ILogger>(getSymbol(Logger)).to(Logger).inTransientScope()
-    .onActivation(onInitializableActivation);
+  bindInitializable(container, Logger);
 }
 
 export const TYPES = {

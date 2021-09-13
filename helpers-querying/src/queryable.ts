@@ -23,10 +23,8 @@ import {
   IFile, IFilesystem, ItemType, TYPES as FILESYSTEM_TYPES,
 } from 'helpers-filesystem';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
-import {
-  inject, injectable, interfaces, optional,
-} from 'inversify';
+import { Scope, setBindMetadata, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
+import { inject, interfaces, optional } from 'inversify';
 
 import { NotAQueryableFileError, NotConfiguredFilesystemError } from './errors';
 import type { IQueryable } from './iqueryable';
@@ -35,8 +33,7 @@ import type { IFileQueryableProvider } from './providers/ifile-queryable-provide
 import type { IQueryableProvider } from './providers/iqueryable-provider';
 import { GoogleSpreadsheetQueryableProviderSymbol, IQueryableSymbol, MemoryQueryableProviderSymbol } from './symbols';
 
-@injectable()
-@bindSymbol(IQueryableSymbol)
+@setBindMetadata(IQueryableSymbol, Scope.Singleton)
 export class Queryable implements IQueryable {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(UTILITIES_TYPES.Container) private readonly container: interfaces.Container,

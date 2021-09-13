@@ -22,8 +22,10 @@
 import { ICache, TYPES as CACHING_TYPES } from 'helpers-caching';
 import type { IFile } from 'helpers-filesystem';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol, errors as utilities_errors, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
-import { inject, injectable, interfaces } from 'inversify';
+import {
+  errors as utilities_errors, Scope, setBindMetadata, TYPES as UTILITIES_TYPES,
+} from 'helpers-utilities';
+import { inject, interfaces } from 'inversify';
 
 import { InvalidQueryError, NotASpreadsheetContextError } from '../../errors';
 import { GoogleSpreadsheetQueryableProviderSymbol } from '../../symbols';
@@ -36,8 +38,7 @@ import type { ICurrentQueryableProvider } from '../icurrent-queryable-provider';
 import type { IFileQueryableProvider } from '../ifile-queryable-provider';
 import { ProviderType } from '../provider-type';
 
-@injectable()
-@bindSymbol(GoogleSpreadsheetQueryableProviderSymbol)
+@setBindMetadata(GoogleSpreadsheetQueryableProviderSymbol, Scope.Transient)
 export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvider
   implements IFileQueryableProvider, ICurrentQueryableProvider {
   private _spreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet | undefined;

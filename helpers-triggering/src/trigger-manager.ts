@@ -22,16 +22,15 @@
 import { IExportedMethodProvider, TYPES as EXPORTING_TYPES } from 'helpers-exporting';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import {
-  bindSymbol, errors as utilities_errors, getOwnerType, getSymbol,
+  errors as utilities_errors, getBindMetadata, getOwnerType, Scope, setBindMetadata,
 } from 'helpers-utilities';
-import { inject, injectable, interfaces } from 'inversify';
+import { inject, interfaces } from 'inversify';
 
 import { AlreadyExistsTriggerError, TriggeringError } from './errors';
 import type { ITriggerManager } from './itrigger-manager';
 import { ITriggerManagerSymbol } from './symbols';
 
-@injectable()
-@bindSymbol(ITriggerManagerSymbol)
+@setBindMetadata(ITriggerManagerSymbol, Scope.Transient)
 export class TriggerManger implements ITriggerManager {
   private static readonly ALLOWED_MINUTES = [1, 5, 10, 15, 30];
 
@@ -100,7 +99,7 @@ export class TriggerManger implements ITriggerManager {
     }
 
     const owner = getOwnerType(context, TriggerManger);
-    this._symbol = getSymbol(owner);
+    this._symbol = getBindMetadata(owner).symbol;
     this.initialized = true;
   }
 

@@ -21,16 +21,14 @@
  */
 import { IExchange, TYPES as EXCHANGE_TYPES } from 'helpers-exchange';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindName, bindSymbol } from 'helpers-utilities';
-import { inject, injectable } from 'inversify';
+import { Scope, setBindMetadata } from 'helpers-utilities';
+import { inject } from 'inversify';
 
 import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../symbols';
 import type { IExecutionContext } from '../iexecution-context';
 import type { IAlaSQLFunction } from './ialasql-function';
 
-@injectable()
-@bindName('EXCHANGE')
-@bindSymbol(IAlaSQLFunctionSymbol)
+@setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'EXCHANGE')
 export class AlaSQLExchangeFunction implements IAlaSQLFunction {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(EXCHANGE_TYPES.IExchange) private readonly exchange: IExchange,

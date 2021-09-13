@@ -21,11 +21,41 @@
  */
 import type { interfaces } from 'inversify';
 
-import type { IInitializable } from './iinitializable';
+import { getBindMetadata } from './get-bind-metadata';
+import { Scope } from './scope';
 
-export function onInitializableActivation<T extends IInitializable>(context: interfaces.Context,
-  instance: T): T {
-  instance.initialize(context);
+export function bindInternal<TConstructor>(
+  container: interfaces.Container,
+  constructor: interfaces.Newable<TConstructor>,
+): interfaces.BindingOnSyntax<TConstructor> {
+  const metadata = getBindMetadata(constructor);
+  const bindingTo = container
+    .bind<TConstructor>(metadata.symbol)
+    .to(constructor);
 
-  return instance;
+  let bindingWhenOn: interfaces.BindingWhenOnSyntax<TConstructor>;
+  switch (metadata.scope) {
+    case Scope.Transient: {
+      bindingWhenOn = bindingTo.inTransientScope();
+      break;
+    }
+    case Scope.Request: {
+      bindingWhenOn = bindingTo.inRequestScope();
+      break;
+    }
+    case Scope.Singleton: {
+      bindingWhenOn = bindingTo.inSingletonScope();
+      break;
+    }
+    default: {
+      bindingWhenOn = bindingTo;
+      break;
+    }
+  }
+
+  if (metadata.name) {
+    return bindingWhenOn.whenTargetNamed(metadata.name);
+  }
+
+  return bindingWhenOn;
 }

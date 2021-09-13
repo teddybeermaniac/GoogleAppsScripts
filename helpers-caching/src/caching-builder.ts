@@ -19,11 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { errors as utilities_errors, getSymbol } from 'helpers-utilities';
+import { bind, errors as utilities_errors } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import { GoogleAppsScriptCacheProvider } from './providers/google-apps-script-cache-provider/google-apps-script-cache-provider';
-import type { ICacheProvider } from './providers/icache-provider';
 
 export class CachingBuilder {
   private provider = false;
@@ -35,8 +34,7 @@ export class CachingBuilder {
       throw new utilities_errors.BuilderError('CachingBuilder', 'A caching provider was already added');
     }
 
-    this.container.bind<ICacheProvider>(getSymbol(GoogleAppsScriptCacheProvider))
-      .to(GoogleAppsScriptCacheProvider).inSingletonScope();
+    bind(this.container, GoogleAppsScriptCacheProvider);
     this.provider = true;
 
     return this;

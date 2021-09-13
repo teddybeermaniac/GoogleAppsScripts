@@ -21,8 +21,10 @@
  */
 import { ICache, TYPES as CACHING_TYPES } from 'helpers-caching';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol, errors as utilities_errors, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
-import { inject, injectable, interfaces } from 'inversify';
+import {
+  errors as utilities_errors, Scope, setBindMetadata, TYPES as UTILITIES_TYPES,
+} from 'helpers-utilities';
+import { inject, interfaces } from 'inversify';
 
 import { MemoryQueryableProviderSymbol } from '../../../symbols';
 import type { ICurrentQueryableProvider } from '../../icurrent-queryable-provider';
@@ -33,8 +35,7 @@ import type { IFromMethodOptions } from '../from-method/ifrom-method-options';
 import type { IIntoMethodOptions } from '../into-method/iinto-method-options';
 import { intoMethod } from '../into-method/into-method';
 
-@injectable()
-@bindSymbol(MemoryQueryableProviderSymbol)
+@setBindMetadata(MemoryQueryableProviderSymbol, Scope.Transient)
 export class MemoryQueryableProvider extends BaseAlaSQLQueryableProvider
   implements ICurrentQueryableProvider {
   private _storage: { [table: string]: any[]; } | undefined;

@@ -19,44 +19,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import * as errors from './errors';
-import { Filesystem } from './filesystem';
-import { FilesystemBuilder } from './filesystem-builder';
-import type { IFile } from './ifile';
-import type { IFilesystem } from './ifilesystem';
-import type { IFolder } from './ifolder';
-import type { IItem } from './iitem';
-import type { IShortcut } from './ishortcut';
-import { ItemType } from './item-type';
-import { ProviderType } from './providers/provider-type';
-import { IFilesystemSymbol } from './symbols';
+import { getBindMetadata } from './get-bind-metadata';
 
-export function addFilesystem(container: interfaces.Container, build: (builder: FilesystemBuilder)
-=> void)
-  : void {
-  const builder = new FilesystemBuilder(container);
-  build(builder);
+export function getOwnerType<TContainer>(context: interfaces.Context,
+  constructor: interfaces.Newable<TContainer>):
+  interfaces.Newable<any> {
+  const { symbol } = getBindMetadata(constructor);
+  let request = context.currentRequest;
+  let found = false;
+  while (!found) {
+    if (request.serviceIdentifier === symbol) {
+      found = true;
+    }
 
-  bind(container, Filesystem);
+    if (request.parentRequest) {
+      request = request.parentRequest;
+    } else {
+      throw new Error('Unknown error');
+    }
+  }
+
+  if (request.bindings[0] === undefined || request.bindings[0].implementationType === null) {
+    throw new Error('Unknown error');
+  }
+
+  return request.bindings[0].implementationType;
 }
-
-export const TYPES = {
-  IFilesystem: IFilesystemSymbol,
-};
-
-export type {
-  IFile,
-  IFilesystem,
-  IFolder,
-  IItem,
-  IShortcut,
-};
-
-export {
-  errors,
-  ItemType,
-  ProviderType,
-};

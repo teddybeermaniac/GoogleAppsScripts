@@ -19,10 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { interfaces } from 'inversify';
+import { injectable, interfaces } from 'inversify';
 
-import { bindSymbolSymbol } from '../symbols';
+import { bindMetadataSymbol } from '../symbols';
+import type { IBindMetadata } from './ibind-metadata';
+import type { Scope } from './scope';
 
-export function getSymbol<TConstructor>(constructor: interfaces.Newable<TConstructor>): symbol {
-  return <symbol>Reflect.getMetadata(bindSymbolSymbol, constructor);
+export function setBindMetadata<TConstructor>(symbol: symbol, scope: Scope, name?: string):
+(constructor: interfaces.Newable<TConstructor>) => void {
+  const makeInjectable = injectable();
+
+  return (constructor) => {
+    const metadata: IBindMetadata = {
+      symbol,
+      scope,
+      name,
+    };
+
+    Reflect.defineMetadata(bindMetadataSymbol, metadata, constructor);
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return makeInjectable(constructor);
+  };
 }

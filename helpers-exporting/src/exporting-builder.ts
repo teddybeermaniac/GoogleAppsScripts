@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { getSymbol } from 'helpers-utilities';
+import { bind as bind_ } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import { exportedMethodContainerSymbol } from './symbols';
@@ -32,7 +32,7 @@ export class ExportingBuilder {
     this.container.bind<interfaces.Newable<TContainer>>(exportedMethodContainerSymbol)
       .toConstructor(constructor);
     if (bind) {
-      this.container.bind(getSymbol(constructor)).to(constructor).inSingletonScope();
+      bind_(this.container, constructor);
     }
 
     return this;

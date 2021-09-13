@@ -23,15 +23,15 @@ import 'core-js';
 
 import { Container, interfaces } from 'inversify';
 
-import { bindName } from './binding/bind-name';
-import { bindSymbol } from './binding/bind-symbol';
-import { getName } from './binding/get-name';
-import { getSymbol } from './binding/get-symbol';
+import { bind } from './binding/bind';
+import { bindInitializable } from './binding/bind-initializable';
+import { bindSettings } from './binding/bind-settings';
+import { getBindMetadata } from './binding/get-bind-metadata';
+import { getOwnerType } from './binding/get-owner-type';
+import type { IInitializable } from './binding/iinitializable';
+import { Scope } from './binding/scope';
+import { setBindMetadata } from './binding/set-bind-metadata';
 import * as errors from './errors';
-import { getOwnerType } from './initialization/get-owner-type';
-import type { IInitializable } from './initialization/iinitializable';
-import { onInitializableActivation } from './initialization/on-initializable-activation';
-import { getSettings } from './settings/get-settings';
 import { ContainerSymbol } from './symbols';
 
 export function createContainer(): interfaces.Container {
@@ -50,12 +50,12 @@ export type {
 };
 
 export {
-  bindName,
-  bindSymbol,
+  bind,
+  bindInitializable,
+  bindSettings,
   errors,
-  getName,
+  getBindMetadata,
   getOwnerType,
-  getSettings,
-  getSymbol,
-  onInitializableActivation,
+  Scope,
+  setBindMetadata,
 };

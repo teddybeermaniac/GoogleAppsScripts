@@ -24,10 +24,11 @@
 import alasql from 'alasql';
 import type { ICache } from 'helpers-caching';
 import type { ILogger } from 'helpers-logging';
-import { getName } from 'helpers-utilities';
+import { getBindMetadata } from 'helpers-utilities';
 import { injectable, interfaces } from 'inversify';
 
 import { InvalidFromMethodError, InvalidIntoMethodError } from '../../errors';
+import { InvalidFunctionError } from '../../errors/invalid-function-error';
 import {
   fromMethodsSymbol,
   IAlaSQLFunctionConstructorSymbol,
@@ -132,7 +133,11 @@ export abstract class BaseAlaSQLQueryableProvider extends BaseQueryableProvider 
     this.logger.debug('Adding custom functions');
     this.container.getAll<interfaces.Newable<IAlaSQLFunction>>(IAlaSQLFunctionConstructorSymbol)
       .forEach((constructor) => {
-        const name = getName(constructor);
+        const { name } = getBindMetadata(constructor);
+        if (!name) {
+          throw new InvalidFunctionError(constructor.name);
+        }
+
         this.logger.trace(`Adding '${name}' function`);
         alasql.fn[name] = (...parameters) => {
           this.container
