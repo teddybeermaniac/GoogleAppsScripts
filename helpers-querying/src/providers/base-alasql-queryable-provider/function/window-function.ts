@@ -38,11 +38,11 @@ export class WindowFunction implements IAlaSQLFunction {
   callback(id: string, query: string, partition: string, value: any, parameters: any):
   any {
     this.logger.trace(() => `Running in context '${this.context.id}' with id '${id}', query '${query}', partition '${partition}', value '${JSONEx.stringify(value)}' and parameters '${JSONEx.stringify(parameters)}'`);
-    if (!this.context.data[id]) {
-      this.context.data[id] = {};
+    if (!this.context.data[`WINDOW_${id}`]) {
+      this.context.data[`WINDOW_${id}`] = {};
     }
     const data = <{ [partition: string]: { Number: number, Value: any; }[]; }>
-      this.context.data[id];
+      this.context.data[`WINDOW_${id}`];
 
     if (!data[partition]) {
       data[partition] = [];

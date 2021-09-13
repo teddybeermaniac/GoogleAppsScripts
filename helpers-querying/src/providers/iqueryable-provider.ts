@@ -25,6 +25,6 @@ export interface IQueryableProvider {
   readonly providerType: ProviderType;
 
   query<TModel>(query: string, cacheKey: string | boolean | null, parameters: any):
-    TModel[] | undefined;
+  TModel[] | undefined;
   queryAny(query: string, cacheKey: string | boolean | null, parameters: any): any[][] | undefined;
 }
