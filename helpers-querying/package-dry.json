@@ -4,14 +4,17 @@
     },
     "dependencies": {
         "@types/object-hash": "^2.1.1",
+        "@types/uuid": "^8.3.1",
         "alasql": "^1.7.3",
+        "context": "^1.1.4",
         "helpers-caching": "link:../helpers-caching/build/src",
         "helpers-exchange": "link:../helpers-exchange/build/src",
         "helpers-filesystem": "link:../helpers-filesystem/build/src",
         "helpers-logging": "link:../helpers-logging/build/src",
         "helpers-utilities": "link:../helpers-utilities/build/src",
         "moment": "^2.29.1",
-        "object-hash": "^2.2.0"
+        "object-hash": "^2.2.0",
+        "uuid": "^8.3.2"
     },
     "name": "helpers-querying"
 }

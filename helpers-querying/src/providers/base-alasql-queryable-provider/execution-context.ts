@@ -19,24 +19,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindName, bindSymbol } from 'helpers-utilities';
-import { inject, injectable } from 'inversify';
-import moment from 'moment';
+import createContext from 'context';
+import { bindSymbol } from 'helpers-utilities';
+import { injectable } from 'inversify';
+import { v4 } from 'uuid';
 
-import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../symbols';
-import type { IExecutionContext } from '../iexecution-context';
-import type { IAlaSQLFunction } from './ialasql-function';
+import { IExecutionContextSymbol } from '../../symbols';
+import type { BaseAlaSQLQueryableProvider } from './base-alasql-queryable-provider';
+import type { IExecutionContext } from './iexecution-context';
 
 @injectable()
-@bindName('MOMENT')
-@bindSymbol(IAlaSQLFunctionSymbol)
-export class AlaSQLMomentFunction implements IAlaSQLFunction {
-  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) { }
+@bindSymbol(IExecutionContextSymbol)
+export class ExecutionContext implements IExecutionContext {
+  private readonly context = createContext<{
+    id: string,
+    data: { [key: string]: any; },
+    provider: BaseAlaSQLQueryableProvider
+  }>();
 
-  public callback(input?: moment.MomentInput): moment.Moment {
-    this.logger.trace(() => `Running MOMENT function in context '${this.context.id}'${input?.toString() !== undefined && input.toString() !== '' ? ` with '${input?.toString()}' input` : ' without input'}`);
-    return moment(input);
+  public get id(): string {
+    return this.context.use()!.id;
+  }
+
+  public get data(): { [key: string]: any; } {
+    return this.context.use()!.data;
+  }
+
+  public get provider(): BaseAlaSQLQueryableProvider {
+    return this.context.use()!.provider;
+  }
+
+  public execute<TReturn>(provider: BaseAlaSQLQueryableProvider, callback: () => TReturn): TReturn {
+    return this.context.run(
+      {
+        id: v4({ random: Array(16).fill(null).map(() => Math.floor(Math.random() * 255)) }),
+        data: {},
+        provider,
+      }, callback,
+    );
   }
 }

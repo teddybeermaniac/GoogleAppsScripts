@@ -21,4 +21,5 @@
  */
 export enum ProviderType {
   GoogleSpreadsheet,
+  Memory,
 }

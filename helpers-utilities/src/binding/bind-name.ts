@@ -19,6 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export const bindNameSymbol = Symbol('bindName');
-export const bindSymbolSymbol = Symbol('bindSymbol');
-export const ContainerSymbol = Symbol('Container');
+import type { interfaces } from 'inversify';
+
+import { bindNameSymbol } from '../symbols';
+
+export function bindName<TConstructor>(name: string):
+(constructor: interfaces.Newable<TConstructor>) => void {
+  return (constructor) => {
+    Reflect.defineMetadata(bindNameSymbol, name, constructor);
+  };
+}

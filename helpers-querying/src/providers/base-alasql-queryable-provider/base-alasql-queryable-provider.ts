@@ -24,37 +24,51 @@
 import alasql from 'alasql';
 import type { ICache } from 'helpers-caching';
 import type { ILogger } from 'helpers-logging';
+import { getName } from 'helpers-utilities';
 import { injectable, interfaces } from 'inversify';
 
-import { fromMethodsSymbol, IAlaSQLFunctionSymbol, intoMethodsSymbol } from '../../symbols';
+import { InvalidFromMethodError, InvalidIntoMethodError } from '../../errors';
+import {
+  fromMethodsSymbol,
+  IAlaSQLFunctionConstructorSymbol,
+  IAlaSQLFunctionSymbol,
+  IExecutionContextSymbol,
+  intoMethodsSymbol,
+} from '../../symbols';
 import { BaseQueryableProvider } from '../base-queryable-provider';
 import type { ProviderType } from '../provider-type';
 import type { IFromMethod } from './from-method/ifrom-method';
 import type { IFromMethodOptions } from './from-method/ifrom-method-options';
 import type { IAlaSQLFunction } from './function/ialasql-function';
+import type { IExecutionContext } from './iexecution-context';
 import type { IIntoMethod } from './into-method/iinto-method';
 import type { IIntoMethodOptions } from './into-method/iinto-method-options';
 
 @injectable()
 export abstract class BaseAlaSQLQueryableProvider extends BaseQueryableProvider {
+  private static _alaSQLQueryableProviderInitialized: { [key: string]: boolean; } = {};
+
+  private static _baseAlaSQLQueryableProviderInitialized = false;
+
   private static readonly defaultFromMethodOptions: IFromMethodOptions = {};
 
   private static readonly defaultIntoMethodOptions: IIntoMethodOptions = {
     append: false,
   };
 
-  private static _alasqlInitialized = false;
-
   public abstract get providerType(): ProviderType;
 
-  constructor(logger: ILogger, cache: ICache, private container: interfaces.Container) {
+  constructor(logger: ILogger, cache: ICache, private readonly container: interfaces.Container) {
     super(logger, cache);
 
-    if (!BaseAlaSQLQueryableProvider._alasqlInitialized) {
+    if (!BaseAlaSQLQueryableProvider._alaSQLQueryableProviderInitialized[this.constructor.name]) {
       this.addFromMethods();
       this.addIntoMethods();
+      BaseAlaSQLQueryableProvider._alaSQLQueryableProviderInitialized[this.constructor.name] = true;
+    }
+    if (!BaseAlaSQLQueryableProvider._baseAlaSQLQueryableProviderInitialized) {
       this.addFunctions();
-      BaseAlaSQLQueryableProvider._alasqlInitialized = true;
+      BaseAlaSQLQueryableProvider._baseAlaSQLQueryableProviderInitialized = true;
     }
   }
 
@@ -66,11 +80,16 @@ export abstract class BaseAlaSQLQueryableProvider extends BaseQueryableProvider 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (<any>alasql).from[method.name] = (tableName: string, options: IFromMethodOptions,
         callback: (data: any[], idx: number, query: any) => any, idx: number, query: any) => {
+        const context = this.container.get<IExecutionContext>(IExecutionContextSymbol);
+        if (context.provider.providerType !== this.providerType) {
+          throw new InvalidFromMethodError(method.name, context.provider.constructor.name);
+        }
+
         const mergedOptions = {
           ...BaseAlaSQLQueryableProvider.defaultFromMethodOptions,
           ...options,
         };
-        const data = method.callback.bind(this)(tableName, mergedOptions);
+        const data = method.callback.bind(context.provider)(tableName, mergedOptions);
         if (callback) {
           return callback(data, idx, query);
         }
@@ -88,13 +107,18 @@ export abstract class BaseAlaSQLQueryableProvider extends BaseQueryableProvider 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (<any>alasql).into[method.name] = (tableName: string, options: IIntoMethodOptions,
         data: any[], columns: any[], callback: (data: undefined) => void) => {
+        const context = this.container.get<IExecutionContext>(IExecutionContextSymbol);
+        if (context.provider.providerType !== this.providerType) {
+          throw new InvalidIntoMethodError(method.name, context.provider.constructor.name);
+        }
+
         const mergedOptions = {
           ...BaseAlaSQLQueryableProvider.defaultIntoMethodOptions,
           ...options,
         };
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const columnNames = columns.map((column) => <string>column.columnid);
-        method.callback.bind(this)(tableName, mergedOptions, columnNames, data);
+        method.callback.bind(context.provider)(tableName, mergedOptions, columnNames, data);
         if (callback) {
           return callback(undefined);
         }
@@ -106,18 +130,26 @@ export abstract class BaseAlaSQLQueryableProvider extends BaseQueryableProvider 
 
   private addFunctions(): void {
     this.logger.debug('Adding custom functions');
-    this.container.getAll<IAlaSQLFunction>(IAlaSQLFunctionSymbol).forEach((func) => {
-      const funcName = func.name.toUpperCase();
-      this.logger.trace(`Adding '${funcName}' function`);
-      alasql.fn[funcName] = (...parameters) => func.callback(...parameters);
-    });
+    this.container.getAll<interfaces.Newable<IAlaSQLFunction>>(IAlaSQLFunctionConstructorSymbol)
+      .forEach((constructor) => {
+        const name = getName(constructor);
+        this.logger.trace(`Adding '${name}' function`);
+        alasql.fn[name] = (...parameters) => {
+          this.container
+            .getNamed<IAlaSQLFunction>(IAlaSQLFunctionSymbol, name).callback(parameters);
+        };
+      });
   }
 
   protected runQuery<TRow>(query: string, parameters: any[]): TRow[] {
-    return (<any[]>alasql(query, parameters)).map((row) => <TRow>row);
+    const context = this.container.get<IExecutionContext>(IExecutionContextSymbol);
+
+    return context.execute(this, () => (<any[]>alasql(query, parameters)).map((row) => <TRow>row));
   }
 
   protected runQueryAny(query: string, parameters: any[]): any[][] {
-    return alasql(query, parameters);
+    const context = this.container.get<IExecutionContext>(IExecutionContextSymbol);
+
+    return context.execute(this, () => alasql(query, parameters));
   }
 }

@@ -44,6 +44,14 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
 
   private initialized = false;
 
+  private get spreadsheet(): GoogleAppsScript.Spreadsheet.Spreadsheet {
+    if (!this.initialized || this._spreadsheet === undefined) {
+      throw new utilities_errors.InitializationError('Not initialized');
+    }
+
+    return this._spreadsheet;
+  }
+
   public get providerType(): ProviderType {
     return ProviderType.GoogleSpreadsheet;
   }
@@ -53,14 +61,6 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
     @inject(CACHING_TYPES.ICache) cache: ICache,
     @inject(UTILITIES_TYPES.Container) container: interfaces.Container) {
     super(logger, cache, container);
-  }
-
-  private get spreadsheet(): GoogleAppsScript.Spreadsheet.Spreadsheet {
-    if (!this.initialized || this._spreadsheet === undefined) {
-      throw new utilities_errors.InitializationError('Not initialized');
-    }
-
-    return this._spreadsheet;
   }
 
   private getLastDataRow(sheet: GoogleAppsScript.Spreadsheet.Sheet, originRow: number,
@@ -162,7 +162,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
   @intoMethod('NAMEDRANGE')
   public intoNamedRange(tableName: string, options: IIntoMethodOptions, columnNames: string[],
     data: any[]): void {
-    this.logger.debug(`${options.append ? 'Appending' : 'Inserting'} data ${options.append ? 'to' : 'into'} range '${tableName}'`);
+    this.logger.debug(`${options.append ? 'Appending' : 'Inserting'} data ${options.append ? 'to' : 'into'} named range '${tableName}'`);
     const {
       sheet, dataRange, namedRange, names, originRow, originColumn, rows, columns,
     } = this.getNamedRange(tableName, false);

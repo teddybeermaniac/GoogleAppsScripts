@@ -33,7 +33,7 @@ import type { IQueryable } from './iqueryable';
 import type { ICurrentQueryableProvider } from './providers/icurrent-queryable-provider';
 import type { IFileQueryableProvider } from './providers/ifile-queryable-provider';
 import type { IQueryableProvider } from './providers/iqueryable-provider';
-import { GoogleSpreadsheetQueryableProviderSymbol, IQueryableSymbol } from './symbols';
+import { GoogleSpreadsheetQueryableProviderSymbol, IQueryableSymbol, MemoryQueryableProviderSymbol } from './symbols';
 
 @injectable()
 @bindSymbol(IQueryableSymbol)
@@ -42,6 +42,14 @@ export class Queryable implements IQueryable {
     @inject(UTILITIES_TYPES.Container) private readonly container: interfaces.Container,
     @inject(FILESYSTEM_TYPES.IFilesystem) @optional()
     private readonly filesystem?: IFilesystem) { }
+
+  public fromMemory(): IQueryableProvider {
+    this.logger.information('Creating a queryable from memory');
+    const provider = this.container.get<ICurrentQueryableProvider>(MemoryQueryableProviderSymbol);
+    provider.loadCurrent();
+
+    return provider;
+  }
 
   public fromFile(path: string): IQueryableProvider {
     this.logger.information(`Creating a queryable from file '${path}'`);

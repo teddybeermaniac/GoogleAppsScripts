@@ -21,11 +21,11 @@
  */
 import type { interfaces } from 'inversify';
 
-import { BindSymbolSymbol } from '../symbols';
+import { bindSymbolSymbol } from '../symbols';
 
-export function bindSymbol<TContainer>(symbol: symbol):
-(constructor: interfaces.Newable<TContainer>) => void {
+export function bindSymbol<TConstructor>(symbol: symbol):
+(constructor: interfaces.Newable<TConstructor>) => void {
   return (constructor) => {
-    Reflect.defineMetadata(BindSymbolSymbol, symbol, constructor);
+    Reflect.defineMetadata(bindSymbolSymbol, symbol, constructor);
   };
 }

@@ -23,7 +23,9 @@ import 'core-js';
 
 import { Container, interfaces } from 'inversify';
 
+import { bindName } from './binding/bind-name';
 import { bindSymbol } from './binding/bind-symbol';
+import { getName } from './binding/get-name';
 import { getSymbol } from './binding/get-symbol';
 import * as errors from './errors';
 import { getOwnerType } from './initialization/get-owner-type';
@@ -48,8 +50,10 @@ export type {
 };
 
 export {
+  bindName,
   bindSymbol,
   errors,
+  getName,
   getOwnerType,
   getSettings,
   getSymbol,

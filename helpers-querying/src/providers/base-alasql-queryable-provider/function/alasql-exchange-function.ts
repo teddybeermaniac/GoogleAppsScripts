@@ -21,24 +21,23 @@
  */
 import { IExchange, TYPES as EXCHANGE_TYPES } from 'helpers-exchange';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { bindSymbol } from 'helpers-utilities';
+import { bindName, bindSymbol } from 'helpers-utilities';
 import { inject, injectable } from 'inversify';
 
-import { IAlaSQLFunctionSymbol } from '../../../symbols';
+import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../symbols';
+import type { IExecutionContext } from '../iexecution-context';
 import type { IAlaSQLFunction } from './ialasql-function';
 
 @injectable()
+@bindName('EXCHANGE')
 @bindSymbol(IAlaSQLFunctionSymbol)
 export class AlaSQLExchangeFunction implements IAlaSQLFunction {
-  public get name(): string {
-    return 'EXCHANGE';
-  }
-
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(EXCHANGE_TYPES.IExchange) private readonly exchange: IExchange) { }
+    @inject(EXCHANGE_TYPES.IExchange) private readonly exchange: IExchange,
+    @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) { }
 
   callback(value: number, from: string, to: string): number {
-    this.logger.trace(`Running EXCHANGE function with value '${value}', from currency '${from}' and to currency '${to}'`);
+    this.logger.trace(`Running EXCHANGE function in context '${this.context.id}' with value '${value}', from currency '${from}' and to currency '${to}'`);
     return this.exchange.convert(value, from, to);
   }
 }
