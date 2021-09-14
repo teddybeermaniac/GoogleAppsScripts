@@ -39,7 +39,7 @@ function getEnvironment() {
   try {
     fileEnvironment = JSON.parse(fs.readFileSync(`${__dirname}/../_common/env.json`));
   } catch { }
-  var processEnvironment = Object.fromEntries(Object.entries(process.env).filter(([key, _]) => key.startsWith('GAS_')));
+  var processEnvironment = Object.fromEntries(Object.entries(process.env).filter(([key, _]) => key.startsWith('GAS_')).map(([key, value]) => [key.replace(/^GAS_/, ''), value]));
 
   return {
     ...fileEnvironment,

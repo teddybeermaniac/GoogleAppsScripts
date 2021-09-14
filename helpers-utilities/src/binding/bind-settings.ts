@@ -32,7 +32,7 @@ declare let process: {
 export function bindSettings<TSettings>(container: interfaces.Container, symbol: symbol,
   name: string, runtype: RuntypeBase<TSettings>, defaults: Partial<TSettings>,
   statics?: Partial<TSettings>): void {
-  const prefixRegex = new RegExp(`^GAS_${constantCase(name)}_`);
+  const prefixRegex = new RegExp(`^${constantCase(name)}_`);
   const environment = Object.fromEntries(Object.entries(process.env)
     .filter(([key, _]) => prefixRegex.test(key))
     .map(([key, value]) => [camelCase(key.replace(prefixRegex, '')), value]));
