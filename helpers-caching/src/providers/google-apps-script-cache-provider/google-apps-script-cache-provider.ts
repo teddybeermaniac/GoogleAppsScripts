@@ -52,30 +52,26 @@ export class GoogleAppsScriptCacheProvider implements ICacheProvider {
     return allKeysJson ? JSONEx.parse<string[]>(allKeysJson) : [];
   }
 
-  public get(prefix: string, key: string): string | null {
-    this.logger.trace(
-      `Getting cache key '${key}' with a prefix '${prefix}'`,
-    );
-
-    return this.cache.get(GoogleAppsScriptCacheProvider.getKey(prefix, key));
+  public get(prefix: string, key: string): string | undefined {
+    this.logger.trace(`Getting cache keys '${key}' with a prefix '${prefix}'`);
+    return this.cache.get(GoogleAppsScriptCacheProvider.getKey(prefix, key)) || undefined;
   }
 
-  public set(prefix: string, key: string, value: string, ttl: number | undefined):
-  void {
+  public set(prefix: string, key: string, value: string, ttl?: number): void {
     if (key !== GoogleAppsScriptCacheProvider.ALL_KEYS_KEY) {
       const allKeys = this.getAllKeys(prefix);
-      if (allKeys.indexOf(key) === -1) {
+      if (!allKeys.includes(key)) {
         allKeys.push(key);
-
-        this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSONEx.stringify(allKeys),
-          undefined);
+        this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSONEx.stringify(allKeys));
       }
     }
 
-    this.logger.trace(
-      `Setting cache key '${key}' with a prefix '${prefix}'${ttl !== undefined ? ` with a TTL of ${ttl}` : ''} to a value of '${value}'`,
-    );
-    if (ttl !== undefined) {
+    this.logger.trace(() => {
+      const ttlMessage = ttl ? ` and a TTL of ${ttl}` : '';
+
+      return `Setting cache key '${key}' with a prefix '${prefix}'${ttlMessage} to a value of '${value}'`;
+    });
+    if (ttl) {
       this.cache.put(GoogleAppsScriptCacheProvider.getKey(prefix, key), value, ttl);
     } else {
       this.cache.put(GoogleAppsScriptCacheProvider.getKey(prefix, key), value);
@@ -90,8 +86,7 @@ export class GoogleAppsScriptCacheProvider implements ICacheProvider {
     const keyIndex = allKeys.indexOf(key);
     if (keyIndex !== -1) {
       allKeys.splice(keyIndex, 1);
-      this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSONEx.stringify(allKeys),
-        undefined);
+      this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSONEx.stringify(allKeys));
     }
   }
 

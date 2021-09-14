@@ -25,9 +25,9 @@ import type { ProviderType } from './providers/provider-type';
 
 export interface ICache extends IInitializable {
   readonly providerType: ProviderType;
-  get<TValue>(key: string): TValue | null;
+  get<TValue>(key: string): TValue | undefined;
   get<TValue>(key: string, value: TValue): TValue;
-  pop<TValue>(key: string): TValue | null;
+  pop<TValue>(key: string): TValue | undefined;
   pop<TValue>(key: string, value: TValue): TValue;
   set<TValue>(key: string, value: TValue, ttl?: number): void;
   del(key: string): void;
