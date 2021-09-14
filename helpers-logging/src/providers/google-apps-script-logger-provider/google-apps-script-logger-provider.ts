@@ -33,9 +33,7 @@ import type { GoogleAppsScriptLoggerProviderSettings } from './google-apps-scrip
 export class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
   private readonly logLevel: number;
 
-  public get providerType(): ProviderType {
-    return ProviderType.GoogleAppsScript;
-  }
+  public readonly providerType = ProviderType.GoogleAppsScript;
 
   constructor(@inject(GoogleAppsScriptLoggerProviderSettingsSymbol)
   private readonly settings: GoogleAppsScriptLoggerProviderSettings) {

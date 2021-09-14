@@ -35,6 +35,8 @@ import { ILoggerProviderSymbol, ILoggerSymbol, LoggerSettingsSymbol } from './sy
 export class Logger implements ILogger {
   private readonly logLevel: number;
 
+  public readonly providerTypes: ProviderType[];
+
   private nameInternal?: string;
 
   private initialized = false;
@@ -47,13 +49,10 @@ export class Logger implements ILogger {
     return this.nameInternal;
   }
 
-  public get providerTypes(): ProviderType[] {
-    return this.providers.map((provider) => provider.providerType);
-  }
-
   constructor(@inject(LoggerSettingsSymbol) private readonly settings: LoggerSettings,
     @multiInject(ILoggerProviderSymbol) private readonly providers: ILoggerProvider[]) {
     this.logLevel = logLevelValues[this.settings.level];
+    this.providerTypes = this.providers.map((provider) => provider.providerType);
   }
 
   private log(level: LogLevel, message: string | (() => string), error?: Error) {

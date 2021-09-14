@@ -32,16 +32,16 @@ import { ICacheProviderSymbol, ICacheSymbol } from './symbols';
 
 @setBindMetadata(ICacheSymbol, Scope.Transient)
 export class Cache implements ICache {
+  public readonly providerType: ProviderType;
+
   private prefixInternal?: string;
 
   private initialized = false;
 
-  public get providerType(): ProviderType {
-    return this.provider.providerType;
-  }
-
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(ICacheProviderSymbol) private readonly provider: ICacheProvider) {}
+    @inject(ICacheProviderSymbol) private readonly provider: ICacheProvider) {
+    this.providerType = this.provider.providerType;
+  }
 
   private get prefix(): string {
     if (!this.initialized || !this.prefixInternal) {

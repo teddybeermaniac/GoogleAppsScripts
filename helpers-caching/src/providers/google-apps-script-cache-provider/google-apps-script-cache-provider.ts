@@ -33,12 +33,10 @@ export class GoogleAppsScriptCacheProvider implements ICacheProvider {
 
   private readonly cache: GoogleAppsScript.Cache.Cache;
 
+  public readonly providerType = ProviderType.GoogleAppsScript;
+
   private static getKey(prefix: string, key: string): string {
     return `${prefix}_${key}`;
-  }
-
-  public get providerType(): ProviderType {
-    return ProviderType.GoogleAppsScript;
   }
 
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {
