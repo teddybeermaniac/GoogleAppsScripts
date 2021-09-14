@@ -21,11 +21,10 @@
  */
 import { Record, Static } from 'runtypes';
 
-import { LogLevel } from './log-level';
+import { LogLevelRuntype } from './log-level';
 
-export const LoggerSettings = Record({
-  level: LogLevel,
+export const LoggerSettingsRuntype = Record({
+  level: LogLevelRuntype,
 });
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export type LoggerSettings = Static<typeof LoggerSettings>;
+export type LoggerSettings = Static<typeof LoggerSettingsRuntype>;

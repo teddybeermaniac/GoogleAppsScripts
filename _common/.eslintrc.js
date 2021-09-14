@@ -43,6 +43,7 @@ module.exports = {
       }
     ],
     "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
+    "simple-import-sort/exports": "error",
+    "unicorn/no-array-for-each": "off"
   }
 };

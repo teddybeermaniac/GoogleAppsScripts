@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 export class AlreadyInitializedError extends Error {
-  constructor() {
-    super('Already initialized');
+  constructor(public target: string) {
+    super(`'${target}' already initialized`);
     this.name = 'AlreadyInitializedError';
   }
 }

@@ -19,9 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class UnableToLoadSettingsError extends Error {
-  constructor(public readonly settings: string, public readonly error: Error) {
-    super(`Error loading '${settings}' settings; ${error.name}: ${error.message}`);
-    this.name = 'UnableToLoadSettingsError';
+import type { LogLevel } from '../log-level';
+
+export class InvalidLogLevelError extends Error {
+  constructor(public readonly logLevel: LogLevel) {
+    super(`Invalid log level '${logLevel.toString()}`);
+    this.name = 'InvalidLogLevelError';
   }
 }

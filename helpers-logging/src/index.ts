@@ -22,16 +22,15 @@
 import { bindInitializable } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
+import type { InvalidLogLevelError } from './errors/invalid-log-level-error';
 import type { ILogger } from './ilogger';
-import { LogLevel } from './log-level';
 import { Logger } from './logger';
 import { LoggingBuilder } from './logging-builder';
 import { ProviderType } from './providers/provider-type';
 import { ILoggerSymbol } from './symbols';
 
 export function addLogging(container: interfaces.Container, build: (builder: LoggingBuilder)
-=> void)
-  : void {
+=> void): void {
   const builder = new LoggingBuilder(container);
   build(builder);
 
@@ -47,6 +46,6 @@ export type {
 };
 
 export {
-  LogLevel,
+  InvalidLogLevelError,
   ProviderType,
 };

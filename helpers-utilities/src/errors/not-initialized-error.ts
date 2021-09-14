@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 export class NotInitializedError extends Error {
-  constructor() {
-    super('Not initialized');
+  constructor(public target: string) {
+    super(`'${target}' not initialized`);
     this.name = 'NotInitializedError';
   }
 }

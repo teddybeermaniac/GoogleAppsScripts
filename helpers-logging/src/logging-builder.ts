@@ -19,22 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import {
-  bind, bindSettings, errors as utilities_errors,
-} from 'helpers-utilities';
+import { bind, bindSettings, ProviderAlreadyAddedError } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import type { LoggerSettings } from './logger-settings';
-import { LoggerSettings as LoggerSettingsRuntype } from './logger-settings';
+import { LoggerSettingsRuntype } from './logger-settings';
 import { GoogleAppsScriptLoggerProvider } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider';
 import type { GoogleAppsScriptLoggerProviderSettings } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider-settings';
-import { GoogleAppsScriptLoggerProviderSettings as GoogleAppsScriptLoggerProviderSettingsRuntype } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider-settings';
+import { GoogleAppsScriptLoggerProviderSettingsRuntype } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider-settings';
 import { GoogleAppsScriptLoggerProviderSettingsSymbol, LoggerSettingsSymbol } from './symbols';
 
 export class LoggingBuilder {
-  private appScriptProvider = false;
+  private googleAppScriptProvider = false;
 
-  constructor(private readonly container: interfaces.Container) { }
+  constructor(private readonly container: interfaces.Container) {}
 
   public addSettings(settings?: Partial<LoggerSettings>): LoggingBuilder {
     bindSettings(this.container, LoggerSettingsSymbol, 'Logger', LoggerSettingsRuntype, {
@@ -46,8 +44,8 @@ export class LoggingBuilder {
 
   public addGoogleAppsScriptProvider(settings?: Partial<GoogleAppsScriptLoggerProviderSettings>):
   LoggingBuilder {
-    if (this.appScriptProvider) {
-      throw new utilities_errors.BuilderError('LoggingBuilder', 'GoogleAppsScript logger provider already added');
+    if (this.googleAppScriptProvider) {
+      throw new ProviderAlreadyAddedError('LoggingBuilder', 'GoogleAppsScript');
     }
 
     bindSettings(this.container, GoogleAppsScriptLoggerProviderSettingsSymbol,
@@ -56,7 +54,7 @@ export class LoggingBuilder {
       }, settings);
 
     bind(this.container, GoogleAppsScriptLoggerProvider);
-    this.appScriptProvider = true;
+    this.googleAppScriptProvider = true;
 
     return this;
   }

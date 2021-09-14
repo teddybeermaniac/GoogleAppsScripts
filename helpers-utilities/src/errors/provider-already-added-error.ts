@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 export class ProviderAlreadyAddedError extends Error {
-  constructor(provider: string) {
-    super(`${provider} already added`);
+  constructor(public readonly builder: string, public readonly provider: string) {
+    super(`'${provider}' provider already added to '${builder}'`);
     this.name = 'ProviderAlreadyAddedError';
   }
 }

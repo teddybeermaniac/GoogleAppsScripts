@@ -19,10 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/* eslint-disable no-console */
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
+import { InvalidLogLevelError } from '../../errors/invalid-log-level-error';
 import { LogLevel, logLevelValues } from '../../log-level';
 import { GoogleAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../../symbols';
 import type { ILoggerProvider } from '../ilogger-provider';
@@ -31,51 +31,62 @@ import type { GoogleAppsScriptLoggerProviderSettings } from './google-apps-scrip
 
 @setBindMetadata(ILoggerProviderSymbol, Scope.Singleton)
 export class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
+  private readonly logLevel: number;
+
   public get providerType(): ProviderType {
     return ProviderType.GoogleAppsScript;
   }
 
   constructor(@inject(GoogleAppsScriptLoggerProviderSettingsSymbol)
-  private readonly settings: GoogleAppsScriptLoggerProviderSettings) { }
+  private readonly settings: GoogleAppsScriptLoggerProviderSettings) {
+    this.logLevel = logLevelValues[this.settings.level];
+  }
 
-  public log(name: string, level: LogLevel, message: string | (() => string),
-    error: Error | undefined): void {
-    if (logLevelValues[level]! < logLevelValues[this.settings.level]!) {
+  public log(name: string, level: LogLevel, message: string | (() => string), error?: Error): void {
+    if (logLevelValues[level] < this.logLevel) {
       return;
     }
 
     let method: (message: string) => void;
     let prefix: string;
-    // eslint-disable-next-line default-case
     switch (level) {
       case 'Trace':
+        // eslint-disable-next-line no-console
         method = console.log;
         prefix = 'TRC';
         break;
       case 'Debug':
+        // eslint-disable-next-line no-console
         method = console.log;
         prefix = 'DBG';
         break;
       case 'Information':
+        // eslint-disable-next-line no-console
         method = console.info;
         prefix = 'INF';
         break;
       case 'Warning':
+        // eslint-disable-next-line no-console
         method = console.warn;
         prefix = 'WRN';
         break;
       case 'Error':
+        // eslint-disable-next-line no-console
         method = console.error;
         prefix = 'ERR';
         break;
+      default:
+        throw new InvalidLogLevelError(level);
     }
 
-    const fullMessage = `[${prefix}][${name}] ${message instanceof Function
-      ? message()
-      : message}${level === 'Error' && error
-      ? `; ${error.name}: ${error.message}${error.stack ? `; ${error.stack}` : ''}`
-      : ''}`;
+    const logMessage = message instanceof Function ? message() : message;
 
-    method(fullMessage);
+    let errorMessage = '';
+    if (level === 'Error' && error) {
+      const errorStack = error.stack ? `; ${error.stack}` : '';
+      errorMessage = `; ${error.name}: ${error.message}${errorStack}`;
+    }
+
+    method(`[${prefix}][${name}] ${logMessage}${errorMessage}`);
   }
 }
