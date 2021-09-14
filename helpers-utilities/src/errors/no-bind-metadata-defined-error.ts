@@ -20,7 +20,8 @@
  * SOFTWARE.
  */
 export class NoBindMetadataDefinedError extends Error {
-  constructor(public readonly container: string) {
-    super(`No bind metadata defined for '${container}'`);
+  constructor(public readonly target: string) {
+    super(`No bind metadata defined for '${target}'`);
+    this.name = 'NoBindMetadataDefinedError';
   }
 }

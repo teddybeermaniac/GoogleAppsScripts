@@ -58,7 +58,7 @@ function buildHelpers() {
         stdio: 'inherit'
       });
       console.log(`Building ${helper}`);
-      child_process.execSync('yarn run build-only', {
+      child_process.execSync('yarn run build-this', {
         cwd: `${__dirname}/../${helper}`,
         stdio: 'inherit'
       });

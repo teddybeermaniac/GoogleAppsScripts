@@ -25,8 +25,7 @@ import { bindInternal } from './bind-internal';
 import type { IInitializable } from './iinitializable';
 
 export function bindInitializable<TConstructor extends IInitializable>(
-  container: interfaces.Container,
-  constructor: interfaces.Newable<TConstructor>,
+  container: interfaces.Container, constructor: interfaces.Newable<TConstructor>,
 ): void {
   bindInternal<TConstructor>(container, constructor)
     .onActivation((context, instance) => {

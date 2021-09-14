@@ -33,7 +33,7 @@ export function fromMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: st
       throw new InvalidFromMethodError(propertyKey, target.constructor.name);
     }
 
-    const fromMethodDefinition = {
+    const fromMethodDefinition: IFromMethod = {
       name,
       callback: descriptor.value,
     };

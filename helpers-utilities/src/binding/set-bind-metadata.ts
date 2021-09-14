@@ -26,19 +26,15 @@ import type { IBindMetadata } from './ibind-metadata';
 import type { Scope } from './scope';
 
 export function setBindMetadata<TConstructor>(symbol: symbol, scope: Scope, name?: string):
-(constructor: interfaces.Newable<TConstructor>) => void {
-  const makeInjectable = injectable();
-
-  return (constructor) => {
+(target: interfaces.Newable<TConstructor>) => void {
+  return (target) => {
     const metadata: IBindMetadata = {
       symbol,
       scope,
       name,
     };
+    Reflect.defineMetadata(bindMetadataSymbol, metadata, target);
 
-    Reflect.defineMetadata(bindMetadataSymbol, metadata, constructor);
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return makeInjectable(constructor);
+    injectable()(target);
   };
 }

@@ -19,7 +19,7 @@
     },
     "license": "MIT",
     "scripts": {
-        "build-only": "eslint . --ext .ts && rollup -c",
+        "build-this": "yarn run lint && rollup -c",
         "push": "yarn run build && clasp push"
     },
     "version": "1.0.0"

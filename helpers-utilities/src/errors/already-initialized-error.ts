@@ -19,35 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { camelCase, constantCase } from 'change-case';
-import type { interfaces } from 'inversify';
-import type { RuntypeBase } from 'runtypes/lib/runtype';
-
-import { UnableToLoadSettingsError } from '../errors/unable-to-load-settings-error';
-
-declare let process: {
-  env: { [key: string]: string }
-};
-
-export function bindSettings<TSettings>(container: interfaces.Container, symbol: symbol,
-  name: string, runtype: RuntypeBase<TSettings>, defaults: Partial<TSettings>,
-  statics?: Partial<TSettings>): void {
-  const prefixRegex = new RegExp(`^${constantCase(name)}_`);
-  const environment = Object.fromEntries(Object.entries(process.env)
-    .filter(([key, _value]) => prefixRegex.test(key))
-    .map(([key, value]) => [camelCase(key.replace(prefixRegex, '')), value]));
-  const settings = { ...defaults, ...statics, ...environment };
-
-  let strongSettings: TSettings;
-  try {
-    strongSettings = runtype.check(settings);
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new UnableToLoadSettingsError(name, error);
-    }
-
-    throw error;
+export class AlreadyInitializedError extends Error {
+  constructor() {
+    super('Already initialized');
+    this.name = 'AlreadyInitializedError';
   }
-
-  container.bind<TSettings>(symbol).toConstantValue(strongSettings);
 }

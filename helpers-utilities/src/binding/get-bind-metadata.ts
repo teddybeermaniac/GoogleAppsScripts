@@ -21,7 +21,7 @@
  */
 import type { interfaces } from 'inversify';
 
-import { NoBindMetadataDefinedError } from '../errors';
+import { NoBindMetadataDefinedError } from '../errors/no-bind-metadata-defined-error';
 import { bindMetadataSymbol } from '../symbols';
 import type { IBindMetadata } from './ibind-metadata';
 

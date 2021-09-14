@@ -12,16 +12,21 @@
         "eslint": "^7.32.0",
         "eslint-config-airbnb-base": "^14.2.1",
         "eslint-config-airbnb-typescript": "^13.0.0",
+        "eslint-plugin-eslint-comments": "^3.2.0",
         "eslint-plugin-import": "^2.24.1",
+        "eslint-plugin-json": "^3.1.0",
         "eslint-plugin-simple-import-sort": "^7.0.0",
+        "eslint-plugin-sonarjs": "^0.10.0",
+        "eslint-plugin-unicorn": "^36.0.0",
         "tslib": "^2.3.1",
         "typescript": "^4.3.5"
     },
     "license": "MIT",
     "scripts": {
         "build-helpers": "node ../_common/build-helper-dependencies.js",
-        "build-only": "eslint . --ext .ts && tsc",
-        "build": "yarn run build-helpers && yarn run build-only"
+        "build-this": "yarn run lint && tsc",
+        "build": "yarn run build-helpers && yarn run build-this",
+        "lint": "eslint src --ext .json,.ts"
     },
     "version": "1.0.0"
 }

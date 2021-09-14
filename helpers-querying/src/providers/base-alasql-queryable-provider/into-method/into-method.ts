@@ -33,7 +33,7 @@ export function intoMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: st
       throw new InvalidIntoMethodError(propertyKey, target.constructor.name);
     }
 
-    const intoMethodDefinition = {
+    const intoMethodDefinition: IIntoMethod = {
       name,
       callback: descriptor.value,
     };

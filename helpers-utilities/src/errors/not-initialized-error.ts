@@ -19,4 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class SettingsError extends Error { }
+export class NotInitializedError extends Error {
+  constructor() {
+    super('Not initialized');
+    this.name = 'NotInitializedError';
+  }
+}

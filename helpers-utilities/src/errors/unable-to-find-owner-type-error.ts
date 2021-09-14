@@ -19,4 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class InitializationError extends Error { }
+export class UnableToFindOwnerTypeError extends Error {
+  constructor(public readonly target: string) {
+    super(`Unable to find owner type for '${target}`);
+    this.name = 'UnableToFindOwnerTypeError';
+  }
+}

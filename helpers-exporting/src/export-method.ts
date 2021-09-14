@@ -31,7 +31,7 @@ export function exportMethod<TTarget extends Object>(asIs?: boolean, name?: stri
       throw new InvalidExportedMethodError(propertyKey, target.constructor.name);
     }
 
-    const exportedMethod = {
+    const exportedMethod: IExportedMethod = {
       callback: descriptor.value,
       name: name ?? propertyKey,
       asIs: asIs || false,

@@ -19,8 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class BuilderError extends Error {
-  constructor(public readonly name: string, message: string) {
-    super(`${name} builder error: ${message}`);
+import type { Scope } from '../binding/scope';
+
+export class InvalidScopeDefinedError extends Error {
+  constructor(public readonly scope: Scope) {
+    super(`Invalid scope defined '${scope.toString()}'`);
+    this.name = 'InvalidScopeDefinedError';
   }
 }

@@ -2,8 +2,15 @@ module.exports = {
   extends: [
     'airbnb-base',
     'airbnb-typescript/base',
+    'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking'
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:eslint-comments/recommended',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
+    'plugin:json/recommended',
+    'plugin:sonarjs/recommended',
+    'plugin:unicorn/all'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -14,14 +21,13 @@ module.exports = {
   plugins: [
     '@typescript-eslint',
     'import',
-    'simple-import-sort'
+    'json',
+    'simple-import-sort',
+    'sonarjs',
+    'unicorn'
   ],
   root: true,
   rules: {
-    "@typescript-eslint/ban-types": "off",
-    "@typescript-eslint/no-empty-interface": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
@@ -30,7 +36,6 @@ module.exports = {
     ],
     "class-methods-use-this": "off",
     "import/prefer-default-export": "off",
-    "no-underscore-dangle": "off",
     "no-unused-vars": [
       "error",
       {

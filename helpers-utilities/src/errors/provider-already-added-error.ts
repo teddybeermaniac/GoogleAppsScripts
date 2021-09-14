@@ -19,14 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { BuilderError } from './builder-error';
-import { InitializationError } from './initialization-error';
-import { NoBindMetadataDefinedError } from './no-bind-metadata-defined-error';
-import { SettingsError } from './settings-error';
-
-export {
-  BuilderError,
-  InitializationError,
-  NoBindMetadataDefinedError,
-  SettingsError,
-};
+export class ProviderAlreadyAddedError extends Error {
+  constructor(provider: string) {
+    super(`${provider} already added`);
+    this.name = 'ProviderAlreadyAddedError';
+  }
+}

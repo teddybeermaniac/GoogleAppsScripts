@@ -31,7 +31,13 @@ import { getOwnerType } from './binding/get-owner-type';
 import type { IInitializable } from './binding/iinitializable';
 import { Scope } from './binding/scope';
 import { setBindMetadata } from './binding/set-bind-metadata';
-import * as errors from './errors';
+import { AlreadyInitializedError } from './errors/already-initialized-error';
+import { InvalidScopeDefinedError } from './errors/invalid-scope-defined-error';
+import { NoBindMetadataDefinedError } from './errors/no-bind-metadata-defined-error';
+import { NotInitializedError } from './errors/not-initialized-error';
+import { ProviderAlreadyAddedError } from './errors/provider-already-added-error';
+import { UnableToFindOwnerTypeError } from './errors/unable-to-find-owner-type-error';
+import { UnableToLoadSettingsError } from './errors/unable-to-load-settings-error';
 import { JSONEx } from './jsonex';
 import { ContainerSymbol } from './symbols';
 
@@ -51,13 +57,19 @@ export type {
 };
 
 export {
+  AlreadyInitializedError,
   bind,
   bindInitializable,
   bindSettings,
-  errors,
   getBindMetadata,
   getOwnerType,
+  InvalidScopeDefinedError,
   JSONEx,
+  NoBindMetadataDefinedError,
+  NotInitializedError,
+  ProviderAlreadyAddedError,
   Scope,
   setBindMetadata,
+  UnableToFindOwnerTypeError,
+  UnableToLoadSettingsError,
 };

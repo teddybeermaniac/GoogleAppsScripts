@@ -21,12 +21,12 @@
  */
 import type { interfaces } from 'inversify';
 
+import { InvalidScopeDefinedError } from '../errors/invalid-scope-defined-error';
 import { getBindMetadata } from './get-bind-metadata';
 import { Scope } from './scope';
 
 export function bindInternal<TConstructor>(
-  container: interfaces.Container,
-  constructor: interfaces.Newable<TConstructor>,
+  container: interfaces.Container, constructor: interfaces.Newable<TConstructor>,
 ): interfaces.BindingOnSyntax<TConstructor> {
   const metadata = getBindMetadata(constructor);
   const bindingTo = container
@@ -48,8 +48,7 @@ export function bindInternal<TConstructor>(
       break;
     }
     default: {
-      bindingWhenOn = bindingTo;
-      break;
+      throw new InvalidScopeDefinedError(metadata.scope);
     }
   }
 
