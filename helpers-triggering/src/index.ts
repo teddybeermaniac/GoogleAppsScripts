@@ -22,13 +22,14 @@
 import { bindInitializable } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import * as errors from './errors';
+import { AlreadyExistsTriggerError } from './errors/already-exists-trigger-error';
+import { TriggeringError } from './errors/triggering-error';
 import type { ITriggerManager } from './itrigger-manager';
 import { ITriggerManagerSymbol } from './symbols';
-import { TriggerManger } from './trigger-manager';
+import { TriggerManager } from './trigger-manager';
 
 export function addTriggering(container: interfaces.Container): void {
-  bindInitializable(container, TriggerManger);
+  bindInitializable(container, TriggerManager);
 }
 
 export const TYPES = {
@@ -40,5 +41,6 @@ export type {
 };
 
 export {
-  errors,
+  AlreadyExistsTriggerError,
+  TriggeringError,
 };

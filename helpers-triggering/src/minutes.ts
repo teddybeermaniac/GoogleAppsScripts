@@ -19,10 +19,4 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { AlreadyExistsTriggerError } from './already-exists-trigger-error';
-import { TriggeringError } from './triggering-error';
-
-export {
-  AlreadyExistsTriggerError,
-  TriggeringError,
-};
+export type Minutes = 1 | 5 | 10 | 15 | 30;
