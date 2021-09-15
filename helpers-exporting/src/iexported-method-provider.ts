@@ -22,5 +22,5 @@
 export interface IExportedMethodProvider {
   getExportedMethods(): string[];
   getExportedMethodName(symbol: symbol, name: string): string;
-  callExportedMethod(exportedName: string, args: any[]): any;
+  callExportedMethod(exportedName: string, parameters: unknown[]): unknown;
 }

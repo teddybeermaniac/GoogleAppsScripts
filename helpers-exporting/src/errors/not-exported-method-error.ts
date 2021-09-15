@@ -22,7 +22,11 @@
 import { ExportingError } from './exporting-error';
 
 export class NotExportedMethodError extends ExportingError {
-  constructor(public readonly method: string, public readonly container?: string) {
-    super(`Method '${method}' was not exported${container ? ` from '${container}'` : ''}`);
+  constructor(public readonly method: string, public readonly target?: string) {
+    // eslint-disable-next-line unicorn/custom-error-definition
+    super('');
+    const targetMessage = target ? ` from '${target}'` : '';
+    this.message = `Method '${method}' was not exported${targetMessage}`;
+    this.name = 'NotExportedMethodError';
   }
 }

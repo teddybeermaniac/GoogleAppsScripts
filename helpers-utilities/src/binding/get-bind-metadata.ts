@@ -25,11 +25,10 @@ import { NoBindMetadataDefinedError } from '../errors/no-bind-metadata-defined-e
 import { bindMetadataSymbol } from '../symbols';
 import type { IBindMetadata } from './ibind-metadata';
 
-export function getBindMetadata<TConstructor>(constructor: interfaces.Newable<TConstructor>):
-IBindMetadata {
-  const metadata = <IBindMetadata>Reflect.getMetadata(bindMetadataSymbol, constructor);
+export function getBindMetadata<TTarget>(target: interfaces.Newable<TTarget>): IBindMetadata {
+  const metadata = <IBindMetadata>Reflect.getMetadata(bindMetadataSymbol, target);
   if (!metadata) {
-    throw new NoBindMetadataDefinedError(constructor.name);
+    throw new NoBindMetadataDefinedError(target.name);
   }
 
   return metadata;

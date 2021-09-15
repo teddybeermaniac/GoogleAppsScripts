@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 export interface IExportedMethod {
-  callback: (...parameters: any[]) => any;
+  callback: (...parameters: unknown[]) => unknown;
   name: string;
   asIs: boolean;
 }

@@ -25,8 +25,8 @@ import { bindMetadataSymbol } from '../symbols';
 import type { IBindMetadata } from './ibind-metadata';
 import type { Scope } from './scope';
 
-export function setBindMetadata<TConstructor>(symbol: symbol, scope: Scope, name?: string):
-(target: interfaces.Newable<TConstructor>) => void {
+export function setBindMetadata<TTarget>(symbol: symbol, scope: Scope, name?: string):
+(target: interfaces.Newable<TTarget>) => void {
   return (target) => {
     const metadata: IBindMetadata = {
       symbol,

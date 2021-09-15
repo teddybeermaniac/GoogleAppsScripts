@@ -22,7 +22,8 @@
 import { ExportingError } from './exporting-error';
 
 export class InvalidExportedMethodError extends ExportingError {
-  constructor(public readonly method: string, public readonly container: string) {
-    super(`Invalid exported method '${method}' on '${container}'`);
+  constructor(public readonly method: string, public readonly target: string) {
+    super(`Invalid exported method '${method}' on '${target}'`);
+    this.name = 'InvalidExportedMethodError';
   }
 }

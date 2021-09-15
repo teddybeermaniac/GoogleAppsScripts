@@ -24,9 +24,9 @@ import type { interfaces } from 'inversify';
 import { UnableToFindOwnerTypeError } from '../errors/unable-to-find-owner-type-error';
 import { getBindMetadata } from './get-bind-metadata';
 
-export function getOwnerType<TContainer>(context: interfaces.Context,
-  constructor: interfaces.Newable<TContainer>): interfaces.Newable<unknown> {
-  const { symbol } = getBindMetadata(constructor);
+export function getOwnerType<TTarget>(context: interfaces.Context,
+  target: interfaces.Newable<TTarget>): interfaces.Newable<unknown> {
+  const { symbol } = getBindMetadata(target);
   let request: interfaces.Request | null = context.currentRequest;
   while (request) {
     if (request.serviceIdentifier === symbol) {

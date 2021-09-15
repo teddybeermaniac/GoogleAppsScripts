@@ -19,7 +19,7 @@ function googleAppsScript() {
         return code;
       }
 
-      const provider = container.get(Symbol.for('__ROLLUP_EXPORTED_METHOD_PROVIDER__'));
+      const provider = container.get(Symbol.for('IExportedMethodProvider'));
       const methods = {};
       provider.getExportedMethods().forEach((method) => {
         methods[method] = `function ${method}(...args) {\n  return ${options.name}.container.get(Symbol.for('IExportedMethodProvider')).callExportedMethod('${method}', args);\n}`;

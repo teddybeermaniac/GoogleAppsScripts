@@ -20,11 +20,10 @@
  * SOFTWARE.
  */
 import { ExportingError } from './exporting-error';
-import { InvalidExportedMethodError } from './invalid-exported-method-error';
-import { NotExportedMethodError } from './not-exported-method-error';
 
-export {
-  ExportingError,
-  InvalidExportedMethodError,
-  NotExportedMethodError,
-};
+export class NoMethodsExportedError extends ExportingError {
+  constructor(public readonly target: string) {
+    super(`No methods exported from '${target}'`);
+    this.name = 'NoMethodsExportedError';
+  }
+}

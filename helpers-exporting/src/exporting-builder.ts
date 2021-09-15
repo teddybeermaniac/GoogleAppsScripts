@@ -19,20 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bind as bind_ } from 'helpers-utilities';
+import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import { exportedMethodContainerSymbol } from './symbols';
 
 export class ExportingBuilder {
-  constructor(private readonly container: interfaces.Container) { }
+  constructor(private readonly container: interfaces.Container) {}
 
-  public addContainer<TContainer>(constructor: interfaces.Newable<TContainer>, bind = false):
+  public addContainer<TTarget>(target: interfaces.Newable<TTarget>, shouldBind = false):
   ExportingBuilder {
-    this.container.bind<interfaces.Newable<TContainer>>(exportedMethodContainerSymbol)
-      .toConstructor(constructor);
-    if (bind) {
-      bind_(this.container, constructor);
+    this.container.bind<interfaces.Newable<TTarget>>(exportedMethodContainerSymbol)
+      .toConstructor(target);
+    if (shouldBind) {
+      bind(this.container, target);
     }
 
     return this;

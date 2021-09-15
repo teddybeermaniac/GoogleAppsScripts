@@ -20,18 +20,99 @@
  * SOFTWARE.
  */
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { Scope, setBindMetadata, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
-import { inject, interfaces, multiInject } from 'inversify';
+import {
+  getBindMetadata, Scope, setBindMetadata, TYPES as UTILITIES_TYPES,
+} from 'helpers-utilities';
+import {
+  inject, interfaces, multiInject, optional,
+} from 'inversify';
 
-import { InternalExportedMethodProvider } from './internal-exported-method-provider';
-import { exportedMethodContainerSymbol, IExportedMethodProviderSymbol } from './symbols';
+import { NoMethodsExportedError } from './errors/no-methods-exported-error';
+import { NotExportedMethodError } from './errors/not-exported-method-error';
+import type { IExportedMethod } from './iexported-method';
+import type { IExportedMethodProvider } from './iexported-method-provider';
+import { exportedMethodContainerSymbol, exportedMethodsSymbol, IExportedMethodProviderSymbol } from './symbols';
 
 @setBindMetadata(IExportedMethodProviderSymbol, Scope.Singleton)
-export class ExportedMethodProvider extends InternalExportedMethodProvider {
-  constructor(@inject(UTILITIES_TYPES.Container) container: interfaces.Container,
-    @multiInject(exportedMethodContainerSymbol) constructors: interfaces.Newable<Object>[],
-    @inject(LOGGING_TYPES.ILogger) logger: ILogger) {
-    super(container, logger);
-    this.prepare(constructors);
+export class ExportedMethodProvider implements IExportedMethodProvider {
+  private readonly exportedMethods:
+  (IExportedMethod & { exportedName: string, symbol: symbol })[] = [];
+
+  constructor(@inject(UTILITIES_TYPES.Container) private readonly container: interfaces.Container,
+    @multiInject(exportedMethodContainerSymbol) targets: interfaces.Newable<unknown>[],
+    @inject(LOGGING_TYPES.ILogger) @optional() private readonly logger?: ILogger) {
+    this.prepare(targets);
+  }
+
+  private logDebug(message: string): void {
+    if (!this.logger) {
+      // eslint-disable-next-line no-console
+      console.log(message);
+      return;
+    }
+
+    this.logger.debug(message);
+  }
+
+  private logTrace(message: string): void {
+    if (!this.logger) {
+      // eslint-disable-next-line no-console
+      console.log(message);
+      return;
+    }
+
+    this.logger.trace(message);
+  }
+
+  protected prepare(targets: interfaces.Newable<unknown>[]): void {
+    this.logTrace(`Found ${targets.length} exported method containers`);
+    targets.forEach((target) => {
+      this.logTrace(`Processing '${target.name}'`);
+      const methods = <IExportedMethod[]>Reflect.getMetadata(exportedMethodsSymbol, target);
+      if (!methods) {
+        throw new NoMethodsExportedError(target.name);
+      }
+
+      this.logTrace(
+        `Found ${methods.length} exported methods on container '${target.name}'`,
+      );
+
+      methods.forEach((method) => {
+        const metadata = getBindMetadata(target);
+        const exportedName = method.asIs ? method.name : `zzz_${target.name}_${method.name}`;
+        this.exportedMethods.push({ ...method, exportedName, symbol: metadata.symbol });
+
+        this.logDebug(
+          `Method '${method.name}' from '${target.name}' is exported as '${exportedName}'`,
+        );
+      });
+    });
+  }
+
+  public getExportedMethods(): string[] {
+    return this.exportedMethods.map((method) => method.exportedName);
+  }
+
+  public getExportedMethodName(symbol: symbol, name: string): string {
+    const exportedMethod = this.exportedMethods
+      .find((method) => method.symbol === symbol && method.name === name);
+    if (!exportedMethod) {
+      throw new NotExportedMethodError(name, symbol.description);
+    }
+
+    return exportedMethod.exportedName;
+  }
+
+  public callExportedMethod(exportedName: string, parameters: unknown[]): unknown {
+    this.logDebug(`Calling exported method '${exportedName}'`);
+    const exportedMethod = this.exportedMethods
+      .find((method) => method.exportedName === exportedName);
+    if (!exportedMethod) {
+      throw new NotExportedMethodError(exportedName);
+    }
+
+    const instance = this.container.get(exportedMethod.symbol);
+
+    return exportedMethod.callback.bind(instance)(...parameters);
   }
 }
