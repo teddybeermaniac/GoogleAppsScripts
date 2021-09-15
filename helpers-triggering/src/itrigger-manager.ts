@@ -22,9 +22,9 @@
 import type { IInitializable } from 'helpers-utilities';
 
 export interface ITriggerManager extends IInitializable {
-  addEveryMinutes(method: () => void, minutes: number, replace?: boolean): void;
-  addEveryHours(method: () => void, hours: number, replace?: boolean): void;
-  addEveryDays(method: () => void, days: number, replace?: boolean): void;
-  exists(method: () => void): boolean;
-  remove(method: () => void): void;
+  addEveryMinutes(method: string, minutes: number, replace?: boolean): void;
+  addEveryHours(method: string, hours: number, replace?: boolean): void;
+  addEveryDays(method: string, days: number, replace?: boolean): void;
+  exists(method: string): boolean;
+  remove(method: string): void;
 }

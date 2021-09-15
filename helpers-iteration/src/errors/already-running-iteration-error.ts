@@ -24,5 +24,6 @@ import { IterationError } from './iteration-error';
 export class AlreadyRunningIterationError extends IterationError {
   constructor() {
     super('Iteration already running');
+    this.name = 'AlreadyRunningIterationError';
   }
 }

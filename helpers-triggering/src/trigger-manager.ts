@@ -50,50 +50,50 @@ export class TriggerManager implements ITriggerManager {
     @inject(EXPORTING_TYPES.IExportedMethodProvider)
     private readonly exportedMethodProvider: IExportedMethodProvider) {}
 
-  private getExistingTrigger(method: () => void): GoogleAppsScript.Script.Trigger | undefined {
+  private getExistingTrigger(method: string): GoogleAppsScript.Script.Trigger | undefined {
     this.logger.trace(() => {
       const descriptionMessage = this.symbol.description ? ` from '${this.symbol.description}'` : '';
 
-      return `Getting existing trigger for method '${method.name}'${descriptionMessage}`;
+      return `Getting existing trigger for method '${method}'${descriptionMessage}`;
     });
     const exportedName = this.exportedMethodProvider
-      .getExportedMethodName(this.symbol, method.name);
+      .getExportedMethodName(this.symbol, method);
     const existingTrigger = ScriptApp.getProjectTriggers()
       .find((trigger) => trigger.getHandlerFunction() === exportedName);
     if (!existingTrigger) {
       this.logger.trace(() => {
         const descriptionMessage = this.symbol.description ? ` from '${this.symbol.description}'` : '';
 
-        return `Trigger for method '${method.name}'${descriptionMessage} does not exist`;
+        return `Trigger for method '${method}'${descriptionMessage} does not exist`;
       });
     }
 
     return existingTrigger;
   }
 
-  private build(method: () => void,
-    builder: (trigger: GoogleAppsScript.Script.ClockTriggerBuilder) => void,
-    replace?: boolean): void {
+  private build(method: string,
+    builder: (trigger: GoogleAppsScript.Script.ClockTriggerBuilder) => void, replace?: boolean):
+    void {
     this.logger.trace(() => {
       const descriptionMessage = this.symbol.description ? ` from '${this.symbol.description}'` : '';
 
-      return `Building trigger for method '${method.name}'${descriptionMessage}`;
+      return `Building trigger for method '${method}'${descriptionMessage}`;
     });
     if (this.exists(method)) {
       if (replace) {
         this.logger.debug(() => {
           const descriptionMessage = this.symbol.description ? ` from '${this.symbol.description}'` : '';
 
-          return `Trigger for method '${method.name}'${descriptionMessage} already exists; replacing`;
+          return `Trigger for method '${method}'${descriptionMessage} already exists; replacing`;
         });
         this.remove(method);
       }
 
-      throw new AlreadyExistsTriggerError(method.name, this.symbol.description);
+      throw new AlreadyExistsTriggerError(method, this.symbol.description);
     }
 
     const exportedName = this.exportedMethodProvider
-      .getExportedMethodName(this.symbol, method.name);
+      .getExportedMethodName(this.symbol, method);
     const triggerBuilder = ScriptApp.newTrigger(exportedName)
       .timeBased();
 
@@ -111,35 +111,35 @@ export class TriggerManager implements ITriggerManager {
     this.initialized = true;
   }
 
-  public addEveryMinutes(method: () => void, minutes: Minutes, replace?: boolean): void {
+  public addEveryMinutes(method: string, minutes: Minutes, replace?: boolean): void {
     this.build(method, (builder) => {
       this.logger.information(() => {
         const descriptionMessage = this.symbol.description ? ` from '${this.symbol.description}'` : '';
 
-        return `Adding trigger for method '${method.name}'${descriptionMessage} running every ${minutes} minutes`;
+        return `Adding trigger for method '${method}'${descriptionMessage} running every ${minutes} minutes`;
       });
       builder.everyMinutes(minutes);
     }, replace);
   }
 
-  public addEveryHours(method: () => void, hours: number, replace?: boolean): void {
+  public addEveryHours(method: string, hours: number, replace?: boolean): void {
     this.build(method, (builder) => {
       this.logger.information(() => {
         const descriptionMessage = this.symbol.description ? ` from '${this.symbol.description}'` : '';
 
-        return `Adding trigger for method '${method.name}'${descriptionMessage} running every ${hours} hours`;
+        return `Adding trigger for method '${method}'${descriptionMessage} running every ${hours} hours`;
       });
       builder.everyHours(hours)
         .nearMinute(0);
     }, replace);
   }
 
-  public addEveryDays(method: () => void, days: number, replace?: boolean): void {
+  public addEveryDays(method: string, days: number, replace?: boolean): void {
     this.build(method, (builder) => {
       this.logger.information(() => {
         const descriptionMessage = this.symbol.description ? ` from '${this.symbol.description}'` : '';
 
-        return `Adding trigger for method '${method.name}'${descriptionMessage} running every ${days} days`;
+        return `Adding trigger for method '${method}'${descriptionMessage} running every ${days} days`;
       });
       builder.everyDays(days)
         .atHour(0)
@@ -147,28 +147,28 @@ export class TriggerManager implements ITriggerManager {
     }, replace);
   }
 
-  public exists(method: () => void): boolean {
+  public exists(method: string): boolean {
     this.logger.debug(() => {
       const descriptionMessage = this.symbol.description ? ` from '${this.symbol.description}'` : '';
 
-      return `Checking trigger for method '${method.name}'${descriptionMessage}`;
+      return `Checking trigger for method '${method}'${descriptionMessage}`;
     });
 
     return !!this.getExistingTrigger(method);
   }
 
-  public remove(method: () => void): void {
+  public remove(method: string): void {
     this.logger.information(() => {
       const descriptionMessage = this.symbol.description ? ` from '${this.symbol.description}'` : '';
 
-      return `Removing trigger for method '${method.name}'${descriptionMessage}`;
+      return `Removing trigger for method '${method}'${descriptionMessage}`;
     });
     const existingTrigger = this.getExistingTrigger(method);
     if (!existingTrigger) {
       this.logger.warning(() => {
         const descriptionMessage = this.symbol.description ? ` from '${this.symbol.description}'` : '';
 
-        return `Trigger for method '${method.name}'${descriptionMessage} doesn't exist`;
+        return `Trigger for method '${method}'${descriptionMessage} doesn't exist`;
       });
       return;
     }

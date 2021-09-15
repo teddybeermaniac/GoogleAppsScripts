@@ -23,7 +23,8 @@ import { InvalidExportedMethodError } from './errors/invalid-exported-method-err
 import type { IExportedMethod } from './iexported-method';
 import { exportedMethodsSymbol } from './symbols';
 
-export function exportMethod<TTarget extends Record<string, unknown>>(asIs?: boolean,
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function exportMethod<TTarget extends { constructor: Function; }>(asIs?: boolean,
   name?: string): (target: TTarget, propertyKey: string,
     descriptor: TypedPropertyDescriptor<(...parameters: unknown[]) => unknown>) => void {
   return (target, propertyKey, descriptor) => {

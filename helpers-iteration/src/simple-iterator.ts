@@ -19,19 +19,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class SimpleIterator<TItem> {
-  constructor(private iterator: { hasNext: () => boolean; next: () => TItem }) { }
+import { HIterator } from 'iterator-helper';
 
-  public forEach(callback: (item: TItem) => void): void {
-    while (this.iterator.hasNext()) {
-      callback(this.iterator.next());
-    }
+export class SimpleIterator<TItem> extends HIterator<TItem> {
+  constructor(private readonly iterator: { hasNext: () => boolean; next: () => TItem; }) {
+    super();
   }
 
-  public toArray(): TItem[] {
-    const items: TItem[] = [];
-    this.forEach((item) => items.push(item));
+  public next(): IteratorResult<TItem> {
+    if (this.iterator.hasNext()) {
+      return { value: this.iterator.next(), done: false };
+    }
 
-    return items;
+    return { value: undefined, done: true };
   }
 }
