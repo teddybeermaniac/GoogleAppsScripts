@@ -24,6 +24,6 @@ import type { interfaces } from 'inversify';
 import { bindInternal } from './bind-internal';
 
 export function bind<TTarget>(container: interfaces.Container, target: interfaces.Newable<TTarget>):
-  void {
+void {
   bindInternal<TTarget>(container, target);
 }
