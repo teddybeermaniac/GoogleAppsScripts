@@ -21,8 +21,9 @@
  */
 import { ExchangeError } from './exchange-error';
 
-export class RateFetchError extends ExchangeError {
+export class BadRateFetchResponseError extends ExchangeError {
   constructor(message: string) {
     super(`Error fetching currency exchange rates: ${message}`);
+    this.name = 'BadRateFetchResponseError';
   }
 }

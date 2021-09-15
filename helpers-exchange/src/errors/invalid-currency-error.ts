@@ -22,7 +22,8 @@
 import { ExchangeError } from './exchange-error';
 
 export class InvalidCurrencyError extends ExchangeError {
-  constructor(currency: string) {
+  constructor(public readonly currency: string) {
     super(`Invalid currency '${currency}'`);
+    this.name = 'InvalidCurrencyError';
   }
 }

@@ -19,35 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bindInitializable } from 'helpers-utilities';
-import type { interfaces } from 'inversify';
+import { ExchangeError } from './exchange-error';
 
-import { InvalidLogLevelError } from './errors/invalid-log-level-error';
-import { LoggingError } from './errors/logging-error';
-import type { ILogger } from './ilogger';
-import { Logger } from './logger';
-import { LoggingBuilder } from './logging-builder';
-import { ProviderType } from './providers/provider-type';
-import { ILoggerSymbol } from './symbols';
-
-export function addLogging(container: interfaces.Container, build: (builder: LoggingBuilder)
-=> void): void {
-  const builder = new LoggingBuilder(container);
-  build(builder);
-
-  bindInitializable(container, Logger);
+export class NoRatesFetchedError extends ExchangeError {
+  constructor() {
+    super('No exchange rates fetched');
+    this.name = 'NoRatesFetchedError';
+  }
 }
-
-export const TYPES = {
-  ILogger: ILoggerSymbol,
-};
-
-export type {
-  ILogger,
-};
-
-export {
-  InvalidLogLevelError,
-  LoggingError,
-  ProviderType,
-};

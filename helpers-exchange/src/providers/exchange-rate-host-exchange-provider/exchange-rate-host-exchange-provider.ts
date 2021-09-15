@@ -33,9 +33,7 @@ import currencies from './currencies.json';
 export class ExchangeRateHostExchangeProvider extends BaseExchangeProvider {
   public readonly supportedCurrencies = currencies;
 
-  public get providerType(): ProviderType {
-    return ProviderType.ExchangeRateHost;
-  }
+  public readonly providerType = ProviderType.ExchangeRateHost;
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger,
@@ -45,7 +43,8 @@ export class ExchangeRateHostExchangeProvider extends BaseExchangeProvider {
 
   getRate(from: string, to: string): number {
     return this.getRateInternal(from, to, `https://api.exchangerate.host/latest?base=${encodeURIComponent(from)}`,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      3600, (result) => <{ [currency: string]: number; }>result.rates);
+      // eslint-disable-next-line max-len
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+      3600, (result) => <{ [currency: string]: number; }>(<any>result).rates);
   }
 }

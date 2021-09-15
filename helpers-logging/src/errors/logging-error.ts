@@ -19,12 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { ExchangeError } from './exchange-error';
-import { InvalidCurrencyError } from './invalid-currency-error';
-import { RateFetchError } from './rate-fetch-error';
-
-export {
-  ExchangeError,
-  InvalidCurrencyError,
-  RateFetchError,
-};
+export abstract class LoggingError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'LoggingError';
+  }
+}

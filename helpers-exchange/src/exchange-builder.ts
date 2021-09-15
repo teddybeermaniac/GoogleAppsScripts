@@ -19,32 +19,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import {
-  bind, bindSettings, errors as utilities_errors,
-} from 'helpers-utilities';
+import { bind, bindSettings, ProviderAlreadyAddedError } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import { ExchangeRateApiComExchangeProvider } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider';
 import type { ExchangeRateApiComExchangeProviderSettings } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider-settings';
-import { ExchangeRateApiComExchangeProviderSettings as ExchangeRateApiComExchangeProviderSettingsRuntype } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider-settings';
+import { ExchangeRateApiComExchangeProviderSettingsRuntype } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider-settings';
 import { ExchangeRateHostExchangeProvider } from './providers/exchange-rate-host-exchange-provider/exchange-rate-host-exchange-provider';
 import { ExchangeRateApiComExchangeProviderSettingsSymbol } from './symbols';
 
 export class ExchangeBuilder {
   private provider = false;
 
-  constructor(private readonly container: interfaces.Container) { }
+  constructor(private readonly container: interfaces.Container) {}
 
   public addExchangeRateApiComProvider(
     settings?: Partial<ExchangeRateApiComExchangeProviderSettings>,
   ) : ExchangeBuilder {
     if (this.provider) {
-      throw new utilities_errors.BuilderError('ExchangeBuilder', 'An exchange provider was already added');
+      throw new ProviderAlreadyAddedError('ExchangeBuilder', 'exchange');
     }
 
     bindSettings(this.container, ExchangeRateApiComExchangeProviderSettingsSymbol,
-      'ExchangeRateApiComExchangeProvider', ExchangeRateApiComExchangeProviderSettingsRuntype, {
-      }, settings);
+      'ExchangeRateApiComExchangeProvider', ExchangeRateApiComExchangeProviderSettingsRuntype, {},
+      settings);
     bind(this.container, ExchangeRateApiComExchangeProvider);
     this.provider = true;
 
@@ -53,7 +51,7 @@ export class ExchangeBuilder {
 
   public addExchangeRateHostProvider(): ExchangeBuilder {
     if (this.provider) {
-      throw new utilities_errors.BuilderError('ExchangeBuilder', 'An exchange provider was already added');
+      throw new ProviderAlreadyAddedError('ExchangeBuilder', 'exchange');
     }
 
     bind(this.container, ExchangeRateHostExchangeProvider);

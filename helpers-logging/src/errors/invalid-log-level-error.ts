@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 import type { LogLevel } from '../log-level';
+import { LoggingError } from './logging-error';
 
-export class InvalidLogLevelError extends Error {
+export class InvalidLogLevelError extends LoggingError {
   constructor(public readonly logLevel: LogLevel) {
     super(`Invalid log level '${logLevel.toString()}`);
     this.name = 'InvalidLogLevelError';

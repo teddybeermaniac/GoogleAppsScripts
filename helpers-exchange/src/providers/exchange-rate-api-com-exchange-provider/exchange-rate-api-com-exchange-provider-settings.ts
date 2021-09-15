@@ -21,10 +21,9 @@
  */
 import { Record, Static, String } from 'runtypes';
 
-export const ExchangeRateApiComExchangeProviderSettings = Record({
+export const ExchangeRateApiComExchangeProviderSettingsRuntype = Record({
   apiKey: String,
 });
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export type ExchangeRateApiComExchangeProviderSettings
-  = Static<typeof ExchangeRateApiComExchangeProviderSettings>;
+  = Static<typeof ExchangeRateApiComExchangeProviderSettingsRuntype>;
