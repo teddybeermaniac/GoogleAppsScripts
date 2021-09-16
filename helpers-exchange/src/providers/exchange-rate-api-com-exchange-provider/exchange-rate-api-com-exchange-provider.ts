@@ -24,15 +24,15 @@ import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
-import { BadRateFetchResponseError } from '../../errors/bad-rate-fetch-response-error';
+import BadRateFetchResponseError from '../../errors/bad-rate-fetch-response-error';
 import { ExchangeRateApiComExchangeProviderSettingsSymbol, IExchangeProviderSymbol } from '../../symbols';
-import { BaseExchangeProvider } from '../base-exchange-provider';
-import { ProviderType } from '../provider-type';
+import BaseExchangeProvider from '../base-exchange-provider';
+import ProviderType from '../provider-type';
 import currencies from './currencies.json';
-import type { ExchangeRateApiComExchangeProviderSettings } from './exchange-rate-api-com-exchange-provider-settings';
+import type ExchangeRateApiComExchangeProviderSettings from './exchange-rate-api-com-exchange-provider-settings';
 
 @setBindMetadata(IExchangeProviderSymbol, Scope.Singleton)
-export class ExchangeRateApiComExchangeProvider extends BaseExchangeProvider {
+export default class ExchangeRateApiComExchangeProvider extends BaseExchangeProvider {
   public readonly supportedCurrencies = currencies;
 
   public readonly providerType = ProviderType.ExchangeRateApiCom;

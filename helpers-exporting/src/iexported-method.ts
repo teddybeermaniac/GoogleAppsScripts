@@ -19,8 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type IExportedMethodCallback = (...parameters: any[]) => any;
+
 export default interface IExportedMethod {
-  callback: (...parameters: unknown[]) => unknown;
+  callback: IExportedMethodCallback;
   name: string;
   asIs: boolean;
 }

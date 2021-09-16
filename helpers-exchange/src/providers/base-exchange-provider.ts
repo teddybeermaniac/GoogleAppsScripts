@@ -24,14 +24,14 @@ import type { ILogger } from 'helpers-logging';
 import { JSONEx } from 'helpers-utilities';
 import { injectable } from 'inversify';
 
-import { BadRateFetchResponseError } from '../errors/bad-rate-fetch-response-error';
-import { InvalidCurrencyError } from '../errors/invalid-currency-error';
-import { NoRatesFetchedError } from '../errors/no-rates-fetched-error';
-import type { IExchangeProvider } from './iexchange-provider';
-import type { ProviderType } from './provider-type';
+import BadRateFetchResponseError from '../errors/bad-rate-fetch-response-error';
+import InvalidCurrencyError from '../errors/invalid-currency-error';
+import NoRatesFetchedError from '../errors/no-rates-fetched-error';
+import type IExchangeProvider from './iexchange-provider';
+import type ProviderType from './provider-type';
 
 @injectable()
-export abstract class BaseExchangeProvider implements IExchangeProvider {
+export default abstract class BaseExchangeProvider implements IExchangeProvider {
   public abstract providerType: ProviderType;
 
   public abstract supportedCurrencies: string[];

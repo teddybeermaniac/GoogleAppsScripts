@@ -20,13 +20,14 @@
  * SOFTWARE.
  */
 import InvalidExportedMethodError from './errors/invalid-exported-method-error';
+import type { IExportedMethodCallback } from './iexported-method';
 import type IExportedMethod from './iexported-method';
 import { exportedMethodsSymbol } from './symbols';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export default function exportMethod<TTarget extends { constructor: Function; }>(asIs?: boolean,
   name?: string): (target: TTarget, propertyKey: string,
-    descriptor: TypedPropertyDescriptor<(...parameters: unknown[]) => unknown>) => void {
+    descriptor: TypedPropertyDescriptor<IExportedMethodCallback>) => void {
   return (target, propertyKey, descriptor) => {
     if (!descriptor.value) {
       throw new InvalidExportedMethodError(propertyKey, target.constructor.name);

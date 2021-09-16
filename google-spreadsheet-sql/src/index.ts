@@ -19,15 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { addCaching } from 'helpers-caching';
-import { addExchange } from 'helpers-exchange';
-import { addExporting } from 'helpers-exporting';
-import { addLogging } from 'helpers-logging';
-import { addQuerying } from 'helpers-querying';
+import addCaching from 'helpers-caching';
+import addExchange from 'helpers-exchange';
+import addExporting from 'helpers-exporting';
+import addLogging from 'helpers-logging';
+import addQuerying from 'helpers-querying';
 import { createContainer } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { GoogleSpreadsheetSQL } from './google-spreadsheet-sql';
+import GoogleSpreadsheetSQL from './google-spreadsheet-sql';
 
 const container: interfaces.Container = createContainer();
 addCaching(container, (builder) => {
@@ -45,6 +45,6 @@ addLogging(container, (builder) => {
 });
 addQuerying(container);
 
-export {
+export default {
   container,
 };

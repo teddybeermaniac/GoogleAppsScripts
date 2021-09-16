@@ -25,5 +25,6 @@ export const ExchangeRateApiComExchangeProviderSettingsRuntype = Record({
   apiKey: String,
 });
 
-export type ExchangeRateApiComExchangeProviderSettings
+type ExchangeRateApiComExchangeProviderSettings
   = Static<typeof ExchangeRateApiComExchangeProviderSettingsRuntype>;
+export default ExchangeRateApiComExchangeProviderSettings;

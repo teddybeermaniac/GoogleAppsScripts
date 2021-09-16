@@ -25,12 +25,12 @@ import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
 import { IExchangeProviderSymbol } from '../../symbols';
-import { BaseExchangeProvider } from '../base-exchange-provider';
-import { ProviderType } from '../provider-type';
+import BaseExchangeProvider from '../base-exchange-provider';
+import ProviderType from '../provider-type';
 import currencies from './currencies.json';
 
 @setBindMetadata(IExchangeProviderSymbol, Scope.Singleton)
-export class ExchangeRateHostExchangeProvider extends BaseExchangeProvider {
+export default class ExchangeRateHostExchangeProvider extends BaseExchangeProvider {
   public readonly supportedCurrencies = currencies;
 
   public readonly providerType = ProviderType.ExchangeRateHost;

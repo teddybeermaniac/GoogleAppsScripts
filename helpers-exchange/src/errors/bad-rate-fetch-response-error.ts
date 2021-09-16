@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { ExchangeError } from './exchange-error';
+import ExchangeError from './exchange-error';
 
-export class BadRateFetchResponseError extends ExchangeError {
+export default class BadRateFetchResponseError extends ExchangeError {
   constructor(message: string) {
     super(`Error fetching currency exchange rates: ${message}`);
     this.name = 'BadRateFetchResponseError';

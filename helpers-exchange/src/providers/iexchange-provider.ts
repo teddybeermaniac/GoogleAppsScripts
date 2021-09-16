@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ProviderType } from './provider-type';
+import type ProviderType from './provider-type';
 
-export interface IExchangeProvider {
+export default interface IExchangeProvider {
   readonly providerType: ProviderType;
   readonly supportedCurrencies: string[];
   getRate(from: string, to: string): number;

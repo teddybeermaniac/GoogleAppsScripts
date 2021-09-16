@@ -22,13 +22,13 @@
 import { bind, bindSettings, ProviderAlreadyAddedError } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { ExchangeRateApiComExchangeProvider } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider';
-import type { ExchangeRateApiComExchangeProviderSettings } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider-settings';
+import ExchangeRateApiComExchangeProvider from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider';
+import type ExchangeRateApiComExchangeProviderSettings from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider-settings';
 import { ExchangeRateApiComExchangeProviderSettingsRuntype } from './providers/exchange-rate-api-com-exchange-provider/exchange-rate-api-com-exchange-provider-settings';
-import { ExchangeRateHostExchangeProvider } from './providers/exchange-rate-host-exchange-provider/exchange-rate-host-exchange-provider';
+import ExchangeRateHostExchangeProvider from './providers/exchange-rate-host-exchange-provider/exchange-rate-host-exchange-provider';
 import { ExchangeRateApiComExchangeProviderSettingsSymbol } from './symbols';
 
-export class ExchangeBuilder {
+export default class ExchangeBuilder {
   private provider = false;
 
   constructor(private readonly container: interfaces.Container) {}

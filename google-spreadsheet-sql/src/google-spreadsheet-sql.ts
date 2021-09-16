@@ -29,14 +29,13 @@ import objectHash from 'object-hash';
 import { GoogleSpreadsheetSQLSymbol } from './symbols';
 
 @setBindMetadata(GoogleSpreadsheetSQLSymbol, Scope.Singleton)
-export class GoogleSpreadsheetSQL {
+export default class GoogleSpreadsheetSQL {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {
-  }
+    @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {}
 
   @exportMethod(true, 'SQL')
-  public sql(query: string, cacheKey: string | boolean | null, ...parameters: [[string, any]][]):
-  any[][] | undefined {
+  public sql(query: string, cacheKey?: string | boolean, ...parameters: [[string, unknown]][]):
+  unknown[][] | undefined {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
     const queryableProvider = this.queryable.fromCurrentSpreadsheet();
     const entries = parameters.map((parameter) => parameter[0]);
@@ -45,7 +44,7 @@ export class GoogleSpreadsheetSQL {
   }
 
   @exportMethod(true, 'CACHEKEY')
-  public cacheKey(...parameters: any[]): string {
+  public cacheKey(...parameters: unknown[]): string {
     this.logger.debug('Calculating cache key');
 
     return objectHash.sha1(parameters);

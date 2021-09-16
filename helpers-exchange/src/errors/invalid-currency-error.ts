@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { ExchangeError } from './exchange-error';
+import ExchangeError from './exchange-error';
 
-export class InvalidCurrencyError extends ExchangeError {
+export default class InvalidCurrencyError extends ExchangeError {
   constructor(public readonly currency: string) {
     super(`Invalid currency '${currency}'`);
     this.name = 'InvalidCurrencyError';

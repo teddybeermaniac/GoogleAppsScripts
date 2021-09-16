@@ -24,13 +24,13 @@ import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
 import currencies from './currencies.json';
-import { InvalidCurrencyError } from './errors/invalid-currency-error';
-import type { IExchange } from './iexchange';
-import type { IExchangeProvider } from './providers/iexchange-provider';
+import InvalidCurrencyError from './errors/invalid-currency-error';
+import type IExchange from './iexchange';
+import type IExchangeProvider from './providers/iexchange-provider';
 import { IExchangeProviderSymbol, IExchangeSymbol } from './symbols';
 
 @setBindMetadata(IExchangeSymbol, Scope.Singleton)
-export class Exchange implements IExchange {
+export default class Exchange implements IExchange {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(IExchangeProviderSymbol) private readonly provider: IExchangeProvider) {}
 
