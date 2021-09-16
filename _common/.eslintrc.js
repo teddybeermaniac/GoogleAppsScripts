@@ -28,22 +28,35 @@ module.exports = {
   ],
   root: true,
   rules: {
+    // Allow marking unused variables with _ prefix.
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
         "argsIgnorePattern": "^_"
       }
     ],
+    // No, just... No.
     "class-methods-use-this": "off",
     "import/prefer-default-export": "off",
+    // Remove ForOfSyntax from airbnb's config to replace it with for...of and satisfy unicorn/no-array-for-each.
+    "no-restricted-syntax": [
+      "error",
+      "ForInStatement",
+      "LabeledStatement",
+      "WithStatement",
+    ],
+    // Allow marking unused variables with _ prefix.
     "no-unused-vars": [
       "error",
       {
         "argsIgnorePattern": "^_"
       }
     ],
-    "simple-import-sort/imports": "error",
+    // Force exports to be sorted.
     "simple-import-sort/exports": "error",
-    "unicorn/no-array-for-each": "off"
+    // Force imports to be sorted.
+    "simple-import-sort/imports": "error",
+    // Not yet supported in TypeScript (https://github.com/microsoft/TypeScript/issues/45512).
+    "unicorn/prefer-at": "off"
   }
 };

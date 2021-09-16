@@ -21,4 +21,4 @@
  */
 import type { IItem } from './iitem';
 
-export interface IFolder extends IItem { }
+export type IFolder = IItem;

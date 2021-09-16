@@ -19,14 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { DuplicatePathError } from './duplicate-path-error';
 import { FilesystemError } from './filesystem-error';
-import { InvalidPathError } from './invalid-path-error';
-import { NotFoundPathError } from './not-found-path-error';
 
-export {
-  DuplicatePathError,
-  FilesystemError,
-  InvalidPathError,
-  NotFoundPathError,
-};
+export class NoShortcutTargetError extends FilesystemError {
+  constructor(public readonly path: string) {
+    super(`Shortcut '${path}' doesn't point to anywhere`);
+    this.name = 'NoShortcutTargetError';
+  }
+}

@@ -24,9 +24,11 @@ import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
-import {
-  DuplicatePathError, FilesystemError, InvalidPathError, NotFoundPathError,
-} from '../../errors';
+import { DuplicatePathError } from '../../errors/duplicate-path-error';
+import { InternalProviderError } from '../../errors/internal-provider-error';
+import { InvalidPathError } from '../../errors/invalid-path-error';
+import { NoShortcutTargetError } from '../../errors/no-shortcut-target-error';
+import { NotFoundPathError } from '../../errors/not-found-path-error';
 import type { IItem } from '../../iitem';
 import { IFilesystemProviderSymbol } from '../../symbols';
 import type { IFilesystemProvider } from '../ifilesystem-provider';
@@ -41,11 +43,9 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
 
   private readonly SHORTCUT_MIME_TYPE = 'application/vnd.google-apps.shortcut';
 
-  public get providerType(): ProviderType {
-    return ProviderType.GoogleDrive;
-  }
+  public readonly providerType = ProviderType.GoogleDrive;
 
-  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) { }
+  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger) {}
 
   private getPathFromId(id: string): string {
     this.logger.trace(`Getting path for item with id '${id}'`);
@@ -61,8 +61,8 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
       getParents: () => GoogleAppsScript.Drive.FolderIterator
     };
     item = DriveApp.getFileById(id);
-    if (item === null) {
-      throw new FilesystemError(`Item with id '${id}' does not exist`);
+    if (!item) {
+      throw new InternalProviderError(`Item with id '${id}' does not exist`);
     }
 
     let path = `/${item.getName()}`;
@@ -80,70 +80,88 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     return path;
   }
 
-  private getIdFromPath(path: string, folder?: boolean): string {
-    this.logger.trace(`Getting id for item with path '${path}'`);
-    const segments = path.split('/').slice(1);
-    let segmentFolder = DriveApp.getRootFolder();
-    for (let i = 0; i < segments.length; i += 1) {
-      let childIterator: { hasNext: () => boolean; };
-
-      childIterator = segmentFolder.getFoldersByName(segments[i]!);
-      if (!childIterator.hasNext()) {
-        if (i < segments.length - 1) {
-          throw new NotFoundPathError(path);
-        }
-
-        childIterator = segmentFolder.getFilesByName(segments[i]!);
-        if (!childIterator.hasNext()) {
-          throw new NotFoundPathError(path);
-        }
-        if (folder === true) {
-          throw new InvalidPathError(path);
-        }
-
-        const segmentFile = (<GoogleAppsScript.Drive.FileIterator>childIterator)
-          .next();
-        if (childIterator.hasNext()) {
-          throw new DuplicatePathError(path, segmentFile.getName());
-        }
-
-        return segmentFile.getId();
-      }
-
-      if (i === segments.length - 1 && folder === false) {
+  private getFile(searchFolder: GoogleAppsScript.Drive.Folder, name: string, path: string):
+  GoogleAppsScript.Drive.File {
+    const fileIterator = searchFolder.getFilesByName(name);
+    if (!fileIterator.hasNext()) {
+      if (searchFolder.getFoldersByName(name).hasNext()) {
         throw new InvalidPathError(path);
       }
 
-      segmentFolder = (<GoogleAppsScript.Drive.FolderIterator>childIterator).next();
-      if (childIterator.hasNext()) {
-        throw new DuplicatePathError(path, segmentFolder.getName());
-      }
+      throw new NotFoundPathError(path);
     }
 
-    return segmentFolder.getId();
+    const file = fileIterator.next();
+    if (fileIterator.hasNext()) {
+      throw new DuplicatePathError(path, name);
+    }
+
+    return file;
+  }
+
+  private getFolder(searchFolder: GoogleAppsScript.Drive.Folder, name: string, path: string):
+  GoogleAppsScript.Drive.Folder {
+    const folderIterator = searchFolder.getFoldersByName(name);
+    if (!folderIterator.hasNext()) {
+      if (searchFolder.getFilesByName(name).hasNext()) {
+        throw new InvalidPathError(path);
+      }
+
+      throw new NotFoundPathError(path);
+    }
+
+    const folder = folderIterator.next();
+    if (folderIterator.hasNext()) {
+      throw new DuplicatePathError(path, name);
+    }
+
+    return folder;
+  }
+
+  private getIdFromPath(path: string, folder?: boolean): string {
+    this.logger.trace(`Getting id for item with path '${path}'`);
+    const pathElements = path.split('/').slice(1);
+    const lastElement = pathElements.slice(-1)[0];
+    if (!lastElement) {
+      throw new InvalidPathError(path);
+    }
+
+    let searchFolder = DriveApp.getRootFolder();
+    for (const element of pathElements.slice(0, -1)) {
+      searchFolder = this.getFolder(searchFolder, element, path);
+    }
+
+    if (folder) {
+      return this.getFolder(searchFolder, lastElement, path).getId();
+    }
+
+    return this.getFile(searchFolder, lastElement, path).getId();
   }
 
   public list(path: string): IItem[] {
     this.logger.trace(`Listing path '${path}'`);
     const rootFolder = DriveApp.getFolderById(this.getIdFromPath(path, true));
-    if (rootFolder === null) {
+    if (!rootFolder) {
       throw new InvalidPathError(path);
     }
 
     const items: IItem[] = [];
     this.logger.trace('Getting folders');
-    new SimpleIterator(rootFolder.getFolders())
-      .forEach((folder) => items.push(new GoogleDriveFolder(folder, `${path}${folder.getName()}`)));
+    for (const folder of new SimpleIterator(rootFolder.getFolders())) items.push(new GoogleDriveFolder(folder, `${path}${folder.getName()}`));
     this.logger.trace('Getting files and shortcuts');
-    new SimpleIterator(rootFolder.getFiles())
-      .forEach((file) => {
-        if (file.getMimeType() === this.SHORTCUT_MIME_TYPE) {
-          items.push(new GoogleDriveFile(file, `${path}/${file.getName()}`));
-        } else {
-          items.push(new GoogleDriveShortcut(file, `${path}/${file.getName()}`,
-            this.getPathFromId(file.getTargetId()!)));
+    for (const file of new SimpleIterator(rootFolder.getFiles())) {
+      if (file.getMimeType() === this.SHORTCUT_MIME_TYPE) {
+        items.push(new GoogleDriveFile(file, `${path}/${file.getName()}`));
+      } else {
+        const targetId = file.getTargetId();
+        if (!targetId) {
+          throw new NoShortcutTargetError(path);
         }
-      });
+
+        items.push(new GoogleDriveShortcut(file, `${path}/${file.getName()}`,
+          this.getPathFromId(targetId)));
+      }
+    }
     items.sort((a, b) => {
       if (a.name === b.name) {
         return 0;
@@ -155,14 +173,14 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     return items;
   }
 
-  public stat(path: string, resolve: boolean): IItem | null {
+  public stat(path: string, resolve?: boolean): IItem | undefined {
     this.logger.trace(`Stat'ing path '${path}'`);
     let id: string;
     try {
       id = this.getIdFromPath(path);
     } catch (error) {
       if (error instanceof NotFoundPathError) {
-        return null;
+        return undefined;
       }
 
       throw error;
@@ -172,7 +190,11 @@ export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
     let mimeType = file.getMimeType();
     if (mimeType === this.SHORTCUT_MIME_TYPE) {
       this.logger.trace(`Path '${path}' is a shortcut`);
-      const targetId = file.getTargetId()!;
+      const targetId = file.getTargetId();
+      if (!targetId) {
+        throw new NoShortcutTargetError(path);
+      }
+
       if (resolve) {
         file = DriveApp.getFileById(targetId);
         mimeType = file.getMimeType();

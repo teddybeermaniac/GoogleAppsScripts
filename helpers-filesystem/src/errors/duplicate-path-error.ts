@@ -24,5 +24,6 @@ import { FilesystemError } from './filesystem-error';
 export class DuplicatePathError extends FilesystemError {
   constructor(public readonly path: string, public readonly item: string) {
     super(`Duplicate item '${item}' in path '${path}'`);
+    this.name = 'DuplicatePathError';
   }
 }

@@ -22,7 +22,12 @@
 import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import * as errors from './errors';
+import { DuplicatePathError } from './errors/duplicate-path-error';
+import { FilesystemError } from './errors/filesystem-error';
+import { InternalProviderError } from './errors/internal-provider-error';
+import { InvalidPathError } from './errors/invalid-path-error';
+import { NoShortcutTargetError } from './errors/no-shortcut-target-error';
+import { NotFoundPathError } from './errors/not-found-path-error';
 import { Filesystem } from './filesystem';
 import { FilesystemBuilder } from './filesystem-builder';
 import type { IFile } from './ifile';
@@ -35,8 +40,7 @@ import { ProviderType } from './providers/provider-type';
 import { IFilesystemSymbol } from './symbols';
 
 export function addFilesystem(container: interfaces.Container, build: (builder: FilesystemBuilder)
-=> void)
-  : void {
+=> void) : void {
   const builder = new FilesystemBuilder(container);
   build(builder);
 
@@ -56,7 +60,12 @@ export type {
 };
 
 export {
-  errors,
+  DuplicatePathError,
+  FilesystemError,
+  InternalProviderError,
+  InvalidPathError,
   ItemType,
+  NoShortcutTargetError,
+  NotFoundPathError,
   ProviderType,
 };

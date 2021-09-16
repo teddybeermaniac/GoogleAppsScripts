@@ -24,5 +24,6 @@ import { FilesystemError } from './filesystem-error';
 export class InvalidPathError extends FilesystemError {
   constructor(public readonly path: string) {
     super(`Invalid path '${path}'`);
+    this.name = 'InvalidPathError';
   }
 }

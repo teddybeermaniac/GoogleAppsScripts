@@ -19,29 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { NoShortcutTargetError } from '../../errors/no-shortcut-target-error';
-import type { IShortcut } from '../../ishortcut';
-import { ItemType } from '../../item-type';
-import { GoogleDriveItem } from './google-drive-item';
+import { FilesystemError } from './filesystem-error';
 
-export class GoogleDriveShortcut extends GoogleDriveItem implements IShortcut {
-  private targetIdInternal?: string;
-
-  public get targetId(): string {
-    if (this.targetIdInternal === undefined) {
-      const targetId = this.file.getTargetId();
-      if (!targetId) {
-        throw new NoShortcutTargetError(this.path);
-      }
-
-      this.targetIdInternal = targetId;
-    }
-
-    return this.targetIdInternal;
-  }
-
-  constructor(private readonly file: GoogleAppsScript.Drive.File, path: string,
-    public readonly target: string) {
-    super(file, ItemType.Shortcut, path);
+export class InternalProviderError extends FilesystemError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InternalProviderError';
   }
 }

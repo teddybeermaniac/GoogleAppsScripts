@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bind, errors as utilities_errors } from 'helpers-utilities';
+import { bind, ProviderAlreadyAddedError } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import { GoogleDriveFilesystemProvider } from './providers/google-drive-filesystem-provider/google-drive-filesystem-provider';
@@ -27,11 +27,11 @@ import { GoogleDriveFilesystemProvider } from './providers/google-drive-filesyst
 export class FilesystemBuilder {
   private provider = false;
 
-  constructor(private readonly container: interfaces.Container) { }
+  constructor(private readonly container: interfaces.Container) {}
 
   public addGoogleDriveProvider(): FilesystemBuilder {
     if (this.provider) {
-      throw new utilities_errors.BuilderError('FilesystemBuilder', 'A filesystem provider was already added');
+      throw new ProviderAlreadyAddedError('FilesystemBuilder', 'filesystem');
     }
 
     bind(this.container, GoogleDriveFilesystemProvider);

@@ -24,24 +24,24 @@ import { ItemType } from '../../item-type';
 import { GoogleDriveItem } from './google-drive-item';
 
 export class GoogleDriveFile extends GoogleDriveItem implements IFile {
-  private _size?: number;
+  private sizeInternal?: number;
 
-  private _mimeType?: string;
+  private mimeTypeInternal?: string;
 
   public get size(): number {
-    if (this._size === undefined) {
-      this._size = this.file.getSize();
+    if (this.sizeInternal === undefined) {
+      this.sizeInternal = this.file.getSize();
     }
 
-    return this._size;
+    return this.sizeInternal;
   }
 
   public get mimeType(): string {
-    if (this._mimeType === undefined) {
-      this._mimeType = this.file.getMimeType();
+    if (this.mimeTypeInternal === undefined) {
+      this.mimeTypeInternal = this.file.getMimeType();
     }
 
-    return this._mimeType;
+    return this.mimeTypeInternal;
   }
 
   constructor(private readonly file: GoogleAppsScript.Drive.File, path: string) {
