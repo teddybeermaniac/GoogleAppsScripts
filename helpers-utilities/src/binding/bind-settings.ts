@@ -23,13 +23,13 @@ import { camelCase, constantCase } from 'change-case';
 import type { interfaces } from 'inversify';
 import type { RuntypeBase } from 'runtypes/lib/runtype';
 
-import { UnableToLoadSettingsError } from '../errors/unable-to-load-settings-error';
+import UnableToLoadSettingsError from '../errors/unable-to-load-settings-error';
 
 declare let process: {
   env: { [key: string]: string }
 };
 
-export function bindSettings<TSettings>(container: interfaces.Container, symbol: symbol,
+export default function bindSettings<TSettings>(container: interfaces.Container, symbol: symbol,
   name: string, runtype: RuntypeBase<TSettings>, defaults: Partial<TSettings>,
   statics?: Partial<TSettings>): void {
   const prefixRegex = new RegExp(`^${constantCase(name)}_`);

@@ -21,11 +21,12 @@
  */
 import type { interfaces } from 'inversify';
 
-import { NoBindMetadataDefinedError } from '../errors/no-bind-metadata-defined-error';
+import NoBindMetadataDefinedError from '../errors/no-bind-metadata-defined-error';
 import { bindMetadataSymbol } from '../symbols';
-import type { IBindMetadata } from './ibind-metadata';
+import type IBindMetadata from './ibind-metadata';
 
-export function getBindMetadata<TTarget>(target: interfaces.Newable<TTarget>): IBindMetadata {
+export default function getBindMetadata<TTarget>(target: interfaces.Newable<TTarget>):
+IBindMetadata {
   const metadata = <IBindMetadata>Reflect.getMetadata(bindMetadataSymbol, target);
   if (!metadata) {
     throw new NoBindMetadataDefinedError(target.name);

@@ -19,8 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export enum Scope {
+enum Scope {
   Transient,
   Request,
   Singleton,
 }
+export default Scope;

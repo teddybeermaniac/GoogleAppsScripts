@@ -19,12 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { NoShortcutTargetError } from '../../errors/no-shortcut-target-error';
-import type { IShortcut } from '../../ishortcut';
-import { ItemType } from '../../item-type';
-import { GoogleDriveItem } from './google-drive-item';
+import NoShortcutTargetError from '../../errors/no-shortcut-target-error';
+import type IShortcut from '../../ishortcut';
+import ItemType from '../../item-type';
+import GoogleDriveItem from './google-drive-item';
 
-export class GoogleDriveShortcut extends GoogleDriveItem implements IShortcut {
+export default class GoogleDriveShortcut extends GoogleDriveItem implements IShortcut {
   private targetIdInternal?: string;
 
   public get targetId(): string {

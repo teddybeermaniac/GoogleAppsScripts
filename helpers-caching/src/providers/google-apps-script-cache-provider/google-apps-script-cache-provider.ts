@@ -24,11 +24,11 @@ import { JSONEx, Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
 import { ICacheProviderSymbol } from '../../symbols';
-import type { ICacheProvider } from '../icache-provider';
-import { ProviderType } from '../provider-type';
+import type ICacheProvider from '../icache-provider';
+import ProviderType from '../provider-type';
 
 @setBindMetadata(ICacheProviderSymbol, Scope.Singleton)
-export class GoogleAppsScriptCacheProvider implements ICacheProvider {
+export default class GoogleAppsScriptCacheProvider implements ICacheProvider {
   private static readonly ALL_KEYS_KEY = '__ALL_KEYS__';
 
   private readonly cache: GoogleAppsScript.Cache.Cache;

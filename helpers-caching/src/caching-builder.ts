@@ -22,9 +22,9 @@
 import { bind, ProviderAlreadyAddedError } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { GoogleAppsScriptCacheProvider } from './providers/google-apps-script-cache-provider/google-apps-script-cache-provider';
+import GoogleAppsScriptCacheProvider from './providers/google-apps-script-cache-provider/google-apps-script-cache-provider';
 
-export class CachingBuilder {
+export default class CachingBuilder {
   private provider = false;
 
   constructor(private readonly container: interfaces.Container) {}

@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { Scope } from '../binding/scope';
+import type Scope from '../binding/scope';
 
-export class InvalidScopeDefinedError extends Error {
+export default class InvalidScopeDefinedError extends Error {
   constructor(public readonly scope: Scope) {
     super(`Invalid scope defined '${scope.toString()}'`);
     this.name = 'InvalidScopeDefinedError';

@@ -21,10 +21,10 @@
  */
 import type { interfaces } from 'inversify';
 
-import { UnableToFindOwnerTypeError } from '../errors/unable-to-find-owner-type-error';
-import { getBindMetadata } from './get-bind-metadata';
+import UnableToFindOwnerTypeError from '../errors/unable-to-find-owner-type-error';
+import getBindMetadata from './get-bind-metadata';
 
-export function getOwnerType<TTarget>(context: interfaces.Context,
+export default function getOwnerType<TTarget>(context: interfaces.Context,
   target: interfaces.Newable<TTarget>): interfaces.Newable<unknown> {
   const { symbol } = getBindMetadata(target);
   let request: interfaces.Request | null = context.currentRequest;

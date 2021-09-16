@@ -21,9 +21,9 @@
  */
 import type { IInitializable } from 'helpers-utilities';
 
-import type { ProviderType } from './providers/provider-type';
+import type ProviderType from './providers/provider-type';
 
-export interface ICache extends IInitializable {
+export default interface ICache extends IInitializable {
   readonly providerType: ProviderType;
   get<TValue>(key: string): TValue | undefined;
   get<TValue>(key: string, value: TValue): TValue;

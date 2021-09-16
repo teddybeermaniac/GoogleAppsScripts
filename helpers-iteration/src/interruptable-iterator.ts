@@ -25,11 +25,11 @@ import type { ILogger } from 'helpers-logging';
 import type { ITriggerManager } from 'helpers-triggering';
 import { injectable } from 'inversify';
 
-import { AlreadyRunningIterationError } from './errors/already-running-iteration-error';
-import type { IInterruptableIterator } from './iinterruptable-iterator';
+import AlreadyRunningIterationError from './errors/already-running-iteration-error';
+import type IInterruptableIterator from './iinterruptable-iterator';
 
 @injectable()
-export abstract class InterruptableIterator<TToken = string>
+export default abstract class InterruptableIterator<TToken = string>
 implements IInterruptableIterator<TToken> {
   private static readonly TRIGGER_MINUTES = 1;
 

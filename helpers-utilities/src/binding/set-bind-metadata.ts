@@ -22,10 +22,10 @@
 import { injectable, interfaces } from 'inversify';
 
 import { bindMetadataSymbol } from '../symbols';
-import type { IBindMetadata } from './ibind-metadata';
-import type { Scope } from './scope';
+import type IBindMetadata from './ibind-metadata';
+import type Scope from './scope';
 
-export function setBindMetadata<TTarget>(symbol: symbol, scope: Scope, name?: string):
+export default function setBindMetadata<TTarget>(symbol: symbol, scope: Scope, name?: string):
 (target: interfaces.Newable<TTarget>) => void {
   return (target) => {
     const metadata: IBindMetadata = {

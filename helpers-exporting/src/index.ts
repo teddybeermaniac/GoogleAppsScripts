@@ -22,17 +22,17 @@
 import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { ExportingError } from './errors/exporting-error';
-import { InvalidExportedMethodError } from './errors/invalid-exported-method-error';
-import { NoMethodsExportedError } from './errors/no-methods-exported-error';
-import { NotExportedMethodError } from './errors/not-exported-method-error';
-import { exportMethod } from './export-method';
-import { ExportedMethodProvider } from './exported-method-provider';
-import { ExportingBuilder } from './exporting-builder';
-import type { IExportedMethodProvider } from './iexported-method-provider';
+import ExportingError from './errors/exporting-error';
+import InvalidExportedMethodError from './errors/invalid-exported-method-error';
+import NoMethodsExportedError from './errors/no-methods-exported-error';
+import NotExportedMethodError from './errors/not-exported-method-error';
+import exportMethod from './export-method';
+import ExportedMethodProvider from './exported-method-provider';
+import ExportingBuilder from './exporting-builder';
+import type IExportedMethodProvider from './iexported-method-provider';
 import { IExportedMethodProviderSymbol } from './symbols';
 
-export function addExporting(container: interfaces.Container,
+export default function addExporting(container: interfaces.Container,
   build: (builder: ExportingBuilder) => void): void {
   const builder = new ExportingBuilder(container);
   build(builder);

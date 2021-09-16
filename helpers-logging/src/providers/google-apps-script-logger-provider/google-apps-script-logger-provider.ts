@@ -22,15 +22,15 @@
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
-import { InvalidLogLevelError } from '../../errors/invalid-log-level-error';
-import { LogLevel, logLevelValues } from '../../log-level';
+import InvalidLogLevelError from '../../errors/invalid-log-level-error';
+import LogLevel, { logLevelValues } from '../../log-level';
 import { GoogleAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../../symbols';
-import type { ILoggerProvider } from '../ilogger-provider';
-import { ProviderType } from '../provider-type';
-import type { GoogleAppsScriptLoggerProviderSettings } from './google-apps-script-logger-provider-settings';
+import type ILoggerProvider from '../ilogger-provider';
+import ProviderType from '../provider-type';
+import type GoogleAppsScriptLoggerProviderSettings from './google-apps-script-logger-provider-settings';
 
 @setBindMetadata(ILoggerProviderSymbol, Scope.Singleton)
-export class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
+export default class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
   private readonly logLevel: number;
 
   public readonly providerType = ProviderType.GoogleAppsScript;

@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { ExportingError } from './exporting-error';
+import ExportingError from './exporting-error';
 
-export class NoMethodsExportedError extends ExportingError {
+export default class NoMethodsExportedError extends ExportingError {
   constructor(public readonly target: string) {
     super(`No methods exported from '${target}'`);
     this.name = 'NoMethodsExportedError';

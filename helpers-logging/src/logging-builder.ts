@@ -22,14 +22,14 @@
 import { bind, bindSettings, ProviderAlreadyAddedError } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import type { LoggerSettings } from './logger-settings';
+import type LoggerSettings from './logger-settings';
 import { LoggerSettingsRuntype } from './logger-settings';
-import { GoogleAppsScriptLoggerProvider } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider';
-import type { GoogleAppsScriptLoggerProviderSettings } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider-settings';
+import GoogleAppsScriptLoggerProvider from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider';
+import type GoogleAppsScriptLoggerProviderSettings from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider-settings';
 import { GoogleAppsScriptLoggerProviderSettingsRuntype } from './providers/google-apps-script-logger-provider/google-apps-script-logger-provider-settings';
 import { GoogleAppsScriptLoggerProviderSettingsSymbol, LoggerSettingsSymbol } from './symbols';
 
-export class LoggingBuilder {
+export default class LoggingBuilder {
   private googleAppScriptProvider = false;
 
   constructor(private readonly container: interfaces.Container) {}

@@ -19,11 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { IFolder } from '../../ifolder';
-import { ItemType } from '../../item-type';
-import { GoogleDriveItem } from './google-drive-item';
+import type IFolder from '../../ifolder';
+import ItemType from '../../item-type';
+import GoogleDriveItem from './google-drive-item';
 
-export class GoogleDriveFolder extends GoogleDriveItem implements IFolder {
+export default class GoogleDriveFolder extends GoogleDriveItem implements IFolder {
   constructor(folder: GoogleAppsScript.Drive.Folder, path: string) {
     super(folder, ItemType.Folder, path);
   }

@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { TriggeringError } from './triggering-error';
+import TriggeringError from './triggering-error';
 
-export class AlreadyExistsTriggerError extends TriggeringError {
+export default class AlreadyExistsTriggerError extends TriggeringError {
   constructor(public readonly method: string, public readonly target?: string) {
     // eslint-disable-next-line unicorn/custom-error-definition
     super('');

@@ -24,7 +24,7 @@ import type { interfaces } from 'inversify';
 
 import { exportedMethodContainerSymbol } from './symbols';
 
-export class ExportingBuilder {
+export default class ExportingBuilder {
   constructor(private readonly container: interfaces.Container) {}
 
   public addContainer<TTarget>(target: interfaces.Newable<TTarget>, shouldBind = false):

@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class UnableToLoadSettingsError extends Error {
+export default class UnableToLoadSettingsError extends Error {
   constructor(public readonly settings: string, public readonly error: Error) {
     super(`Error loading '${settings}' settings; ${error.name}: ${error.message}`);
     this.name = 'UnableToLoadSettingsError';

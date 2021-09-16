@@ -27,4 +27,5 @@ export const LoggerSettingsRuntype = Record({
   level: LogLevelRuntype,
 });
 
-export type LoggerSettings = Static<typeof LoggerSettingsRuntype>;
+type LoggerSettings = Static<typeof LoggerSettingsRuntype>;
+export default LoggerSettings;

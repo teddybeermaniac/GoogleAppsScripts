@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export abstract class TriggeringError extends Error {
+export default abstract class TriggeringError extends Error {
   constructor(message: string) {
     super(message);
     this.name = 'TriggeringError';

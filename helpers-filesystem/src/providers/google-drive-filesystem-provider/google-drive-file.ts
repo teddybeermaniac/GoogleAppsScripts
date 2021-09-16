@@ -19,11 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { IFile } from '../../ifile';
-import { ItemType } from '../../item-type';
-import { GoogleDriveItem } from './google-drive-item';
+import type IFile from '../../ifile';
+import ItemType from '../../item-type';
+import GoogleDriveItem from './google-drive-item';
 
-export class GoogleDriveFile extends GoogleDriveItem implements IFile {
+export default class GoogleDriveFile extends GoogleDriveItem implements IFile {
   private sizeInternal?: number;
 
   private mimeTypeInternal?: string;

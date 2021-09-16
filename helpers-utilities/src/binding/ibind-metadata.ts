@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { Scope } from './scope';
+import type Scope from './scope';
 
-export interface IBindMetadata {
+export default interface IBindMetadata {
   symbol: symbol;
   scope: Scope;
   name?: string;

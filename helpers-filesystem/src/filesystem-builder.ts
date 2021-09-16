@@ -22,9 +22,9 @@
 import { bind, ProviderAlreadyAddedError } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { GoogleDriveFilesystemProvider } from './providers/google-drive-filesystem-provider/google-drive-filesystem-provider';
+import GoogleDriveFilesystemProvider from './providers/google-drive-filesystem-provider/google-drive-filesystem-provider';
 
-export class FilesystemBuilder {
+export default class FilesystemBuilder {
   private provider = false;
 
   constructor(private readonly container: interfaces.Container) {}

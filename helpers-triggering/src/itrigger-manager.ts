@@ -21,7 +21,7 @@
  */
 import type { IInitializable } from 'helpers-utilities';
 
-export interface ITriggerManager extends IInitializable {
+export default interface ITriggerManager extends IInitializable {
   addEveryMinutes(method: string, minutes: number, replace?: boolean): void;
   addEveryHours(method: string, hours: number, replace?: boolean): void;
   addEveryDays(method: string, days: number, replace?: boolean): void;

@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { IterationError } from './iteration-error';
+import IterationError from './iteration-error';
 
-export class AlreadyRunningIterationError extends IterationError {
+export default class AlreadyRunningIterationError extends IterationError {
   constructor() {
     super('Iteration already running');
     this.name = 'AlreadyRunningIterationError';

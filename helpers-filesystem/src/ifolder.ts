@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { IItem } from './iitem';
+import type IItem from './iitem';
 
-export type IFolder = IItem;
+type IFolder = IItem;
+export default IFolder;

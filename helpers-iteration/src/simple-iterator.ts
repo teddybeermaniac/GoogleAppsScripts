@@ -21,7 +21,7 @@
  */
 import { HIterator } from 'iterator-helper';
 
-export class SimpleIterator<TItem> extends HIterator<TItem> {
+export default class SimpleIterator<TItem> extends HIterator<TItem> {
   constructor(private readonly iterator: { hasNext: () => boolean; next: () => TItem; }) {
     super();
   }

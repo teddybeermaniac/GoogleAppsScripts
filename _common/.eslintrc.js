@@ -37,7 +37,6 @@ module.exports = {
     ],
     // No, just... No.
     "class-methods-use-this": "off",
-    "import/prefer-default-export": "off",
     // Remove ForOfSyntax from airbnb's config to replace it with for...of and satisfy unicorn/no-array-for-each.
     "no-restricted-syntax": [
       "error",

@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { FilesystemError } from './filesystem-error';
+import FilesystemError from './filesystem-error';
 
-export class InternalProviderError extends FilesystemError {
+export default class InternalProviderError extends FilesystemError {
   constructor(message: string) {
     super(message);
     this.name = 'InternalProviderError';

@@ -27,14 +27,14 @@ import {
   inject, interfaces, multiInject, optional,
 } from 'inversify';
 
-import { NoMethodsExportedError } from './errors/no-methods-exported-error';
-import { NotExportedMethodError } from './errors/not-exported-method-error';
-import type { IExportedMethod } from './iexported-method';
-import type { IExportedMethodProvider } from './iexported-method-provider';
+import NoMethodsExportedError from './errors/no-methods-exported-error';
+import NotExportedMethodError from './errors/not-exported-method-error';
+import type IExportedMethod from './iexported-method';
+import type IExportedMethodProvider from './iexported-method-provider';
 import { exportedMethodContainerSymbol, exportedMethodsSymbol, IExportedMethodProviderSymbol } from './symbols';
 
 @setBindMetadata(IExportedMethodProviderSymbol, Scope.Singleton)
-export class ExportedMethodProvider implements IExportedMethodProvider {
+export default class ExportedMethodProvider implements IExportedMethodProvider {
   private readonly exportedMethods:
   (IExportedMethod & { exportedName: string, symbol: symbol })[] = [];
 
@@ -66,7 +66,7 @@ export class ExportedMethodProvider implements IExportedMethodProvider {
 
   protected prepare(targets: interfaces.Newable<unknown>[]): void {
     this.logTrace(`Found ${targets.length} exported method containers`);
-    targets.forEach((target) => {
+    for (const target of targets) {
       this.logTrace(`Processing '${target.name}'`);
       const methods = <IExportedMethod[]>Reflect.getMetadata(exportedMethodsSymbol, target);
       if (!methods) {
@@ -77,7 +77,7 @@ export class ExportedMethodProvider implements IExportedMethodProvider {
         `Found ${methods.length} exported methods on container '${target.name}'`,
       );
 
-      methods.forEach((method) => {
+      for (const method of methods) {
         const metadata = getBindMetadata(target);
         const exportedName = method.asIs ? method.name : `zzz_${target.name}_${method.name}`;
         this.exportedMethods.push({ ...method, exportedName, symbol: metadata.symbol });
@@ -85,8 +85,8 @@ export class ExportedMethodProvider implements IExportedMethodProvider {
         this.logDebug(
           `Method '${method.name}' from '${target.name}' is exported as '${exportedName}'`,
         );
-      });
-    });
+      }
+    }
   }
 
   public getExportedMethods(): string[] {

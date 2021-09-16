@@ -24,21 +24,21 @@ import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
-import { DuplicatePathError } from '../../errors/duplicate-path-error';
-import { InternalProviderError } from '../../errors/internal-provider-error';
-import { InvalidPathError } from '../../errors/invalid-path-error';
-import { NoShortcutTargetError } from '../../errors/no-shortcut-target-error';
-import { NotFoundPathError } from '../../errors/not-found-path-error';
-import type { IItem } from '../../iitem';
+import DuplicatePathError from '../../errors/duplicate-path-error';
+import InternalProviderError from '../../errors/internal-provider-error';
+import InvalidPathError from '../../errors/invalid-path-error';
+import NoShortcutTargetError from '../../errors/no-shortcut-target-error';
+import NotFoundPathError from '../../errors/not-found-path-error';
+import type IItem from '../../iitem';
 import { IFilesystemProviderSymbol } from '../../symbols';
-import type { IFilesystemProvider } from '../ifilesystem-provider';
-import { ProviderType } from '../provider-type';
-import { GoogleDriveFile } from './google-drive-file';
-import { GoogleDriveFolder } from './google-drive-folder';
-import { GoogleDriveShortcut } from './google-drive-shortcut';
+import type IFilesystemProvider from '../ifilesystem-provider';
+import ProviderType from '../provider-type';
+import GoogleDriveFile from './google-drive-file';
+import GoogleDriveFolder from './google-drive-folder';
+import GoogleDriveShortcut from './google-drive-shortcut';
 
 @setBindMetadata(IFilesystemProviderSymbol, Scope.Singleton)
-export class GoogleDriveFilesystemProvider implements IFilesystemProvider {
+export default class GoogleDriveFilesystemProvider implements IFilesystemProvider {
   private readonly FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
 
   private readonly SHORTCUT_MIME_TYPE = 'application/vnd.google-apps.shortcut';

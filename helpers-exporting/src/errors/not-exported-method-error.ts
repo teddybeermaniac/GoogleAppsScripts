@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { ExportingError } from './exporting-error';
+import ExportingError from './exporting-error';
 
-export class NotExportedMethodError extends ExportingError {
+export default class NotExportedMethodError extends ExportingError {
   constructor(public readonly method: string, public readonly target?: string) {
     // eslint-disable-next-line unicorn/custom-error-definition
     super('');

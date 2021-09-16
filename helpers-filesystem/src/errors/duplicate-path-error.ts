@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { FilesystemError } from './filesystem-error';
+import FilesystemError from './filesystem-error';
 
-export class DuplicatePathError extends FilesystemError {
+export default class DuplicatePathError extends FilesystemError {
   constructor(public readonly path: string, public readonly item: string) {
     super(`Duplicate item '${item}' in path '${path}'`);
     this.name = 'DuplicatePathError';

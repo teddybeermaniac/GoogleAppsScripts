@@ -22,18 +22,18 @@
 import { IExportedMethodProvider, TYPES as EXPORTING_TYPES } from 'helpers-exporting';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import {
-  AlreadyInitializedError,
-  getBindMetadata, getOwnerType, NotInitializedError, Scope, setBindMetadata,
+  AlreadyInitializedError, getBindMetadata, getOwnerType, NotInitializedError, Scope,
+  setBindMetadata,
 } from 'helpers-utilities';
 import { inject, interfaces } from 'inversify';
 
-import { AlreadyExistsTriggerError } from './errors/already-exists-trigger-error';
-import type { ITriggerManager } from './itrigger-manager';
-import type { Minutes } from './minutes';
+import AlreadyExistsTriggerError from './errors/already-exists-trigger-error';
+import type ITriggerManager from './itrigger-manager';
+import type Minutes from './minutes';
 import { ITriggerManagerSymbol } from './symbols';
 
 @setBindMetadata(ITriggerManagerSymbol, Scope.Transient)
-export class TriggerManager implements ITriggerManager {
+export default class TriggerManager implements ITriggerManager {
   private symbolInternal?: symbol;
 
   private initialized = false;

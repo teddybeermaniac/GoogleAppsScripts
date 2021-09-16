@@ -22,13 +22,14 @@
 import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { AlreadyRunningIterationError } from './errors/already-running-iteration-error';
-import { IterationError } from './errors/iteration-error';
-import type { IInterruptableIterator } from './iinterruptable-iterator';
-import { InterruptableIterator } from './interruptable-iterator';
-import { SimpleIterator } from './simple-iterator';
+import AlreadyRunningIterationError from './errors/already-running-iteration-error';
+import IterationError from './errors/iteration-error';
+import type IInterruptableIterator from './iinterruptable-iterator';
+import InterruptableIterator from './interruptable-iterator';
+import SimpleIterator from './simple-iterator';
 
-export function addInterruptableIterator<TToken, TIterator extends InterruptableIterator<TToken>>(
+export default function addInterruptableIterator<TToken, TIterator
+extends InterruptableIterator<TToken>>(
   container: interfaces.Container, target: interfaces.Newable<TIterator>,
 ): void {
   bind(container, target);

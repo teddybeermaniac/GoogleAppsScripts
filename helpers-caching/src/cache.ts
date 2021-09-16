@@ -25,13 +25,13 @@ import {
 } from 'helpers-utilities';
 import { inject, interfaces } from 'inversify';
 
-import type { ICache } from './icache';
-import type { ICacheProvider } from './providers/icache-provider';
-import type { ProviderType } from './providers/provider-type';
+import type ICache from './icache';
+import type ICacheProvider from './providers/icache-provider';
+import type ProviderType from './providers/provider-type';
 import { ICacheProviderSymbol, ICacheSymbol } from './symbols';
 
 @setBindMetadata(ICacheSymbol, Scope.Transient)
-export class Cache implements ICache {
+export default class Cache implements ICache {
   public readonly providerType: ProviderType;
 
   private prefixInternal?: string;

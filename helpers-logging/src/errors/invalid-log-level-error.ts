@@ -19,10 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { LogLevel } from '../log-level';
-import { LoggingError } from './logging-error';
+import type LogLevel from '../log-level';
+import LoggingError from './logging-error';
 
-export class InvalidLogLevelError extends LoggingError {
+export default class InvalidLogLevelError extends LoggingError {
   constructor(public readonly logLevel: LogLevel) {
     super(`Invalid log level '${logLevel.toString()}`);
     this.name = 'InvalidLogLevelError';

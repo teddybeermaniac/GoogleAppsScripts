@@ -24,15 +24,15 @@ import {
 } from 'helpers-utilities';
 import { inject, interfaces, multiInject } from 'inversify';
 
-import type { ILogger } from './ilogger';
-import { LogLevel, logLevelValues } from './log-level';
-import type { LoggerSettings } from './logger-settings';
-import type { ILoggerProvider } from './providers/ilogger-provider';
-import type { ProviderType } from './providers/provider-type';
+import type ILogger from './ilogger';
+import LogLevel, { logLevelValues } from './log-level';
+import type LoggerSettings from './logger-settings';
+import type ILoggerProvider from './providers/ilogger-provider';
+import type ProviderType from './providers/provider-type';
 import { ILoggerProviderSymbol, ILoggerSymbol, LoggerSettingsSymbol } from './symbols';
 
 @setBindMetadata(ILoggerSymbol, Scope.Transient)
-export class Logger implements ILogger {
+export default class Logger implements ILogger {
   private readonly logLevel: number;
 
   public readonly providerTypes: ProviderType[];
@@ -60,14 +60,14 @@ export class Logger implements ILogger {
       return;
     }
 
-    this.providers.forEach((provider) => {
+    for (const provider of this.providers) {
       try {
         provider.log(this.name, level, message, error);
       } catch (providerError) {
         // eslint-disable-next-line no-console
         console.error(<Error>providerError);
       }
-    });
+    }
   }
 
   public initialize(context: interfaces.Context): void {

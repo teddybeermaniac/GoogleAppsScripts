@@ -19,8 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export enum ItemType {
+enum ItemType {
   File,
   Folder,
   Shortcut,
 }
+export default ItemType;

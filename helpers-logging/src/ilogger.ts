@@ -21,9 +21,9 @@
  */
 import type { IInitializable } from 'helpers-utilities';
 
-import type { ProviderType } from './providers/provider-type';
+import type ProviderType from './providers/provider-type';
 
-export interface ILogger extends IInitializable {
+export default interface ILogger extends IInitializable {
   readonly providerTypes: ProviderType[];
   trace(message: string | (() => string)): void;
   debug(message: string | (() => string)): void;

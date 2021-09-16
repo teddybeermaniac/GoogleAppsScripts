@@ -19,12 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { InvalidExportedMethodError } from './errors/invalid-exported-method-error';
-import type { IExportedMethod } from './iexported-method';
+import InvalidExportedMethodError from './errors/invalid-exported-method-error';
+import type IExportedMethod from './iexported-method';
 import { exportedMethodsSymbol } from './symbols';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function exportMethod<TTarget extends { constructor: Function; }>(asIs?: boolean,
+export default function exportMethod<TTarget extends { constructor: Function; }>(asIs?: boolean,
   name?: string): (target: TTarget, propertyKey: string,
     descriptor: TypedPropertyDescriptor<(...parameters: unknown[]) => unknown>) => void {
   return (target, propertyKey, descriptor) => {

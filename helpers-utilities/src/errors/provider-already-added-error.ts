@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class ProviderAlreadyAddedError extends Error {
+export default class ProviderAlreadyAddedError extends Error {
   constructor(public readonly builder: string, public readonly provider: string) {
     super(`'${provider}' provider already added to '${builder}'`);
     this.name = 'ProviderAlreadyAddedError';

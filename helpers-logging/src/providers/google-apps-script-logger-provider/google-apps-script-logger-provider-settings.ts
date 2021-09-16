@@ -27,5 +27,6 @@ export const GoogleAppsScriptLoggerProviderSettingsRuntype = Record({
   level: LogLevelRuntype,
 });
 
-export type GoogleAppsScriptLoggerProviderSettings
+type GoogleAppsScriptLoggerProviderSettings
   = Static<typeof GoogleAppsScriptLoggerProviderSettingsRuntype>;
+export default GoogleAppsScriptLoggerProviderSettings;

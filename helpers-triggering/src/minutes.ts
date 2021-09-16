@@ -19,4 +19,5 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export type Minutes = 1 | 5 | 10 | 15 | 30;
+type Minutes = 1 | 5 | 10 | 15 | 30;
+export default Minutes;

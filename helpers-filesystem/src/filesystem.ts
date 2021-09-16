@@ -23,14 +23,14 @@ import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
-import type { IFilesystem } from './ifilesystem';
-import type { IItem } from './iitem';
-import type { IFilesystemProvider } from './providers/ifilesystem-provider';
-import type { ProviderType } from './providers/provider-type';
+import type IFilesystem from './ifilesystem';
+import type IItem from './iitem';
+import type IFilesystemProvider from './providers/ifilesystem-provider';
+import type ProviderType from './providers/provider-type';
 import { IFilesystemProviderSymbol, IFilesystemSymbol } from './symbols';
 
 @setBindMetadata(IFilesystemSymbol, Scope.Singleton)
-export class Filesystem implements IFilesystem {
+export default class Filesystem implements IFilesystem {
   public readonly providerType: ProviderType;
 
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,

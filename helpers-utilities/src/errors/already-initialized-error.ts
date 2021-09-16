@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class AlreadyInitializedError extends Error {
+export default class AlreadyInitializedError extends Error {
   constructor(public target: string) {
     super(`'${target}' already initialized`);
     this.name = 'AlreadyInitializedError';

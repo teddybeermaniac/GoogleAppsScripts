@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { FilesystemError } from './filesystem-error';
+import FilesystemError from './filesystem-error';
 
-export class NoShortcutTargetError extends FilesystemError {
+export default class NoShortcutTargetError extends FilesystemError {
   constructor(public readonly path: string) {
     super(`Shortcut '${path}' doesn't point to anywhere`);
     this.name = 'NoShortcutTargetError';
