@@ -55,11 +55,7 @@ export default class GoogleDriveFilesystemProvider implements IFilesystemProvide
       return '/';
     }
 
-    let item: {
-      getId: () => string,
-      getName: () => string,
-      getParents: () => GoogleAppsScript.Drive.FolderIterator
-    };
+    let item: GoogleAppsScript.Drive.File | GoogleAppsScript.Drive.Folder;
     item = DriveApp.getFileById(id);
     if (!item) {
       throw new InternalProviderError(`Item with id '${id}' does not exist`);

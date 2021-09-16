@@ -21,8 +21,13 @@
  */
 import { HIterator } from 'iterator-helper';
 
+interface IGoogleAppsScriptIterator<TItem> {
+  hasNext: () => boolean;
+  next: () => TItem;
+}
+
 export default class SimpleIterator<TItem> extends HIterator<TItem> {
-  constructor(private readonly iterator: { hasNext: () => boolean; next: () => TItem; }) {
+  constructor(private readonly iterator: IGoogleAppsScriptIterator<TItem>) {
     super();
   }
 

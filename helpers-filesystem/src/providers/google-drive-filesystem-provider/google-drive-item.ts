@@ -22,16 +22,6 @@
 import type IItem from '../../iitem';
 import type ItemType from '../../item-type';
 
-type Item = {
-  getId: () => string;
-  getName: () => string;
-  getDateCreated: () => GoogleAppsScript.Base.Date;
-  getLastUpdated: () => GoogleAppsScript.Base.Date;
-  getOwner: () => GoogleAppsScript.Drive.User;
-  getViewers: () => GoogleAppsScript.Drive.User[];
-  getEditors: () => GoogleAppsScript.Drive.User[];
-};
-
 export default class GoogleDriveItem implements IItem {
   private idInternal?: string;
 
@@ -103,6 +93,6 @@ export default class GoogleDriveItem implements IItem {
     return this.editorsInternal;
   }
 
-  constructor(private readonly item: Item, public readonly type: ItemType,
-    public readonly path: string) {}
+  constructor(private readonly item: GoogleAppsScript.Drive.File | GoogleAppsScript.Drive.Folder,
+    public readonly type: ItemType, public readonly path: string) {}
 }
