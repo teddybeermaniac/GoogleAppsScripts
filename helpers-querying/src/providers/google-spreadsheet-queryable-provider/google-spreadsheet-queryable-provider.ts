@@ -23,38 +23,37 @@ import { ICache, TYPES as CACHING_TYPES } from 'helpers-caching';
 import type { IFile } from 'helpers-filesystem';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import {
-  errors as utilities_errors, Scope, setBindMetadata, TYPES as UTILITIES_TYPES,
+  AlreadyInitializedError, NotInitializedError, Scope, setBindMetadata, TYPES as UTILITIES_TYPES,
 } from 'helpers-utilities';
 import { inject, interfaces } from 'inversify';
 
-import { InvalidQueryError, NotASpreadsheetContextError } from '../../errors';
+import InvalidQueryError from '../../errors/invalid-query-error';
+import NotASpreadsheetContextError from '../../errors/not-a-spreadsheet-context-error';
 import { GoogleSpreadsheetQueryableProviderSymbol } from '../../symbols';
-import { BaseAlaSQLQueryableProvider } from '../base-alasql-queryable-provider/base-alasql-queryable-provider';
-import { fromMethod } from '../base-alasql-queryable-provider/from-method/from-method';
-import type { IFromMethodOptions } from '../base-alasql-queryable-provider/from-method/ifrom-method-options';
-import type { IIntoMethodOptions } from '../base-alasql-queryable-provider/into-method/iinto-method-options';
-import { intoMethod } from '../base-alasql-queryable-provider/into-method/into-method';
-import type { ICurrentQueryableProvider } from '../icurrent-queryable-provider';
-import type { IFileQueryableProvider } from '../ifile-queryable-provider';
-import { ProviderType } from '../provider-type';
+import BaseAlaSQLQueryableProvider from '../base-alasql-queryable-provider/base-alasql-queryable-provider';
+import fromMethod from '../base-alasql-queryable-provider/from-method/from-method';
+import type IFromMethodOptions from '../base-alasql-queryable-provider/from-method/ifrom-method-options';
+import type IIntoMethodOptions from '../base-alasql-queryable-provider/into-method/iinto-method-options';
+import intoMethod from '../base-alasql-queryable-provider/into-method/into-method';
+import type ICurrentQueryableProvider from '../icurrent-queryable-provider';
+import type IFileQueryableProvider from '../ifile-queryable-provider';
+import ProviderType from '../provider-type';
 
 @setBindMetadata(GoogleSpreadsheetQueryableProviderSymbol, Scope.Transient)
-export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvider
+export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvider
   implements IFileQueryableProvider, ICurrentQueryableProvider {
-  private _spreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet | undefined;
+  private spreadsheetInternal?: GoogleAppsScript.Spreadsheet.Spreadsheet;
 
   private initialized = false;
 
+  public readonly providerType = ProviderType.GoogleSpreadsheet;
+
   private get spreadsheet(): GoogleAppsScript.Spreadsheet.Spreadsheet {
-    if (!this.initialized || this._spreadsheet === undefined) {
-      throw new utilities_errors.InitializationError('Not initialized');
+    if (!this.initialized || !this.spreadsheetInternal) {
+      throw new NotInitializedError('GoogleSpreadsheetQueryableProvider');
     }
 
-    return this._spreadsheet;
-  }
-
-  public get providerType(): ProviderType {
-    return ProviderType.GoogleSpreadsheet;
+    return this.spreadsheetInternal;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
@@ -69,7 +68,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
     this.logger.trace('Getting last data row');
     const lastRowRange = sheet.getRange(originRow + rows - 1, originColumn, 1, columns);
     const lastRowData = lastRowRange.getValues();
-    if (lastRowData[0]!.some((column) => column !== '')) {
+    if (lastRowData[0] && lastRowData[0].some((column) => column !== '')) {
       return lastRowRange.getRow();
     }
 
@@ -78,12 +77,12 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
 
   private getNamedRange(name: string, getData: boolean): {
     sheet: GoogleAppsScript.Spreadsheet.Sheet, namedRange: GoogleAppsScript.Spreadsheet.NamedRange,
-    dataRange: GoogleAppsScript.Spreadsheet.Range, names: string[], data: any[][],
+    dataRange: GoogleAppsScript.Spreadsheet.Range, names: string[], data: unknown[][],
     originRow: number, originColumn: number, rows: number, columns: number
   } {
     this.logger.trace(`Reading named range '${name}'`);
     const namedRange = this.spreadsheet.getNamedRanges()
-      .filter((range) => range.getName() === name)[0];
+      .find((range) => range.getName() === name);
     if (!namedRange) {
       throw new InvalidQueryError(`Named range '${name}' does not exist`);
     }
@@ -123,7 +122,7 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
     originRow += 1;
     rows -= 1;
     const dataRange = sheet.getRange(originRow, originColumn, rows, columns);
-    let data: any[][] = [];
+    let data: unknown[][] = [];
     if (getData) {
       const lastDataRow = this.getLastDataRow(sheet, originRow, originColumn, rows, columns);
       const dataRows = lastDataRow - originRow + 1;
@@ -147,27 +146,19 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
   }
 
   @fromMethod('NAMEDRANGE')
-  public fromNamedRange(tableName: string, _?: IFromMethodOptions): any[] {
+  public fromNamedRange(tableName: string, _options?: IFromMethodOptions): unknown[] {
     this.logger.debug(`Getting data from named range '${tableName}'`);
     const { names, data } = this.getNamedRange(tableName, true);
 
     this.logger.trace(`Converting a range '${tableName}' to a list of objects`);
     return data
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      .map((row) => Object.fromEntries(row
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        .map((column, index) => [names[index]!, column === '' ? null : column])
-        .filter((entry) => entry[0] !== '')));
+      .map((row) => <unknown>Object.fromEntries(row
+        .map((column, index) => [names[index], column === '' ? undefined : column])
+        .filter((entry) => entry[0])));
   }
 
-  @intoMethod('NAMEDRANGE')
-  public intoNamedRange(tableName: string, options: IIntoMethodOptions, columnNames: string[],
-    data: any[]): void {
-    this.logger.debug(`${options.append ? 'Appending' : 'Inserting'} data ${options.append ? 'to' : 'into'} named range '${tableName}'`);
-    const {
-      sheet, dataRange, namedRange, names, originRow, originColumn, rows, columns,
-    } = this.getNamedRange(tableName, false);
-
+  private mapValues(tableName: string, names: string[], columnNames: string[], data: unknown[]):
+  unknown[][] {
     const unknownColumns = columnNames.filter((column) => column === '' || !names.includes(column));
     if (unknownColumns.length > 0) {
       throw new InvalidQueryError(`Unknown columns '${unknownColumns.join('\', \'')}'`);
@@ -179,29 +170,35 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
     }
 
     this.logger.trace(`Converting a list of objects to range '${tableName}'`);
-    const columnMapping = columnNames.reduce((mapping, column) => {
-      // eslint-disable-next-line no-param-reassign
-      mapping[column] = names.indexOf(column);
+    const columnMapping: { [index: string]: number; } = {};
+    for (const [index, column] of names.entries()) {
+      columnMapping[column] = index;
+    }
 
-      return mapping;
-    }, <{ [index: string]: number; }>{});
-
-    const mappedValues: any[][] = [];
-    data.forEach((row) => {
-      const mappedRow = Object.entries(row).reduce((mapped, [name, value]) => {
-        // eslint-disable-next-line no-param-reassign
-        mapped[columnMapping[name]!] = value;
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return mapped;
-      }, <any[]>[]);
+    const mappedValues: unknown[][] = [];
+    for (const row of data) {
+      const mappedRow: unknown[] = [];
+      for (const [name, value] of Object.entries(<Record<string, unknown>>row)) {
+        const mappedName = columnMapping[name];
+        if (!mappedName) {
+          throw new InvalidQueryError(`Unknown column '${name}'`);
+        }
+        mappedRow[mappedName] = value;
+      }
       mappedValues.push(mappedRow);
-    });
+    }
 
+    return mappedValues;
+  }
+
+  private prepareTargetRange(append: boolean, sheet: GoogleAppsScript.Spreadsheet.Sheet,
+    originRow: number, originColumn: number, rows: number, columns: number,
+    dataRange: GoogleAppsScript.Spreadsheet.Range, length: number):
+    { destinationOriginRow: number, destinationRows: number; } {
     this.logger.trace('Preparing destination range');
     let destinationOriginRow: number;
     let destinationRows: number;
-    if (options.append) {
+    if (append) {
       destinationOriginRow = this.getLastDataRow(sheet, originRow, originColumn, rows,
         columns) + 1;
       destinationRows = rows - (destinationOriginRow - originRow);
@@ -210,9 +207,9 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
         const lastRowRange = sheet.getRange(destinationOriginRow - 1, originColumn, 1, columns);
         lastRowRange.insertCells(SpreadsheetApp.Dimension.ROWS);
 
-        const newRowRange = sheet.getRange(destinationOriginRow, originColumn, 1, columns);
-        newRowRange.copyTo(lastRowRange, SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false);
-        newRowRange.clearContent();
+        const addedRowsRange = sheet.getRange(destinationOriginRow, originColumn, 1, columns);
+        addedRowsRange.copyTo(lastRowRange, SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false);
+        addedRowsRange.clearContent();
 
         destinationRows = 1;
       }
@@ -222,20 +219,27 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
       dataRange.clearContent();
     }
 
-    while (mappedValues.length > destinationRows) {
-      const rowsToAdd = Math.min(destinationRows, mappedValues.length - destinationRows);
+    while (length > destinationRows) {
+      const rowsToAdd = Math.min(destinationRows, length - destinationRows);
       this.logger.trace(`Inserting ${rowsToAdd} rows into range`);
-      const newRowsRange = sheet.getRange(destinationOriginRow, originColumn, rowsToAdd, columns);
-      newRowsRange.insertCells(SpreadsheetApp.Dimension.ROWS);
+      const addedRowsRange = sheet.getRange(destinationOriginRow, originColumn, rowsToAdd, columns);
+      addedRowsRange.insertCells(SpreadsheetApp.Dimension.ROWS);
       destinationRows += rowsToAdd;
     }
 
+    return { destinationOriginRow, destinationRows };
+  }
+
+  private setValues(tableName: string, sheet: GoogleAppsScript.Spreadsheet.Sheet,
+    namedRange: GoogleAppsScript.Spreadsheet.NamedRange, append: boolean, mappedValues: unknown[][],
+    originRow: number, originColumn: number, rows: number, columns: number,
+    destinationOriginRow: number, destinationRows: number): void {
     this.logger.trace(`Setting values of ${mappedValues.length} rows`);
     const destinationRange = sheet.getRange(destinationOriginRow, originColumn,
       Math.min(mappedValues.length, destinationRows), columns);
     destinationRange.setValues(mappedValues);
 
-    const wholeRows = options.append
+    const wholeRows = append
       ? Math.max(destinationOriginRow - originRow + destinationRows + 1)
       : Math.max(rows, destinationRows + 1);
     this.logger.trace(`Setting '${tableName}'' range dimension to have ${wholeRows} rows starting from row ${originRow - 1}`);
@@ -243,24 +247,40 @@ export class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvi
     namedRange.setRange(wholeRange);
   }
 
+  @intoMethod('NAMEDRANGE')
+  public intoNamedRange(tableName: string, options: IIntoMethodOptions, columnNames: string[],
+    data: unknown[]): void {
+    this.logger.debug(`${options.append ? 'Appending' : 'Inserting'} data ${options.append ? 'to' : 'into'} named range '${tableName}'`);
+    const {
+      sheet, dataRange, namedRange, names, originRow, originColumn, rows, columns,
+    } = this.getNamedRange(tableName, false);
+
+    const mappedValues = this.mapValues(tableName, names, columnNames, data);
+    const { destinationOriginRow, destinationRows } = this.prepareTargetRange(options.append, sheet,
+      originRow, originColumn, rows, columns, dataRange, mappedValues.length);
+    this.setValues(tableName, sheet, namedRange, options.append, mappedValues, originRow,
+      originColumn, rows, columns, destinationOriginRow, destinationRows);
+  }
+
   public loadFile(file: IFile): void {
     this.logger.trace(`Loading file '${file.path}'`);
     if (this.initialized) {
-      throw new utilities_errors.InitializationError('Already initialized');
+      throw new AlreadyInitializedError('GoogleSpreadsheetQueryableProvider');
     }
 
-    this._spreadsheet = SpreadsheetApp.openById(file.id);
+    this.spreadsheetInternal = SpreadsheetApp.openById(file.id);
+
     this.initialized = true;
   }
 
   public loadCurrent(): void {
     this.logger.trace('Loading current spreadsheet');
     if (this.initialized) {
-      throw new utilities_errors.InitializationError('Already initialized');
+      throw new AlreadyInitializedError('GoogleSpreadsheetQueryableProvider');
     }
 
-    this._spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-    if (!this._spreadsheet) {
+    this.spreadsheetInternal = SpreadsheetApp.getActiveSpreadsheet();
+    if (!this.spreadsheetInternal) {
       throw new NotASpreadsheetContextError();
     }
 

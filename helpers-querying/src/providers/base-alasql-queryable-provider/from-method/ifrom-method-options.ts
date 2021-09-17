@@ -19,4 +19,5 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IFromMethodOptions { }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export default interface IFromMethodOptions { }

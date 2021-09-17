@@ -19,20 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { InvalidFromMethodError } from './invalid-from-method-error';
-import { InvalidIntoMethodError } from './invalid-into-method-error';
-import { InvalidQueryError } from './invalid-query-error';
-import { NotAQueryableFileError } from './not-a-queryable-file-error';
-import { NotASpreadsheetContextError } from './not-a-spreadsheet-context-error';
-import { NotConfiguredFilesystemError } from './not-configured-filesystem-error';
-import { QueryingError } from './querying-error';
+import QueryingError from './querying-error';
 
-export {
-  InvalidFromMethodError,
-  InvalidIntoMethodError,
-  InvalidQueryError,
-  NotAQueryableFileError,
-  NotASpreadsheetContextError,
-  NotConfiguredFilesystemError,
-  QueryingError,
-};
+export default class MissingExecutionContextError extends QueryingError {
+  constructor() {
+    super('Execution context is missing');
+    this.name = 'MissingExecutionContextError';
+  }
+}

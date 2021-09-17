@@ -19,10 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { QueryingError } from './querying-error';
+import QueryingError from './querying-error';
 
-export class InvalidIntoMethodError extends QueryingError {
-  constructor(public readonly method: string, public readonly container: string) {
-    super(`Invalid INTO method '${method}' on '${container}'`);
+export default class InvalidIntoMethodError extends QueryingError {
+  constructor(public readonly method: string, public readonly target: string) {
+    super(`Invalid INTO method '${method}' on '${target}'`);
+    this.name = 'InvalidIntoMethodError';
   }
 }

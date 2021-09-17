@@ -34,21 +34,17 @@ export default function bindInternal<TTarget>(container: interfaces.Container,
 
   let bindingWhenOn: interfaces.BindingWhenOnSyntax<TTarget>;
   switch (metadata.scope) {
-    case Scope.Transient: {
+    case Scope.Transient:
       bindingWhenOn = bindingTo.inTransientScope();
       break;
-    }
-    case Scope.Request: {
+    case Scope.Request:
       bindingWhenOn = bindingTo.inRequestScope();
       break;
-    }
-    case Scope.Singleton: {
+    case Scope.Singleton:
       bindingWhenOn = bindingTo.inSingletonScope();
       break;
-    }
-    default: {
+    default:
       throw new InvalidScopeDefinedError(metadata.scope);
-    }
   }
 
   if (metadata.name) {

@@ -1305,11 +1305,6 @@ isexe@^2.0.0:
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha1-6PvzdNxVb/iUehDcsFctYz8s+hA=
 
-iterator-helper@^1.3.4:
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/iterator-helper/-/iterator-helper-1.3.4.tgz#ab4b4b831c5d031872e5ec86760d152ea2c96a04"
-  integrity sha512-oVep2qxZEUKwBSKu3woDVP9HiG1xmIbspuW/aHdCfBr4vL286j/NKSEFOfNJfgMBJIYx/rH7niPTof5LYxQNgw==
-
 js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"

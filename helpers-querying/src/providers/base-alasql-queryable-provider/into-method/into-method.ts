@@ -19,15 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { InvalidIntoMethodError } from '../../../errors';
+import InvalidIntoMethodError from '../../../errors/invalid-into-method-error';
 import { intoMethodsSymbol } from '../../../symbols';
-import type { BaseAlaSQLQueryableProvider } from '../base-alasql-queryable-provider';
-import type { IIntoMethod } from './iinto-method';
-import type { IIntoMethodOptions } from './iinto-method-options';
+import type BaseAlaSQLQueryableProvider from '../base-alasql-queryable-provider';
+import type IIntoMethod from './iinto-method';
+import type IIntoMethodOptions from './iinto-method-options';
 
-export function intoMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: string):
-// eslint-disable-next-line max-len
-(target: TTarget, propertyKey: string, descriptor: TypedPropertyDescriptor<(tableName: string, options: IIntoMethodOptions, columnNames: string[], data: any[]) => void>) => void {
+export default function intoMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: string):
+(target: TTarget, propertyKey: string, descriptor: TypedPropertyDescriptor<(tableName: string,
+  options: IIntoMethodOptions, columnNames: string[], data: unknown[]) => void>) => void {
   return (target, propertyKey, descriptor) => {
     if (!descriptor.value) {
       throw new InvalidIntoMethodError(propertyKey, target.constructor.name);

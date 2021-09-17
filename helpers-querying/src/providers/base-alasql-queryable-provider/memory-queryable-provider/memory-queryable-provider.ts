@@ -21,38 +21,22 @@
  */
 import { ICache, TYPES as CACHING_TYPES } from 'helpers-caching';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import {
-  errors as utilities_errors, Scope, setBindMetadata, TYPES as UTILITIES_TYPES,
-} from 'helpers-utilities';
+import { Scope, setBindMetadata, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
 import { inject, interfaces } from 'inversify';
 
 import { MemoryQueryableProviderSymbol } from '../../../symbols';
-import type { ICurrentQueryableProvider } from '../../icurrent-queryable-provider';
-import { ProviderType } from '../../provider-type';
-import { BaseAlaSQLQueryableProvider } from '../base-alasql-queryable-provider';
-import { fromMethod } from '../from-method/from-method';
-import type { IFromMethodOptions } from '../from-method/ifrom-method-options';
-import type { IIntoMethodOptions } from '../into-method/iinto-method-options';
-import { intoMethod } from '../into-method/into-method';
+import ProviderType from '../../provider-type';
+import BaseAlaSQLQueryableProvider from '../base-alasql-queryable-provider';
+import fromMethod from '../from-method/from-method';
+import type IFromMethodOptions from '../from-method/ifrom-method-options';
+import type IIntoMethodOptions from '../into-method/iinto-method-options';
+import intoMethod from '../into-method/into-method';
 
 @setBindMetadata(MemoryQueryableProviderSymbol, Scope.Transient)
-export class MemoryQueryableProvider extends BaseAlaSQLQueryableProvider
-  implements ICurrentQueryableProvider {
-  private _storage: { [table: string]: any[]; } | undefined;
+export default class MemoryQueryableProvider extends BaseAlaSQLQueryableProvider {
+  private readonly storage: Record<string, unknown[]> = {};
 
-  private initialized = false;
-
-  private get storage(): { [table: string]: any[]; } {
-    if (!this.initialized || this._storage === undefined) {
-      throw new utilities_errors.InitializationError('Not initialized');
-    }
-
-    return this._storage;
-  }
-
-  public get providerType(): ProviderType {
-    return ProviderType.Memory;
-  }
+  public readonly providerType = ProviderType.Memory;
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger,
@@ -62,34 +46,26 @@ export class MemoryQueryableProvider extends BaseAlaSQLQueryableProvider
   }
 
   @fromMethod('MEMORY')
-  public fromMemory(tableName: string, _?: IFromMethodOptions): any[] {
+  public fromMemory(tableName: string, _options?: IFromMethodOptions): unknown[] {
     this.logger.debug(`Getting data from memory table '${tableName}'`);
-    return Array.from(this.storage[tableName] ?? []);
+    return [...(this.storage[tableName] ?? [])];
   }
 
   @intoMethod('MEMORY')
-  public intoMemory(tableName: string, options: IIntoMethodOptions, _: string[], data: any[])
+  public intoMemory(tableName: string, options: IIntoMethodOptions, _columns: string[],
+    data: unknown[])
     : void {
     this.logger.debug(`${options.append ? 'Appending' : 'Inserting'} data ${options.append ? 'to' : 'into'} memory table '${tableName}'`);
-    if (!this.storage[tableName]) {
-      this.storage[tableName] = [];
+    let tableStorage = this.storage[tableName];
+    if (!tableStorage) {
+      tableStorage = [];
+      this.storage[tableName] = tableStorage;
     }
 
     if (options.append) {
-      this.storage[tableName] = this.storage[tableName]!.concat(data);
+      this.storage[tableName] = [...tableStorage, ...data];
     } else {
-      this.storage[tableName] = Array.from(data);
+      this.storage[tableName] = [...data];
     }
-  }
-
-  loadCurrent(): void {
-    this.logger.trace('Loading empty storage');
-    if (this.initialized) {
-      throw new utilities_errors.InitializationError('Already initialized');
-    }
-
-    this._storage = {};
-
-    this.initialized = true;
   }
 }

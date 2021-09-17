@@ -19,16 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { HIterator } from 'iterator-helper';
-
 interface IGoogleAppsScriptIterator<TItem> {
   hasNext: () => boolean;
   next: () => TItem;
 }
 
-export default class SimpleIterator<TItem> extends HIterator<TItem> {
-  constructor(private readonly iterator: IGoogleAppsScriptIterator<TItem>) {
-    super();
+export default class SimpleIterator<TItem> implements Iterator<TItem> {
+  constructor(private readonly iterator: IGoogleAppsScriptIterator<TItem>) {}
+
+  public [Symbol.iterator](): Iterator<TItem> {
+    return this;
   }
 
   public next(): IteratorResult<TItem> {

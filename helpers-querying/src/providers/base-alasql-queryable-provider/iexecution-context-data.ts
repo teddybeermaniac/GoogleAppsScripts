@@ -19,10 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type IQueryableProvider from './providers/iqueryable-provider';
+import type BaseAlaSQLQueryableProvider from './base-alasql-queryable-provider';
 
-export default interface IQueryable {
-  fromMemory(): IQueryableProvider;
-  fromFile(path: string): IQueryableProvider;
-  fromCurrentSpreadsheet(): IQueryableProvider;
+export default interface IExecutionContextData {
+  readonly id: string;
+  readonly data: Record<string, unknown>;
+  readonly provider: BaseAlaSQLQueryableProvider;
 }

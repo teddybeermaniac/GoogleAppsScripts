@@ -19,10 +19,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type IQueryableProvider from './providers/iqueryable-provider';
+import type IFromMethodOptions from '../providers/base-alasql-queryable-provider/from-method/ifrom-method-options';
+import type IIntoMethodOptions from '../providers/base-alasql-queryable-provider/into-method/iinto-method-options';
 
-export default interface IQueryable {
-  fromMemory(): IQueryableProvider;
-  fromFile(path: string): IQueryableProvider;
-  fromCurrentSpreadsheet(): IQueryableProvider;
+interface FromMethodCallback {
+  (data: unknown[], index: number, query: unknown): unknown;
 }
+
+interface FromMethod {
+  (tableName: string, options: IFromMethodOptions, callback: FromMethodCallback, index: number,
+    query: unknown): unknown | undefined
+}
+
+interface ColumnDefinition {
+  columnid: string;
+}
+
+interface IntoMethodCallback {
+  (data?: unknown): void;
+}
+
+interface IntoMethod {
+  (tableName: string, options: IIntoMethodOptions, data: unknown[], columns: ColumnDefinition[],
+    callback: IntoMethodCallback): unknown | undefined;
+}
+
+interface CustomFunction {
+  (...parameters: unknown[]): unknown | undefined;
+}
+
+export interface AlaSQL {
+  (sql: string, parameters?: unknown): unknown[] | null | undefined;
+  fn: Record<string, CustomFunction>;
+  from: Record<string, FromMethod>;
+  into: Record<string, IntoMethod>;
+}
+
+declare const alasql: AlaSQL;
+export default alasql;

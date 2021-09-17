@@ -19,10 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { QueryingError } from './querying-error';
+import QueryingError from './querying-error';
 
-export class NotASpreadsheetContextError extends QueryingError {
+export default class NotASpreadsheetContextError extends QueryingError {
   constructor() {
     super('Not running in a spreadsheet script');
+    this.name = 'NotASpreadsheetContextError';
   }
 }

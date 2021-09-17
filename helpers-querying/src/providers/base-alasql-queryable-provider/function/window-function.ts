@@ -19,37 +19,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import alasql from 'alasql';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { JSONEx, Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
 import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../symbols';
-import type { IExecutionContext } from '../iexecution-context';
-import type { IAlaSQLFunction } from './ialasql-function';
+import type IExecutionContext from '../iexecution-context';
+import type IAlaSQLFunction from './ialasql-function';
 
 @setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'WINDOW')
-export class WindowFunction implements IAlaSQLFunction {
+export default class WindowFunction implements IAlaSQLFunction {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) { }
+    @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) {}
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  callback(id: string, query: string, partition: string, value: any, parameters: any):
-  any {
+  callback(id: string, query: string, partition: string, value: unknown,
+    parameters: Record<string, unknown>): unknown {
     this.logger.trace(() => `Running in context '${this.context.id}' with id '${id}', query '${query}', partition '${partition}', value '${JSONEx.stringify(value)}' and parameters '${JSONEx.stringify(parameters)}'`);
     if (!this.context.data[`WINDOW_${id}`]) {
       this.context.data[`WINDOW_${id}`] = {};
     }
-    const data = <{ [partition: string]: { Number: number, Value: any; }[]; }>
+    const data = <{ [partition: string]: { Number: number, Value: unknown; }[]; }>
       this.context.data[`WINDOW_${id}`];
 
-    if (!data[partition]) {
-      data[partition] = [];
+    let partitionData = data[partition];
+    if (!partitionData) {
+      partitionData = [];
+      data[partition] = partitionData;
     }
-    const partitionData = data[partition]!;
 
-    const result = alasql(query,
+    const result: unknown = alasql(query,
       { ...parameters, PastValues: partitionData, CurrentValue: value });
 
     partitionData.push({ Number: partitionData.length + 1, Value: result });

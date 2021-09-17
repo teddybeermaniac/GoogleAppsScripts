@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 import 'core-js';
+import 'reflect-metadata';
 
 import { Container, interfaces } from 'inversify';
 

@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { injectable, interfaces } from 'inversify';
+import { decorate, injectable, interfaces } from 'inversify';
 
 import { bindMetadataSymbol } from '../symbols';
 import type IBindMetadata from './ibind-metadata';
@@ -35,6 +35,6 @@ export default function setBindMetadata<TTarget>(symbol: symbol, scope: Scope, n
     };
     Reflect.defineMetadata(bindMetadataSymbol, metadata, target);
 
-    injectable()(target);
+    decorate(injectable(), target);
   };
 }

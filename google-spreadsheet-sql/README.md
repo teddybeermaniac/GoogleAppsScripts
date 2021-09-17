@@ -12,8 +12,8 @@ To install this script:
 7. In your Spreadsheet's script file add the reference to the script created in step **5**.
 8. Then in that script add:
 ```js
-function SQL(query, cacheKey, ...parameters) {
-  return GoogleSpreadsheetSQL.SQL(query, cacheKey, ...parameters);
+function SQL(query, parameters, cacheKey) {
+  return GoogleSpreadsheetSQL.SQL(query, cacheKey, parameters);
 }
 
 function CACHEKEY(...parameters) {

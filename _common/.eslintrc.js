@@ -37,6 +37,8 @@ module.exports = {
     ],
     // No, just... No.
     "class-methods-use-this": "off",
+    // Force eslint-disable comments to be cleaned up.
+    "eslint-comments/no-unused-disable": "error",
     // Remove ForOfSyntax from airbnb's config to replace it with for...of and satisfy unicorn/no-array-for-each.
     "no-restricted-syntax": [
       "error",
@@ -55,7 +57,9 @@ module.exports = {
     "simple-import-sort/exports": "error",
     // Force imports to be sorted.
     "simple-import-sort/imports": "error",
-    // Not yet supported in TypeScript (https://github.com/microsoft/TypeScript/issues/45512).
-    "unicorn/prefer-at": "off"
+    // Too new for Google Appss Script?
+    "unicorn/prefer-at": "off",
+    // Too new for Google Appss Script?
+    "unicorn/prefer-string-replace-all": "off"
   }
 };

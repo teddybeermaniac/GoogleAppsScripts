@@ -19,6 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IAlaSQLFunction {
-  callback(...parameters: any[]): any;
+export default interface IAlaSQLFunction {
+  callback(...parameters: unknown[]): unknown;
 }

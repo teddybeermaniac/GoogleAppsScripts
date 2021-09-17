@@ -22,28 +22,35 @@
 import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import * as errors from './errors';
-import type { IQueryable } from './iqueryable';
-import { ExecutionContext } from './providers/base-alasql-queryable-provider/execution-context';
-import { ExchangeFunction } from './providers/base-alasql-queryable-provider/function/exchange-function';
-import type { IAlaSQLFunction } from './providers/base-alasql-queryable-provider/function/ialasql-function';
-import { MomentFunction } from './providers/base-alasql-queryable-provider/function/moment-function';
-import { WindowFunction } from './providers/base-alasql-queryable-provider/function/window-function';
-import { MemoryQueryableProvider } from './providers/base-alasql-queryable-provider/memory-queryable-provider/memory-queryable-provider';
-import { GoogleSpreadsheetQueryableProvider } from './providers/google-spreadsheet-queryable-provider/google-spreadsheet-queryable-provider';
-import type { IQueryableProvider } from './providers/iqueryable-provider';
-import type { ProviderType } from './providers/provider-type';
-import { Queryable } from './queryable';
-import { IAlaSQLFunctionConstructorSymbol, IQueryableSymbol } from './symbols';
+import type InvalidFromMethodError from './errors/invalid-from-method-error';
+import type InvalidFunctionError from './errors/invalid-function-error';
+import type InvalidIntoMethodError from './errors/invalid-into-method-error';
+import type InvalidQueryError from './errors/invalid-query-error';
+import type MissingExecutionContextError from './errors/missing-execution-context-error';
+import type NotAQueryableFileError from './errors/not-a-queryable-file-error';
+import type NotASpreadsheetContextError from './errors/not-a-spreadsheet-context-error';
+import type NotConfiguredFilesystemError from './errors/not-configured-filesystem-error';
+import type IQueryable from './iqueryable';
+import ExecutionContext from './providers/base-alasql-queryable-provider/execution-context';
+import ExchangeFunction from './providers/base-alasql-queryable-provider/function/exchange-function';
+import type IAlaSQLFunction from './providers/base-alasql-queryable-provider/function/ialasql-function';
+import MomentFunction from './providers/base-alasql-queryable-provider/function/moment-function';
+import WindowFunction from './providers/base-alasql-queryable-provider/function/window-function';
+import MemoryQueryableProvider from './providers/base-alasql-queryable-provider/memory-queryable-provider/memory-queryable-provider';
+import GoogleSpreadsheetQueryableProvider from './providers/google-spreadsheet-queryable-provider/google-spreadsheet-queryable-provider';
+import type IQueryableProvider from './providers/iqueryable-provider';
+import type ProviderType from './providers/provider-type';
+import Queryable from './queryable';
+import { IAlaSQLFunctionDefinitionSymbol, IQueryableSymbol } from './symbols';
 
 function bindFunction(container: interfaces.Container,
-  constructor: interfaces.Newable<IAlaSQLFunction>) {
-  container.bind<interfaces.Newable<IAlaSQLFunction>>(IAlaSQLFunctionConstructorSymbol)
-    .toConstructor(constructor);
-  bind(container, constructor);
+  definition: interfaces.Newable<IAlaSQLFunction>) {
+  container.bind<interfaces.Newable<IAlaSQLFunction>>(IAlaSQLFunctionDefinitionSymbol)
+    .toConstructor(definition);
+  bind(container, definition);
 }
 
-export function addQuerying(container: interfaces.Container): void {
+export default function addQuerying(container: interfaces.Container): void {
   bind(container, Queryable);
   bind(container, GoogleSpreadsheetQueryableProvider);
   bind(container, MemoryQueryableProvider);
@@ -64,6 +71,13 @@ export type {
 };
 
 export {
-  errors,
+  InvalidFromMethodError,
+  InvalidFunctionError,
+  InvalidIntoMethodError,
+  InvalidQueryError,
+  MissingExecutionContextError,
+  NotAQueryableFileError,
+  NotASpreadsheetContextError,
+  NotConfiguredFilesystemError,
   ProviderType,
 };

@@ -19,11 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { BaseAlaSQLQueryableProvider } from './base-alasql-queryable-provider';
+import type BaseAlaSQLQueryableProvider from './base-alasql-queryable-provider';
+import type IExecutionContextData from './iexecution-context-data';
 
-export interface IExecutionContext {
-  readonly id: string;
-  readonly data: { [key: string]: any; };
-  readonly provider: BaseAlaSQLQueryableProvider;
+export default interface IExecutionContext extends IExecutionContextData {
+
   execute<TReturn>(provider: BaseAlaSQLQueryableProvider, callback: () => TReturn): TReturn;
 }

@@ -25,16 +25,17 @@ import { inject } from 'inversify';
 import moment from 'moment';
 
 import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../symbols';
-import type { IExecutionContext } from '../iexecution-context';
-import type { IAlaSQLFunction } from './ialasql-function';
+import type IExecutionContext from '../iexecution-context';
+import type IAlaSQLFunction from './ialasql-function';
 
 @setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'MOMENT')
-export class MomentFunction implements IAlaSQLFunction {
+export default class MomentFunction implements IAlaSQLFunction {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) { }
+    @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) {}
 
   public callback(input?: moment.MomentInput): moment.Moment {
-    this.logger.trace(() => `Running in context '${this.context.id}'${input?.toString() !== undefined && input.toString() !== '' ? ` with '${input?.toString()}' input` : ' without input'}`);
+    const inputMessage = input?.toString() ? ` with '${input.toString()}' input` : ' without input';
+    this.logger.trace(() => `Running in context '${this.context.id}'${inputMessage}`);
     return moment(input);
   }
 }
