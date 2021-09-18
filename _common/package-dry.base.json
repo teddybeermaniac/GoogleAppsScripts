@@ -1,27 +1,36 @@
 {
     "dependencies": {
         "@types/google-apps-script": "^1.0.37",
+        "@types/node": "^16.9.2",
         "dependency-resolver": "^2.0.1",
         "inversify": "^5.1.1",
+        "patch-package": "^6.4.7",
+        "postinstall-postinstall": "^2.1.0",
         "reflect-metadata": "^0.1.13",
-        "runtypes": "^6.4.0"
+        "runtypes": "^6.4.1"
     },
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^4.29.3",
-        "@typescript-eslint/parser": "^4.29.3",
+        "@typescript-eslint/eslint-plugin": "^4.31.1",
+        "@typescript-eslint/parser": "^4.31.1",
         "eslint": "^7.32.0",
         "eslint-config-airbnb-base": "^14.2.1",
-        "eslint-config-airbnb-typescript": "^13.0.0",
-        "eslint-plugin-import": "^2.24.1",
+        "eslint-config-airbnb-typescript": "^13.0.1",
+        "eslint-plugin-eslint-comments": "^3.2.0",
+        "eslint-plugin-import": "^2.24.2",
+        "eslint-plugin-json": "^3.1.0",
         "eslint-plugin-simple-import-sort": "^7.0.0",
+        "eslint-plugin-sonarjs": "^0.10.0",
+        "eslint-plugin-unicorn": "^36.0.0",
         "tslib": "^2.3.1",
-        "typescript": "^4.3.5"
+        "typescript": "^4.4.3"
     },
     "license": "MIT",
     "scripts": {
         "build-helpers": "node ../_common/build-helper-dependencies.js",
-        "build-only": "eslint . --ext .ts && tsc",
-        "build": "yarn run build-helpers && yarn run build-only"
+        "build-this": "yarn run lint && tsc",
+        "build": "yarn run build-helpers && yarn run build-this",
+        "lint": "eslint src --ext .json,.ts",
+        "postinstall": "patch-package --patch-dir ../_common/patches"
     },
     "version": "1.0.0"
 }

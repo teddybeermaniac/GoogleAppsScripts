@@ -19,21 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { InvalidFromMethodError } from '../../../errors';
-import { fromMethodsSymbol } from '../../../symbols';
-import type { BaseAlaSQLQueryableProvider } from '../base-alasql-queryable-provider';
-import type { IFromMethod } from './ifrom-method';
-import type { IFromMethodOptions } from './ifrom-method-options';
+import type { FunctionDecorator } from 'helpers-utilities';
 
-export function fromMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: string):
-// eslint-disable-next-line max-len
-(target: TTarget, propertyKey: string, descriptor: TypedPropertyDescriptor<(tableName: string, options?: IFromMethodOptions) => any[]>) => void {
+import InvalidFromMethodError from '../../../errors/invalid-from-method-error';
+import { fromMethodsSymbol } from '../../../symbols';
+import type BaseAlaSQLQueryableProvider from '../base-alasql-queryable-provider';
+import type FromMethodCallback from './from-method-callback';
+import type IFromMethod from './ifrom-method';
+
+export default function fromMethod(name: string): FunctionDecorator<FromMethodCallback,
+BaseAlaSQLQueryableProvider> {
   return (target, propertyKey, descriptor) => {
     if (!descriptor.value) {
       throw new InvalidFromMethodError(propertyKey, target.constructor.name);
     }
 
-    const fromMethodDefinition = {
+    const fromMethodDefinition: IFromMethod = {
       name,
       callback: descriptor.value,
     };

@@ -21,8 +21,8 @@
  */
 import type { IFile } from 'helpers-filesystem';
 
-import type { IQueryableProvider } from './iqueryable-provider';
+import type IQueryableProvider from './iqueryable-provider';
 
-export interface IFileQueryableProvider extends IQueryableProvider {
+export default interface IFileQueryableProvider extends IQueryableProvider {
   loadFile(file: IFile): void;
 }

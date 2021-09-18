@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { IQueryableProvider } from './providers/iqueryable-provider';
+import type IQueryableProvider from './providers/iqueryable-provider';
 
-export interface IQueryable {
+export default interface IQueryable {
   fromMemory(): IQueryableProvider;
   fromFile(path: string): IQueryableProvider;
   fromCurrentSpreadsheet(): IQueryableProvider;

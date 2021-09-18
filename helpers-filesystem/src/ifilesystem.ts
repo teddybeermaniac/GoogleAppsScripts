@@ -19,11 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { IItem } from './iitem';
-import type { ProviderType } from './providers/provider-type';
+import type IItem from './iitem';
+import type ProviderType from './providers/provider-type';
 
-export interface IFilesystem {
+export default interface IFilesystem {
   readonly providerType: ProviderType;
   list(path: string): IItem[];
-  stat(path: string, resolve: boolean): IItem | null;
+  stat(path: string, resolve?: boolean): IItem | undefined;
 }

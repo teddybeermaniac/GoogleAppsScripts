@@ -19,10 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { ExportingError } from './exporting-error';
+import ExportingError from './exporting-error';
 
-export class NotExportedMethodError extends ExportingError {
-  constructor(public readonly method: string, public readonly container?: string) {
-    super(`Method '${method}' was not exported${container ? ` from '${container}'` : ''}`);
+export default class NotExportedMethodError extends ExportingError {
+  constructor(public readonly method: string, public readonly target?: string) {
+    // eslint-disable-next-line unicorn/custom-error-definition
+    super('');
+    const targetMessage = target ? ` from '${target}'` : '';
+    this.message = `Method '${method}' was not exported${targetMessage}`;
+    this.name = 'NotExportedMethodError';
   }
 }

@@ -3,7 +3,7 @@
         "extends": "../_common/package-dry.json"
     },
     "dependencies": {
-        "@types/object-hash": "^2.1.1",
+        "@types/object-hash": "^2.2.1",
         "helpers-caching": "link:../helpers-caching/build/src",
         "helpers-exchange": "link:../helpers-exchange/build/src",
         "helpers-exporting": "link:../helpers-exporting/build/src",

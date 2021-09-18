@@ -20,77 +20,81 @@
  * SOFTWARE.
  */
 import {
-  errors as utilities_errors, getOwnerType, Scope, setBindMetadata,
+  AlreadyInitializedError, getOwnerType, NotInitializedError, Scope, setBindMetadata,
 } from 'helpers-utilities';
 import { inject, interfaces, multiInject } from 'inversify';
 
-import type { ILogger } from './ilogger';
-import { LogLevel, logLevelValues } from './log-level';
-import type { LoggerSettings } from './logger-settings';
-import type { ILoggerProvider } from './providers/ilogger-provider';
-import type { ProviderType } from './providers/provider-type';
+import type ILogger from './ilogger';
+import type LogLevel from './log-level';
+import logLevelValues from './log-level-values';
+import type LoggerSettings from './logger-settings';
+import type ILoggerProvider from './providers/ilogger-provider';
+import type ProviderType from './providers/provider-type';
 import { ILoggerProviderSymbol, ILoggerSymbol, LoggerSettingsSymbol } from './symbols';
 
 @setBindMetadata(ILoggerSymbol, Scope.Transient)
-export class Logger implements ILogger {
-  private _name: string | undefined;
+export default class Logger implements ILogger {
+  private readonly logLevel: number;
+
+  public readonly providerTypes: ProviderType[];
+
+  private nameInternal?: string;
 
   private initialized = false;
 
-  public get providerTypes(): ProviderType[] {
-    return this.providers.map((provider) => provider.providerType);
+  private get name(): string {
+    if (!this.initialized || !this.nameInternal) {
+      throw new NotInitializedError('Logger');
+    }
+
+    return this.nameInternal;
   }
 
   constructor(@inject(LoggerSettingsSymbol) private readonly settings: LoggerSettings,
-    @multiInject(ILoggerProviderSymbol) private readonly providers: ILoggerProvider[]) { }
-
-  private get name(): string {
-    if (!this.initialized || this._name === undefined) {
-      throw new utilities_errors.InitializationError('Not initialized');
-    }
-
-    return this._name;
+    @multiInject(ILoggerProviderSymbol) private readonly providers: ILoggerProvider[]) {
+    this.logLevel = logLevelValues[this.settings.level];
+    this.providerTypes = this.providers.map((provider) => provider.providerType);
   }
 
-  private log(level: LogLevel, message: string | (() => string), error: Error | undefined) {
-    if (logLevelValues[level]! < logLevelValues[this.settings.level]!) {
+  private log(level: LogLevel, message: string | (() => string), error?: Error) {
+    if (logLevelValues[level] < this.logLevel) {
       return;
     }
 
-    this.providers.forEach((provider) => {
+    for (const provider of this.providers) {
       try {
         provider.log(this.name, level, message, error);
       } catch (providerError) {
         // eslint-disable-next-line no-console
         console.error(<Error>providerError);
       }
-    });
+    }
   }
 
   public initialize(context: interfaces.Context): void {
     if (this.initialized) {
-      throw new utilities_errors.InitializationError('Already initialized');
+      throw new AlreadyInitializedError('Logger');
     }
 
     const owner = getOwnerType(context, Logger);
-    this._name = owner.name;
+    this.nameInternal = owner.name;
     this.initialized = true;
   }
 
   public trace(message: string | (() => string)): void {
-    this.log('Trace', message, undefined);
+    this.log('Trace', message);
   }
 
   public debug(message: string | (() => string)): void {
-    this.log('Debug', message, undefined);
+    this.log('Debug', message);
   }
 
   public information(message: string | (() => string)): void {
-    this.log('Information', message, undefined);
+    this.log('Information', message);
   }
 
   public warning(message: string | (() => string)): void {
-    this.log('Warning', message, undefined);
+    this.log('Warning', message);
   }
 
   public error(message: string | (() => string), error?: Error): void {

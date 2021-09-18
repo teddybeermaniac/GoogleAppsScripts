@@ -21,14 +21,13 @@
  */
 import type { interfaces } from 'inversify';
 
-import { bindInternal } from './bind-internal';
-import type { IInitializable } from './iinitializable';
+import bindInternal from './bind-internal';
+import type IInitializable from './iinitializable';
 
-export function bindInitializable<TConstructor extends IInitializable>(
-  container: interfaces.Container,
-  constructor: interfaces.Newable<TConstructor>,
+export default function bindInitializable<TTarget extends IInitializable>(
+  container: interfaces.Container, target: interfaces.Newable<TTarget>,
 ): void {
-  bindInternal<TConstructor>(container, constructor)
+  bindInternal<TTarget>(container, target)
     .onActivation((context, instance) => {
       instance.initialize(context);
 

@@ -19,19 +19,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bind, errors as utilities_errors } from 'helpers-utilities';
+import { bind, ProviderAlreadyAddedError } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { GoogleAppsScriptCacheProvider } from './providers/google-apps-script-cache-provider/google-apps-script-cache-provider';
+import GoogleAppsScriptCacheProvider from './providers/google-apps-script-cache-provider/google-apps-script-cache-provider';
 
-export class CachingBuilder {
+export default class CachingBuilder {
   private provider = false;
 
-  constructor(private readonly container: interfaces.Container) { }
+  constructor(private readonly container: interfaces.Container) {}
 
   public addGoogleAppsScriptProvider(): CachingBuilder {
     if (this.provider) {
-      throw new utilities_errors.BuilderError('CachingBuilder', 'A caching provider was already added');
+      throw new ProviderAlreadyAddedError('CachingBuilder', 'caching');
     }
 
     bind(this.container, GoogleAppsScriptCacheProvider);

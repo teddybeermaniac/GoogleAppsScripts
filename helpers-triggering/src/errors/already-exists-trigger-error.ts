@@ -19,10 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { TriggeringError } from './triggering-error';
+import TriggeringError from './triggering-error';
 
-export class AlreadyExistsTriggerError extends TriggeringError {
-  constructor(public readonly method: string, public readonly container?: string) {
-    super(`Trigger for method '${method}'${container ? ` from '${container}'` : ''} already exists`);
+export default class AlreadyExistsTriggerError extends TriggeringError {
+  constructor(public readonly method: string, public readonly target?: string) {
+    // eslint-disable-next-line unicorn/custom-error-definition
+    super('');
+    const targetMessage = target ? ` from '${target}'` : '';
+    this.message = `Trigger for method '${method}'${targetMessage} already exists`;
+    this.name = 'AlreadyExistsTriggerError';
   }
 }

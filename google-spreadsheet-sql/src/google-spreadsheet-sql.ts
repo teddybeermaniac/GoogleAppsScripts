@@ -26,26 +26,31 @@ import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 import objectHash from 'object-hash';
 
+import InvalidParametersError from './errors/invalid-parameters-error';
+import type Parameters from './parameters';
+import { ParametersRuntype } from './parameters';
 import { GoogleSpreadsheetSQLSymbol } from './symbols';
 
 @setBindMetadata(GoogleSpreadsheetSQLSymbol, Scope.Singleton)
-export class GoogleSpreadsheetSQL {
+export default class GoogleSpreadsheetSQL {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {
-  }
+    @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {}
 
   @exportMethod(true, 'SQL')
-  public sql(query: string, cacheKey: string | boolean | null, ...parameters: [[string, any]][]):
-  any[][] | undefined {
+  public sql(query: string, parameters?: Parameters, cacheKey?: string | boolean):
+  unknown[][] | undefined {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
     const queryableProvider = this.queryable.fromCurrentSpreadsheet();
-    const entries = parameters.map((parameter) => parameter[0]);
+    if (parameters && !ParametersRuntype.check(parameters)) {
+      throw new InvalidParametersError(parameters);
+    }
 
-    return queryableProvider.queryAny(query, cacheKey, Object.fromEntries(entries));
+    return queryableProvider.queryAny(query,
+      parameters ? Object.fromEntries(parameters) : parameters, cacheKey);
   }
 
   @exportMethod(true, 'CACHEKEY')
-  public cacheKey(...parameters: any[]): string {
+  public cacheKey(...parameters: unknown[]): string {
     this.logger.debug('Calculating cache key');
 
     return objectHash.sha1(parameters);

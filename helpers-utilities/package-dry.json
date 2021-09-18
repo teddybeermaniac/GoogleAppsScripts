@@ -3,7 +3,7 @@
         "extends": "../_common/package-dry.base.json"
     },
     "dependencies": {
-        "core-js": "3",
+        "core-js": "^3.17.3",
         "change-case": "^4.1.2"
     },
     "name": "helpers-utilities"

@@ -19,17 +19,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bind } from 'helpers-utilities';
+import { bind, BuilderCallback } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { Exchange } from './exchange';
-import { ExchangeBuilder } from './exchange-builder';
-import type { IExchange } from './iexchange';
-import type { ProviderType } from './providers/provider-type';
+import BadRateFetchResponseError from './errors/bad-rate-fetch-response-error';
+import ExchangeError from './errors/exchange-error';
+import InvalidCurrencyError from './errors/invalid-currency-error';
+import NoRatesFetchedError from './errors/no-rates-fetched-error';
+import Exchange from './exchange';
+import ExchangeBuilder from './exchange-builder';
+import type IExchange from './iexchange';
+import type ProviderType from './providers/provider-type';
 import { IExchangeSymbol } from './symbols';
 
-export function addExchange(container: interfaces.Container,
-  build: (builder: ExchangeBuilder) => void): void {
+export default function addExchange(container: interfaces.Container,
+  build: BuilderCallback<ExchangeBuilder>): void {
   const builder = new ExchangeBuilder(container);
   build(builder);
 
@@ -45,5 +49,9 @@ export type {
 };
 
 export {
+  BadRateFetchResponseError,
+  ExchangeError,
+  InvalidCurrencyError,
+  NoRatesFetchedError,
   ProviderType,
 };

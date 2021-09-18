@@ -19,17 +19,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bindInitializable } from 'helpers-utilities';
+import { bindInitializable, BuilderCallback } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import { Cache } from './cache';
-import { CachingBuilder } from './caching-builder';
-import type { ICache } from './icache';
-import { ProviderType } from './providers/provider-type';
+import Cache from './cache';
+import CachingBuilder from './caching-builder';
+import type ICache from './icache';
+import ProviderType from './providers/provider-type';
 import { ICacheSymbol } from './symbols';
 
-export function addCaching(container: interfaces.Container,
-  build: (builder: CachingBuilder) => void): void {
+export default function addCaching(container: interfaces.Container,
+  build: BuilderCallback<CachingBuilder>): void {
   const builder = new CachingBuilder(container);
   build(builder);
 

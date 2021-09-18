@@ -19,4 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class ExportingError extends Error { }
+export default abstract class ExportingError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ExportingError';
+  }
+}

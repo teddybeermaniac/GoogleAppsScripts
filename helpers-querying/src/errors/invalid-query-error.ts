@@ -19,10 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { QueryingError } from './querying-error';
+import QueryingError from './querying-error';
 
-export class InvalidQueryError extends QueryingError {
-  constructor(message: string) {
-    super(`Invalid query: ${message}`);
+export default class InvalidQueryError extends QueryingError {
+  constructor(message: string, public readonly query?: string) {
+    // eslint-disable-next-line unicorn/custom-error-definition
+    super('');
+    const queryMessage = query ? `'${query}'; ` : '';
+    this.message = `Invalid query: ${queryMessage}${message}`;
+    this.name = 'InvalidQueryError';
   }
 }

@@ -26,19 +26,20 @@ import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { Scope, setBindMetadata, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
 import { inject, interfaces, optional } from 'inversify';
 
-import { NotAQueryableFileError, NotConfiguredFilesystemError } from './errors';
-import type { IQueryable } from './iqueryable';
-import type { ICurrentQueryableProvider } from './providers/icurrent-queryable-provider';
-import type { IFileQueryableProvider } from './providers/ifile-queryable-provider';
-import type { IQueryableProvider } from './providers/iqueryable-provider';
+import NotAQueryableFileError from './errors/not-a-queryable-file-error';
+import NotConfiguredFilesystemError from './errors/not-configured-filesystem-error';
+import type IQueryable from './iqueryable';
+import type ICurrentQueryableProvider from './providers/icurrent-queryable-provider';
+import type IFileQueryableProvider from './providers/ifile-queryable-provider';
+import type IQueryableProvider from './providers/iqueryable-provider';
 import { GoogleSpreadsheetQueryableProviderSymbol, IQueryableSymbol, MemoryQueryableProviderSymbol } from './symbols';
 
 @setBindMetadata(IQueryableSymbol, Scope.Singleton)
-export class Queryable implements IQueryable {
+export default class Queryable implements IQueryable {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(UTILITIES_TYPES.Container) private readonly container: interfaces.Container,
     @inject(FILESYSTEM_TYPES.IFilesystem) @optional()
-    private readonly filesystem?: IFilesystem) { }
+    private readonly filesystem?: IFilesystem) {}
 
   public fromMemory(): IQueryableProvider {
     this.logger.information('Creating a queryable from memory');
@@ -61,6 +62,7 @@ export class Queryable implements IQueryable {
 
     const file = <IFile>stat;
     let provider: IFileQueryableProvider;
+    // eslint-disable-next-line sonarjs/no-small-switch
     switch (file.mimeType) {
       case 'application/vnd.google-apps.spreadsheet':
         this.logger.debug(`File '${path}' is a Google Spreadsheet`);

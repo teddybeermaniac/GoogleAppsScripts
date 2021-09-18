@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { ItemType } from './item-type';
+import type ItemType from './item-type';
 
-export interface IItem {
+export default interface IItem {
   readonly id: string;
   readonly type: ItemType;
   readonly path: string;

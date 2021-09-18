@@ -23,20 +23,20 @@ import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
-import type { IFilesystem } from './ifilesystem';
-import type { IItem } from './iitem';
-import type { IFilesystemProvider } from './providers/ifilesystem-provider';
-import type { ProviderType } from './providers/provider-type';
+import type IFilesystem from './ifilesystem';
+import type IItem from './iitem';
+import type IFilesystemProvider from './providers/ifilesystem-provider';
+import type ProviderType from './providers/provider-type';
 import { IFilesystemProviderSymbol, IFilesystemSymbol } from './symbols';
 
 @setBindMetadata(IFilesystemSymbol, Scope.Singleton)
-export class Filesystem implements IFilesystem {
-  public get providerType(): ProviderType {
-    return this.provider.providerType;
-  }
+export default class Filesystem implements IFilesystem {
+  public readonly providerType: ProviderType;
 
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(IFilesystemProviderSymbol) private readonly provider: IFilesystemProvider) { }
+    @inject(IFilesystemProviderSymbol) private readonly provider: IFilesystemProvider) {
+    this.providerType = this.provider.providerType;
+  }
 
   private sanitizePath(path: string): string {
     this.logger.trace(`Sanitizing path '${path}'`);
@@ -45,10 +45,10 @@ export class Filesystem implements IFilesystem {
       sanitizedPath = `/${sanitizedPath}`;
     }
     if (sanitizedPath.endsWith('/')) {
-      sanitizedPath = sanitizedPath.substring(0, sanitizedPath.length - 1);
+      sanitizedPath = sanitizedPath.slice(0, Math.max(0, sanitizedPath.length - 1));
     }
 
-    this.logger.trace(`Sanitized path '${sanitizedPath}`);
+    this.logger.trace(`Sanitized path '${sanitizedPath}'`);
     return sanitizedPath;
   }
 
@@ -57,7 +57,7 @@ export class Filesystem implements IFilesystem {
     return this.provider.list(this.sanitizePath(path));
   }
 
-  public stat(path: string, resolve: boolean): IItem | null {
+  public stat(path: string, resolve?: boolean): IItem | undefined {
     this.logger.debug(`Stat'ing${resolve ? ' and resolving' : ''} path '${path}'`);
     return this.provider.stat(this.sanitizePath(path), resolve);
   }

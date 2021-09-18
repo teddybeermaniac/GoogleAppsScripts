@@ -24,21 +24,23 @@ import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
 import currencies from './currencies.json';
-import { InvalidCurrencyError } from './errors';
-import type { IExchange } from './iexchange';
-import type { IExchangeProvider } from './providers/iexchange-provider';
+import InvalidCurrencyError from './errors/invalid-currency-error';
+import type IExchange from './iexchange';
+import type IExchangeProvider from './providers/iexchange-provider';
 import { IExchangeProviderSymbol, IExchangeSymbol } from './symbols';
 
 @setBindMetadata(IExchangeSymbol, Scope.Singleton)
-export class Exchange implements IExchange {
+export default class Exchange implements IExchange {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(IExchangeProviderSymbol) private readonly provider: IExchangeProvider) { }
+    @inject(IExchangeProviderSymbol) private readonly provider: IExchangeProvider) {}
 
   convert(value: number, from: string, to: string): number {
     this.logger.debug(`Converting '${value}' from '${from}' to '${to}'`);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     if (!currencies.includes(from) || !this.provider.supportedCurrencies.includes(from)) {
       throw new InvalidCurrencyError(from);
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     if (!currencies.includes(to) || !this.provider.supportedCurrencies.includes(to)) {
       throw new InvalidCurrencyError(to);
     }

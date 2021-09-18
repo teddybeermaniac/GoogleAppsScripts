@@ -19,10 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { QueryingError } from './querying-error';
+import QueryingError from './querying-error';
 
-export class NotAQueryableFileError extends QueryingError {
+export default class NotAQueryableFileError extends QueryingError {
   constructor(public readonly path: string) {
     super(`Path '${path}' is not queryable`);
+    this.name = 'NotAQueryableFileError';
   }
 }

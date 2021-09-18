@@ -19,10 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { QueryingError } from './querying-error';
+import QueryingError from './querying-error';
 
-export class NotConfiguredFilesystemError extends QueryingError {
+export default class NotConfiguredFilesystemError extends QueryingError {
   constructor() {
     super('Filesystem not fonfigured');
+    this.name = 'NotConfiguredFilesystemError';
   }
 }

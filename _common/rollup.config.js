@@ -19,7 +19,7 @@ function googleAppsScript() {
         return code;
       }
 
-      const provider = container.get(Symbol.for('__ROLLUP_EXPORTED_METHOD_PROVIDER__'));
+      const provider = container.get(Symbol.for('IExportedMethodProvider'));
       const methods = {};
       provider.getExportedMethods().forEach((method) => {
         methods[method] = `function ${method}(...args) {\n  return ${options.name}.container.get(Symbol.for('IExportedMethodProvider')).callExportedMethod('${method}', args);\n}`;
@@ -39,7 +39,7 @@ function getEnvironment() {
   try {
     fileEnvironment = JSON.parse(fs.readFileSync(`${__dirname}/../_common/env.json`));
   } catch { }
-  var processEnvironment = Object.fromEntries(Object.entries(process.env).filter(([key, _]) => key.startsWith('GAS_')));
+  var processEnvironment = Object.fromEntries(Object.entries(process.env).filter(([key, _]) => key.startsWith('GAS_')).map(([key, value]) => [key.replace(/^GAS_/, ''), value]));
 
   return {
     ...fileEnvironment,

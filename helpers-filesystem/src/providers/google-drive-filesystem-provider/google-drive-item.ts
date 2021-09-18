@@ -19,90 +19,80 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { IItem } from '../../iitem';
-import type { ItemType } from '../../item-type';
+import type IItem from '../../iitem';
+import type ItemType from '../../item-type';
 
-type Item = {
-  getId: () => string;
-  getName: () => string;
-  getDateCreated: () => GoogleAppsScript.Base.Date;
-  getLastUpdated: () => GoogleAppsScript.Base.Date;
-  getOwner: () => GoogleAppsScript.Drive.User;
-  getViewers: () => GoogleAppsScript.Drive.User[];
-  getEditors: () => GoogleAppsScript.Drive.User[];
-};
+export default class GoogleDriveItem implements IItem {
+  private idInternal?: string;
 
-export class GoogleDriveItem implements IItem {
-  private _id?: string;
+  private nameInternal?: string;
 
-  private _name?: string;
+  private creationDateInternal?: Date;
 
-  private _creationDate?: Date;
+  private modificationDateInternal?: Date;
 
-  private _modificationDate?: Date;
+  private ownerInternal?: string;
 
-  private _owner?: string;
+  private readersInternal?: string[];
 
-  private _readers?: string[];
-
-  private _editors?: string[];
+  private editorsInternal?: string[];
 
   public get id(): string {
-    if (this._id === undefined) {
-      this._id = this.item.getId();
+    if (this.idInternal === undefined) {
+      this.idInternal = this.item.getId();
     }
 
-    return this._id;
+    return this.idInternal;
   }
 
   public get name(): string {
-    if (this._name === undefined) {
-      this._name = this.item.getName();
+    if (this.nameInternal === undefined) {
+      this.nameInternal = this.item.getName();
     }
 
-    return this._name;
+    return this.nameInternal;
   }
 
   public get creationDate(): Date {
-    if (this._creationDate === undefined) {
-      this._creationDate = new Date(this.item.getDateCreated().valueOf());
+    if (this.creationDateInternal === undefined) {
+      this.creationDateInternal = new Date(this.item.getDateCreated().valueOf());
     }
 
-    return this._creationDate;
+    return this.creationDateInternal;
   }
 
   public get modificationDate(): Date {
-    if (this._modificationDate === undefined) {
-      this._modificationDate = new Date(this.item.getLastUpdated().valueOf());
+    if (this.modificationDateInternal === undefined) {
+      this.modificationDateInternal = new Date(this.item.getLastUpdated().valueOf());
     }
 
-    return this._modificationDate;
+    return this.modificationDateInternal;
   }
 
   public get owner(): string {
-    if (this._owner === undefined) {
-      this._owner = this.item.getOwner().getEmail();
+    if (this.ownerInternal === undefined) {
+      this.ownerInternal = this.item.getOwner().getEmail();
     }
 
-    return this._owner;
+    return this.ownerInternal;
   }
 
   public get readers(): string[] {
-    if (this._readers === undefined) {
-      this._readers = this.item.getViewers().map((viewer) => viewer.getEmail());
+    if (this.readersInternal === undefined) {
+      this.readersInternal = this.item.getViewers().map((viewer) => viewer.getEmail());
     }
 
-    return this._readers;
+    return this.readersInternal;
   }
 
   public get editors(): string[] {
-    if (this._editors === undefined) {
-      this._editors = this.item.getEditors().map((editor) => editor.getEmail());
+    if (this.editorsInternal === undefined) {
+      this.editorsInternal = this.item.getEditors().map((editor) => editor.getEmail());
     }
 
-    return this._editors;
+    return this.editorsInternal;
   }
 
-  constructor(private readonly item: Item, public readonly type: ItemType,
-    public readonly path: string) { }
+  constructor(private readonly item: GoogleAppsScript.Drive.File | GoogleAppsScript.Drive.Folder,
+    public readonly type: ItemType, public readonly path: string) {}
 }

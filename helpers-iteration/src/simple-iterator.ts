@@ -19,19 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class SimpleIterator<TItem> {
-  constructor(private iterator: { hasNext: () => boolean; next: () => TItem }) { }
+import type IGoogleAppsScriptIterator from './igoogle-apps-script-iterator';
 
-  public forEach(callback: (item: TItem) => void): void {
-    while (this.iterator.hasNext()) {
-      callback(this.iterator.next());
-    }
+export default class SimpleIterator<TItem> implements Iterator<TItem> {
+  constructor(private readonly iterator: IGoogleAppsScriptIterator<TItem>) {}
+
+  public [Symbol.iterator](): Iterator<TItem> {
+    return this;
   }
 
-  public toArray(): TItem[] {
-    const items: TItem[] = [];
-    this.forEach((item) => items.push(item));
+  public next(): IteratorResult<TItem> {
+    if (this.iterator.hasNext()) {
+      return { value: this.iterator.next(), done: false };
+    }
 
-    return items;
+    return { value: undefined, done: true };
   }
 }

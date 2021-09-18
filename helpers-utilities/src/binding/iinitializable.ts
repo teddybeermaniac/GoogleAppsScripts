@@ -21,6 +21,6 @@
  */
 import type { interfaces } from 'inversify';
 
-export interface IInitializable {
+export default interface IInitializable {
   initialize(context: interfaces.Context): void;
 }

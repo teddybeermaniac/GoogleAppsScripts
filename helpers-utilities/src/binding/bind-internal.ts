@@ -21,36 +21,30 @@
  */
 import type { interfaces } from 'inversify';
 
-import { getBindMetadata } from './get-bind-metadata';
-import { Scope } from './scope';
+import InvalidScopeDefinedError from '../errors/invalid-scope-defined-error';
+import getBindMetadata from './get-bind-metadata';
+import Scope from './scope';
 
-export function bindInternal<TConstructor>(
-  container: interfaces.Container,
-  constructor: interfaces.Newable<TConstructor>,
-): interfaces.BindingOnSyntax<TConstructor> {
-  const metadata = getBindMetadata(constructor);
+export default function bindInternal<TTarget>(container: interfaces.Container,
+  target: interfaces.Newable<TTarget>): interfaces.BindingOnSyntax<TTarget> {
+  const metadata = getBindMetadata(target);
   const bindingTo = container
-    .bind<TConstructor>(metadata.symbol)
-    .to(constructor);
+    .bind<TTarget>(metadata.symbol)
+    .to(target);
 
-  let bindingWhenOn: interfaces.BindingWhenOnSyntax<TConstructor>;
+  let bindingWhenOn: interfaces.BindingWhenOnSyntax<TTarget>;
   switch (metadata.scope) {
-    case Scope.Transient: {
+    case Scope.Transient:
       bindingWhenOn = bindingTo.inTransientScope();
       break;
-    }
-    case Scope.Request: {
+    case Scope.Request:
       bindingWhenOn = bindingTo.inRequestScope();
       break;
-    }
-    case Scope.Singleton: {
+    case Scope.Singleton:
       bindingWhenOn = bindingTo.inSingletonScope();
       break;
-    }
-    default: {
-      bindingWhenOn = bindingTo;
-      break;
-    }
+    default:
+      throw new InvalidScopeDefinedError(metadata.scope);
   }
 
   if (metadata.name) {

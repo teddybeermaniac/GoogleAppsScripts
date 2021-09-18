@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { IItem } from './iitem';
+import type IItem from './iitem';
 
-export interface IFolder extends IItem { }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export default interface IFolder extends IItem {}

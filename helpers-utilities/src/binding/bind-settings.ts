@@ -23,18 +23,17 @@ import { camelCase, constantCase } from 'change-case';
 import type { interfaces } from 'inversify';
 import type { RuntypeBase } from 'runtypes/lib/runtype';
 
-import { SettingsError } from '../errors';
+import UnableToLoadSettingsError from '../errors/unable-to-load-settings-error';
+import type Process from './process';
 
-declare let process: {
-  env: { [key: string]: string }
-};
+declare let process: Process;
 
-export function bindSettings<TSettings>(container: interfaces.Container, symbol: symbol,
+export default function bindSettings<TSettings>(container: interfaces.Container, symbol: symbol,
   name: string, runtype: RuntypeBase<TSettings>, defaults: Partial<TSettings>,
   statics?: Partial<TSettings>): void {
-  const prefixRegex = new RegExp(`^GAS_${constantCase(name)}_`);
+  const prefixRegex = new RegExp(`^${constantCase(name)}_`);
   const environment = Object.fromEntries(Object.entries(process.env)
-    .filter(([key, _]) => prefixRegex.test(key))
+    .filter(([key, _value]) => prefixRegex.test(key))
     .map(([key, value]) => [camelCase(key.replace(prefixRegex, '')), value]));
   const settings = { ...defaults, ...statics, ...environment };
 
@@ -43,7 +42,7 @@ export function bindSettings<TSettings>(container: interfaces.Container, symbol:
     strongSettings = runtype.check(settings);
   } catch (error) {
     if (error instanceof Error) {
-      throw new SettingsError(`Error loading '${name}' settings; ${error.message}`);
+      throw new UnableToLoadSettingsError(name, error);
     }
 
     throw error;

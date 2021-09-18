@@ -21,7 +21,7 @@
  */
 export const GoogleSpreadsheetQueryableProviderSymbol = Symbol('GoogleSpreadsheetQueryableProvider');
 export const IAlaSQLFunctionSymbol = Symbol('IAlaSQLFunction');
-export const IAlaSQLFunctionConstructorSymbol = Symbol('IAlaSQLFunctionConstructor');
+export const IAlaSQLFunctionDefinitionSymbol = Symbol('IAlaSQLFunctionDefinition');
 export const IExecutionContextSymbol = Symbol('IExecutionContext');
 export const IQueryableSymbol = Symbol('IQueryable');
 export const MemoryQueryableProviderSymbol = Symbol('MemoryQueryableProvider');

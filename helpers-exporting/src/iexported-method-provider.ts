@@ -19,8 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IExportedMethodProvider {
+export default interface IExportedMethodProvider {
   getExportedMethods(): string[];
   getExportedMethodName(symbol: symbol, name: string): string;
-  callExportedMethod(exportedName: string, args: any[]): any;
+  callExportedMethod(exportedName: string, parameters: unknown[]): unknown;
 }

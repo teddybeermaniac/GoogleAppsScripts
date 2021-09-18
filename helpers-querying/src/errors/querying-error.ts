@@ -19,4 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class QueryingError extends Error { }
+export default class QueryingError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'QueryingError';
+  }
+}

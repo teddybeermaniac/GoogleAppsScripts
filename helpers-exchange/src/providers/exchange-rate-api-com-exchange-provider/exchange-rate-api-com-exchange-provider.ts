@@ -24,20 +24,18 @@ import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
-import { RateFetchError } from '../../errors';
+import BadRateFetchResponseError from '../../errors/bad-rate-fetch-response-error';
 import { ExchangeRateApiComExchangeProviderSettingsSymbol, IExchangeProviderSymbol } from '../../symbols';
-import { BaseExchangeProvider } from '../base-exchange-provider';
-import { ProviderType } from '../provider-type';
+import BaseExchangeProvider from '../base-exchange-provider';
+import ProviderType from '../provider-type';
 import currencies from './currencies.json';
-import type { ExchangeRateApiComExchangeProviderSettings } from './exchange-rate-api-com-exchange-provider-settings';
+import type ExchangeRateApiComExchangeProviderSettings from './exchange-rate-api-com-exchange-provider-settings';
 
 @setBindMetadata(IExchangeProviderSymbol, Scope.Singleton)
-export class ExchangeRateApiComExchangeProvider extends BaseExchangeProvider {
+export default class ExchangeRateApiComExchangeProvider extends BaseExchangeProvider {
   public readonly supportedCurrencies = currencies;
 
-  public get providerType(): ProviderType {
-    return ProviderType.ExchangeRateApiCom;
-  }
+  public readonly providerType = ProviderType.ExchangeRateApiCom;
 
   constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger,
     @inject(CACHING_TYPES.ICache) cache: ICache,
@@ -49,15 +47,18 @@ export class ExchangeRateApiComExchangeProvider extends BaseExchangeProvider {
   getRate(from: string, to: string): number {
     return this.getRateInternal(from, to,
       `https://v6.exchangerate-api.com/v6/${encodeURIComponent(this.settings.apiKey)}/latest/${encodeURIComponent(from)}`,
-      86400, (result) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        if (result.result !== 'success') {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          throw new RateFetchError(result.result);
+      86_400, (result) => {
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        if ((<any>result).result !== 'success') {
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+          throw new BadRateFetchResponseError((<any>result).result);
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        return <{ [currency: string]: number; }>result.conversion_rates;
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        return <{ [currency: string]: number; }>(<any>result).conversion_rates;
       });
   }
 }

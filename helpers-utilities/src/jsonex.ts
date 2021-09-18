@@ -19,25 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class JSONEx {
-  private static dateRegex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
+export default class JSONEx {
+  // eslint-disable-next-line unicorn/no-unsafe-regex
+  private static dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(?:Z|[+-]\d{2}:\d{2})$/;
 
-  private static reviver(this: void, _: string, value: any): any {
-    if (typeof value === 'string') {
-      if (JSONEx.dateRegex.test(value)) {
-        return new Date(value);
-      }
+  private static reviver(this: void, _key: string, value: unknown): unknown {
+    if (typeof value === 'string' && JSONEx.dateRegex.test(value)) {
+      return new Date(value);
     }
 
     return value;
   }
 
-  public static parse<TModel = any>(value: string): TModel {
+  public static parse<TModel = unknown>(value: string): TModel {
     return <TModel>JSON.parse(value, JSONEx.reviver);
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public static stringify(value: any): string {
+  public static stringify(value: unknown): string {
     return JSON.stringify(value);
   }
 }

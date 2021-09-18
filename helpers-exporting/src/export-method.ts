@@ -19,26 +19,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { InvalidExportedMethodError } from './errors';
-import type { IExportedMethod } from './iexported-method';
+import type { FunctionDecorator } from 'helpers-utilities';
+
+import InvalidExportedMethodError from './errors/invalid-exported-method-error';
+import type ExportedMethodCallback from './exported-method-callback';
+import type IExportedMethod from './iexported-method';
 import { exportedMethodsSymbol } from './symbols';
 
-export function exportMethod<TTarget extends Object>(asIs?: boolean, name?: string):
-(target: TTarget, propertyKey: string,
-  descriptor: TypedPropertyDescriptor<(...parameters: any[]) => any>) => void {
+export default function exportMethod(asIs?: boolean,
+  name?: string): FunctionDecorator<ExportedMethodCallback> {
   return (target, propertyKey, descriptor) => {
     if (!descriptor.value) {
       throw new InvalidExportedMethodError(propertyKey, target.constructor.name);
     }
 
-    const exportedMethod = {
+    const exportedMethod: IExportedMethod = {
       callback: descriptor.value,
       name: name ?? propertyKey,
-      asIs: asIs || false,
+      asIs: asIs ?? false,
     };
 
-    const exportedMethods = <IExportedMethod[]>Reflect
-      .getMetadata(exportedMethodsSymbol, target.constructor);
+    const exportedMethods = <IExportedMethod[]>Reflect.getMetadata(exportedMethodsSymbol,
+      target.constructor);
     if (exportedMethods) {
       exportedMethods.push(exportedMethod);
     } else {

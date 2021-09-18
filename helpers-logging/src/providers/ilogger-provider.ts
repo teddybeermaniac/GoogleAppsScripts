@@ -19,11 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { LogLevel } from '../log-level';
-import type { ProviderType } from './provider-type';
+import type LogLevel from '../log-level';
+import type ProviderType from './provider-type';
 
-export interface ILoggerProvider {
+export default interface ILoggerProvider {
   readonly providerType: ProviderType;
-  log(name: string, level: LogLevel, message: string | (() => string), error: Error | undefined):
-  void;
+  log(name: string, level: LogLevel, message: string | (() => string), error?: Error): void;
 }

@@ -19,8 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export class NoBindMetadataDefinedError extends Error {
-  constructor(public readonly container: string) {
-    super(`No bind metadata defined for '${container}'`);
+export default class NoBindMetadataDefinedError extends Error {
+  constructor(public readonly target: string) {
+    super(`No bind metadata defined for '${target}'`);
+    this.name = 'NoBindMetadataDefinedError';
   }
 }

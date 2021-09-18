@@ -25,11 +25,12 @@ import type { ILogger } from 'helpers-logging';
 import type { ITriggerManager } from 'helpers-triggering';
 import { injectable } from 'inversify';
 
-import { AlreadyRunningIterationError } from './errors';
-import type { IInterruptableIterator } from './iinterruptable-iterator';
+import AlreadyRunningIterationError from './errors/already-running-iteration-error';
+import type IInterruptableIterator from './iinterruptable-iterator';
 
 @injectable()
-export abstract class InterruptableIterator<TToken> implements IInterruptableIterator<TToken> {
+export default abstract class InterruptableIterator<TToken = string>
+implements IInterruptableIterator<TToken> {
   private static readonly TRIGGER_MINUTES = 1;
 
   private static readonly MAXIMUM_RUNTIME_SECONDS = 6 * 60;
@@ -51,15 +52,15 @@ export abstract class InterruptableIterator<TToken> implements IInterruptableIte
   private iterationStarted?: number;
 
   constructor(protected readonly logger: ILogger, protected readonly cache: ICache,
-    private readonly triggerManager: ITriggerManager) { }
+    private readonly triggerManager: ITriggerManager) {}
 
-  protected abstract next(iterationToken: TToken | null): TToken | null;
+  protected abstract next(iterationToken?: TToken): TToken | undefined;
 
   private shouldContinue(): boolean {
-    const { iterationStarted } = this;
+    const iterationStartedPrevious = this.iterationStarted;
     this.iterationStarted = Date.now();
-    if (iterationStarted) {
-      const iterationTime = Date.now() - iterationStarted;
+    if (iterationStartedPrevious) {
+      const iterationTime = Date.now() - iterationStartedPrevious;
 
       this.runTime += iterationTime;
       this.iterations += 1;
@@ -90,8 +91,7 @@ export abstract class InterruptableIterator<TToken> implements IInterruptableIte
 
     if (this.isFinished()) {
       this.logger.information('Iteration already finished; exiting');
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      this.triggerManager.remove(this.continue);
+      this.triggerManager.remove(this.continue.name);
 
       return;
     }
@@ -100,11 +100,11 @@ export abstract class InterruptableIterator<TToken> implements IInterruptableIte
     this.cache.set(InterruptableIterator.RUNNING_KEY, true,
       InterruptableIterator.MAXIMUM_RUNTIME_SECONDS);
     let iterationToken = this.cache.get<TToken>(InterruptableIterator.ITERATION_TOKEN_KEY);
-    if (iterationToken === null) {
+    if (iterationToken === undefined) {
       iterationToken = this.cache.pop<TToken>(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY);
     }
 
-    while (iterationToken !== null) {
+    while (iterationToken !== undefined) {
       if (!this.shouldContinue()) {
         this.logger.information('Not enough time left; exiting');
 
@@ -118,11 +118,10 @@ export abstract class InterruptableIterator<TToken> implements IInterruptableIte
     }
 
     this.cache.set(InterruptableIterator.RUNNING_KEY, false);
-    if (iterationToken === null) {
+    if (iterationToken === undefined) {
       this.logger.information('Iteration finished; exiting');
       this.cache.clear();
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      this.triggerManager.remove(this.continue);
+      this.triggerManager.remove(this.continue.name);
     }
   }
 
@@ -140,8 +139,7 @@ export abstract class InterruptableIterator<TToken> implements IInterruptableIte
         InterruptableIterator.TRIGGER_MINUTES * 60 * 2);
     }
 
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    this.triggerManager.addEveryMinutes(this.continue, InterruptableIterator.TRIGGER_MINUTES);
+    this.triggerManager.addEveryMinutes(this.continue.name, InterruptableIterator.TRIGGER_MINUTES);
 
     return true;
   }
@@ -160,7 +158,7 @@ export abstract class InterruptableIterator<TToken> implements IInterruptableIte
   public isFinished(): boolean {
     this.logger.trace('Checking if iteration was finished');
     return !this.isRunning()
-      && this.cache.get<TToken>(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY) === null
-      && this.cache.get<TToken>(InterruptableIterator.ITERATION_TOKEN_KEY) === null;
+      && this.cache.get<TToken>(InterruptableIterator.ITERATION_INITIAL_TOKEN_KEY) === undefined
+      && this.cache.get<TToken>(InterruptableIterator.ITERATION_TOKEN_KEY) === undefined;
   }
 }

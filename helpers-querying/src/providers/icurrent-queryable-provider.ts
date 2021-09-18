@@ -19,8 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { IQueryableProvider } from './iqueryable-provider';
+import type IQueryableProvider from './iqueryable-provider';
 
-export interface ICurrentQueryableProvider extends IQueryableProvider {
+export default interface ICurrentQueryableProvider extends IQueryableProvider {
   loadCurrent(): void;
 }

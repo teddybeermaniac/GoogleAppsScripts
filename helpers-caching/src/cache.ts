@@ -21,75 +21,81 @@
  */
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import {
-  errors as utilities_errors, getOwnerType, JSONEx, Scope, setBindMetadata,
+  AlreadyInitializedError, getOwnerType, JSONEx, NotInitializedError, Scope, setBindMetadata,
 } from 'helpers-utilities';
 import { inject, interfaces } from 'inversify';
 
-import type { ICache } from './icache';
-import type { ICacheProvider } from './providers/icache-provider';
-import type { ProviderType } from './providers/provider-type';
+import type ICache from './icache';
+import type ICacheProvider from './providers/icache-provider';
+import type ProviderType from './providers/provider-type';
 import { ICacheProviderSymbol, ICacheSymbol } from './symbols';
 
 @setBindMetadata(ICacheSymbol, Scope.Transient)
-export class Cache implements ICache {
-  private _prefix: string | undefined;
+export default class Cache implements ICache {
+  public readonly providerType: ProviderType;
+
+  private prefixInternal?: string;
 
   private initialized = false;
 
-  public get providerType(): ProviderType {
-    return this.provider.providerType;
+  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
+    @inject(ICacheProviderSymbol) private readonly provider: ICacheProvider) {
+    this.providerType = this.provider.providerType;
   }
 
-  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(ICacheProviderSymbol) private readonly provider: ICacheProvider) { }
-
   private get prefix(): string {
-    if (!this.initialized || this._prefix === undefined) {
-      throw new utilities_errors.InitializationError('Not initialized');
+    if (!this.initialized || !this.prefixInternal) {
+      throw new NotInitializedError('Cache');
     }
 
-    return this._prefix;
+    return this.prefixInternal;
   }
 
   public initialize(context: interfaces.Context): void {
     if (this.initialized) {
-      throw new utilities_errors.InitializationError('Already initialized');
+      throw new AlreadyInitializedError('Cache');
     }
 
     const owner = getOwnerType(context, Cache);
-    this._prefix = owner.name;
+    this.prefixInternal = owner.name;
     this.initialized = true;
     this.logger.debug(`Initialized with a '${this.prefix}' prefix`);
   }
 
-  public get<TValue>(key: string): TValue | null;
+  public get<TValue>(key: string): TValue | undefined;
   public get<TValue>(key: string, value: TValue): TValue;
-  public get<TValue>(key: string, value?: TValue): TValue | null {
+  public get<TValue>(key: string, value?: TValue): TValue | undefined {
     this.logger.debug(`Getting cache key '${key}'`);
     const json = this.provider.get(this.prefix, key);
-    if (json === null) {
+    if (!json) {
       this.logger.debug(`Key '${key}' not found in cache`);
-      return value !== undefined ? value : null;
+      return value;
     }
 
     this.logger.debug(`Key '${key}' found in cache with value '${json}'`);
     return JSONEx.parse<TValue>(json);
   }
 
-  public pop<TValue>(key: string): TValue | null;
+  public pop<TValue>(key: string): TValue | undefined;
   public pop<TValue>(key: string, value: TValue): TValue;
-  public pop<TValue>(key: string, value?: TValue): TValue | null {
-    const result = this.get(key, value) ?? null;
-    this.del(key);
+  public pop<TValue>(key: string, value?: TValue): TValue | undefined {
+    const result = this.get<TValue>(key);
+    if (result !== undefined) {
+      this.del(key);
 
-    return result;
+      return result;
+    }
+
+    return value;
   }
 
   public set<TValue>(key: string, value: TValue, ttl?: number): void {
     const json = JSONEx.stringify(value);
-    this.logger.debug(
-      `Setting cache key '${key}'${ttl !== undefined ? ` with a TTL of ${ttl}s` : ''} to value '${json}'`,
-    );
+    this.logger.debug(() => {
+      const ttlMessage = ttl ? ` with a TTL of ${ttl}s` : '';
+
+      return `Setting cache key '${key}'${ttlMessage} to value '${json}'`;
+    });
     this.provider.set(this.prefix, key, json, ttl);
   }
 

@@ -19,24 +19,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bind } from 'helpers-utilities';
+import { bind, BuilderCallback } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
-import * as errors from './errors';
-import { exportMethod } from './export-method';
-import { ExportedMethodProvider } from './exported-method-provider';
-import { ExportingBuilder } from './exporting-builder';
-import type { IExportedMethodProvider } from './iexported-method-provider';
-import { RollupExportedMethodProvider } from './rollup-exported-method-provider';
+import ExportingError from './errors/exporting-error';
+import InvalidExportedMethodError from './errors/invalid-exported-method-error';
+import NoMethodsExportedError from './errors/no-methods-exported-error';
+import NotExportedMethodError from './errors/not-exported-method-error';
+import exportMethod from './export-method';
+import ExportedMethodProvider from './exported-method-provider';
+import ExportingBuilder from './exporting-builder';
+import type IExportedMethodProvider from './iexported-method-provider';
 import { IExportedMethodProviderSymbol } from './symbols';
 
-export function addExporting(container: interfaces.Container,
-  build: (builder: ExportingBuilder) => void): void {
+export default function addExporting(container: interfaces.Container,
+  build: BuilderCallback<ExportingBuilder>): void {
   const builder = new ExportingBuilder(container);
   build(builder);
 
   bind(container, ExportedMethodProvider);
-  bind(container, RollupExportedMethodProvider);
 }
 
 export const TYPES = {
@@ -48,6 +49,9 @@ export type {
 };
 
 export {
-  errors,
+  ExportingError,
   exportMethod,
+  InvalidExportedMethodError,
+  NoMethodsExportedError,
+  NotExportedMethodError,
 };

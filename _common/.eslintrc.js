@@ -2,8 +2,15 @@ module.exports = {
   extends: [
     'airbnb-base',
     'airbnb-typescript/base',
+    'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking'
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:eslint-comments/recommended',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
+    'plugin:json/recommended',
+    'plugin:sonarjs/recommended',
+    'plugin:unicorn/all'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -14,30 +21,45 @@ module.exports = {
   plugins: [
     '@typescript-eslint',
     'import',
-    'simple-import-sort'
+    'json',
+    'simple-import-sort',
+    'sonarjs',
+    'unicorn'
   ],
   root: true,
   rules: {
-    "@typescript-eslint/ban-types": "off",
-    "@typescript-eslint/no-empty-interface": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
+    // Allow marking unused variables with _ prefix.
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
         "argsIgnorePattern": "^_"
       }
     ],
+    // No, just... No.
     "class-methods-use-this": "off",
-    "import/prefer-default-export": "off",
-    "no-underscore-dangle": "off",
+    // Force eslint-disable comments to be cleaned up.
+    "eslint-comments/no-unused-disable": "error",
+    // Remove ForOfSyntax from airbnb's config to replace it with for...of and satisfy unicorn/no-array-for-each.
+    "no-restricted-syntax": [
+      "error",
+      "ForInStatement",
+      "LabeledStatement",
+      "WithStatement",
+    ],
+    // Allow marking unused variables with _ prefix.
     "no-unused-vars": [
       "error",
       {
         "argsIgnorePattern": "^_"
       }
     ],
+    // Force exports to be sorted.
+    "simple-import-sort/exports": "error",
+    // Force imports to be sorted.
     "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
+    // Too new for Google Appss Script?
+    "unicorn/prefer-at": "off",
+    // Too new for Google Appss Script?
+    "unicorn/prefer-string-replace-all": "off"
   }
 };

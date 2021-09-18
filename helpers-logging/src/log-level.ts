@@ -22,7 +22,7 @@
 
 import { Literal, Static, Union } from 'runtypes';
 
-export const LogLevel = Union(
+export const LogLevelRuntype = Union(
   Literal('Trace'),
   Literal('Debug'),
   Literal('Information'),
@@ -30,13 +30,5 @@ export const LogLevel = Union(
   Literal('Error'),
 );
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export type LogLevel = Static<typeof LogLevel>;
-
-export const logLevelValues: { [key: string]: number; } = {
-  Trace: 0,
-  Debug: 1,
-  Information: 2,
-  Warning: 3,
-  Error: 4,
-};
+type LogLevel = Static<typeof LogLevelRuntype>;
+export default LogLevel;

@@ -19,10 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { FilesystemError } from './filesystem-error';
+import FilesystemError from './filesystem-error';
 
-export class NotFoundPathError extends FilesystemError {
+export default class NotFoundPathError extends FilesystemError {
   constructor(public readonly path: string) {
     super(`Not found path '${path}'`);
+    this.name = 'NotFoundPathError';
   }
 }

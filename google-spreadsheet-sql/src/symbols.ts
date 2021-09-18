@@ -19,4 +19,5 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+// eslint-disable-next-line import/prefer-default-export
 export const GoogleSpreadsheetSQLSymbol = Symbol('GoogleSpreadsheetSQL');

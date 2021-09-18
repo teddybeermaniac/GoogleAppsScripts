@@ -19,8 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export interface IExportedMethod {
-  callback: (...parameters: any[]) => any;
+import type ExportedMethodCallback from './exported-method-callback';
+
+export default interface IExportedMethod {
+  callback: ExportedMethodCallback;
   name: string;
   asIs: boolean;
 }

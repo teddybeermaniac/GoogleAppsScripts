@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "allowUnreachableCode": false,
+        "baseUrl": "./src",
         "composite": true,
         "declaration": true,
         "esModuleInterop": true,
@@ -25,12 +26,19 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "outDir": "./build",
+        "paths": {
+            "*": [
+                "*",
+                "./types/*"
+            ]
+        },
         "removeComments": true,
         "resolveJsonModule": true,
         "strict": true,
         "target": "ES2019",
         "types": [
             "google-apps-script",
+            "node",
             "reflect-metadata"
         ]
     },

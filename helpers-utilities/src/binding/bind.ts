@@ -21,9 +21,9 @@
  */
 import type { interfaces } from 'inversify';
 
-import { bindInternal } from './bind-internal';
+import bindInternal from './bind-internal';
 
-export function bind<TConstructor>(container: interfaces.Container,
-  constructor: interfaces.Newable<TConstructor>): void {
-  bindInternal<TConstructor>(container, constructor);
+export default function bind<TTarget>(container: interfaces.Container,
+  target: interfaces.Newable<TTarget>): void {
+  bindInternal<TTarget>(container, target);
 }

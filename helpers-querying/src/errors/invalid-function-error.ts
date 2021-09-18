@@ -19,10 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { QueryingError } from './querying-error';
+import QueryingError from './querying-error';
 
-export class InvalidFunctionError extends QueryingError {
-  constructor(public readonly container: string) {
-    super(`Invalid function '${container}'`);
+export default class InvalidFunctionError extends QueryingError {
+  constructor(public readonly target: string) {
+    super(`Invalid function '${target}'`);
+    this.name = 'InvalidFunctionError';
   }
 }
