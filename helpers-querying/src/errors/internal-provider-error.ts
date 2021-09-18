@@ -1,3 +1,5 @@
+import QueryingError from './querying-error';
+
 /*
  * Copyright © 2021 Michał Przybyś <michal@przybys.eu>
  *
@@ -19,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type FromMethodCallback from './from-method-callback';
-
-export default interface IFromMethod {
-  name: string;
-  callback: FromMethodCallback;
+export default class InternalProviderError extends QueryingError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InternalProviderError';
+  }
 }

@@ -19,9 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type FromMethodCallback from './from-method-callback';
+import type Constructable from './constructable';
 
-export default interface IFromMethod {
-  name: string;
-  callback: FromMethodCallback;
-}
+type ObjectDecorator<TTarget = Constructable> = (target: TTarget) => void;
+export default ObjectDecorator;

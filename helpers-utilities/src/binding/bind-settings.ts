@@ -24,10 +24,9 @@ import type { interfaces } from 'inversify';
 import type { RuntypeBase } from 'runtypes/lib/runtype';
 
 import UnableToLoadSettingsError from '../errors/unable-to-load-settings-error';
+import type Process from './process';
 
-declare let process: {
-  env: { [key: string]: string }
-};
+declare let process: Process;
 
 export default function bindSettings<TSettings>(container: interfaces.Container, symbol: symbol,
   name: string, runtype: RuntypeBase<TSettings>, defaults: Partial<TSettings>,

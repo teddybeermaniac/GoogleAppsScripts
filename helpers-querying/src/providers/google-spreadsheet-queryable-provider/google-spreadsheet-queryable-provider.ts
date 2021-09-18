@@ -38,6 +38,8 @@ import intoMethod from '../base-alasql-queryable-provider/into-method/into-metho
 import type ICurrentQueryableProvider from '../icurrent-queryable-provider';
 import type IFileQueryableProvider from '../ifile-queryable-provider';
 import ProviderType from '../provider-type';
+import type DestinationRange from './destination-range';
+import type NamedRange from './named-range';
 
 @setBindMetadata(GoogleSpreadsheetQueryableProviderSymbol, Scope.Transient)
 export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvider
@@ -75,11 +77,7 @@ export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQuerya
     return lastRowRange.getNextDataCell(SpreadsheetApp.Direction.UP).getRow();
   }
 
-  private getNamedRange(name: string, getData: boolean): {
-    sheet: GoogleAppsScript.Spreadsheet.Sheet, namedRange: GoogleAppsScript.Spreadsheet.NamedRange,
-    dataRange: GoogleAppsScript.Spreadsheet.Range, names: string[], data: unknown[][],
-    originRow: number, originColumn: number, rows: number, columns: number
-  } {
+  private getNamedRange(name: string, getData: boolean): NamedRange {
     this.logger.trace(`Reading named range '${name}'`);
     const namedRange = this.spreadsheet.getNamedRanges()
       .find((range) => range.getName() === name);
@@ -133,6 +131,7 @@ export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQuerya
     }
 
     return {
+      name,
       sheet,
       namedRange,
       dataRange,
@@ -148,12 +147,12 @@ export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQuerya
   @fromMethod('NAMEDRANGE')
   public fromNamedRange(tableName: string, _options?: IFromMethodOptions): unknown[] {
     this.logger.debug(`Getting data from named range '${tableName}'`);
-    const { names, data } = this.getNamedRange(tableName, true);
+    const namedRange = this.getNamedRange(tableName, true);
 
     this.logger.trace(`Converting a range '${tableName}' to a list of objects`);
-    return data
+    return namedRange.data
       .map((row) => <unknown>Object.fromEntries(row
-        .map((column, index) => [names[index], column === '' ? undefined : column])
+        .map((column, index) => [namedRange.names[index], column === '' ? undefined : column])
         .filter((entry) => entry[0])));
   }
 
@@ -170,7 +169,7 @@ export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQuerya
     }
 
     this.logger.trace(`Converting a list of objects to range '${tableName}'`);
-    const columnMapping: { [index: string]: number; } = {};
+    const columnMapping: Record<string, number> = {};
     for (const [index, column] of names.entries()) {
       columnMapping[column] = index;
     }
@@ -191,75 +190,72 @@ export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQuerya
     return mappedValues;
   }
 
-  private prepareTargetRange(append: boolean, sheet: GoogleAppsScript.Spreadsheet.Sheet,
-    originRow: number, originColumn: number, rows: number, columns: number,
-    dataRange: GoogleAppsScript.Spreadsheet.Range, length: number):
-    { destinationOriginRow: number, destinationRows: number; } {
+  private prepareTargetRange(namedRange: NamedRange, append: boolean, length: number):
+  DestinationRange {
     this.logger.trace('Preparing destination range');
-    let destinationOriginRow: number;
-    let destinationRows: number;
+    let originRow: number;
+    let rows: number;
     if (append) {
-      destinationOriginRow = this.getLastDataRow(sheet, originRow, originColumn, rows,
-        columns) + 1;
-      destinationRows = rows - (destinationOriginRow - originRow);
-      if (destinationRows === 0) {
+      originRow = this.getLastDataRow(namedRange.sheet, namedRange.originRow,
+        namedRange.originColumn, namedRange.rows, namedRange.columns) + 1;
+      rows = namedRange.rows - (originRow - namedRange.originRow);
+      if (rows === 0) {
         this.logger.warning('Range is full; expanding');
-        const lastRowRange = sheet.getRange(destinationOriginRow - 1, originColumn, 1, columns);
+        const lastRowRange = namedRange.sheet.getRange(originRow - 1,
+          namedRange.originColumn, 1, namedRange.columns);
         lastRowRange.insertCells(SpreadsheetApp.Dimension.ROWS);
 
-        const addedRowsRange = sheet.getRange(destinationOriginRow, originColumn, 1, columns);
+        const addedRowsRange = namedRange.sheet.getRange(originRow,
+          namedRange.originColumn, 1, namedRange.columns);
         addedRowsRange.copyTo(lastRowRange, SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false);
         addedRowsRange.clearContent();
 
-        destinationRows = 1;
+        rows = 1;
       }
     } else {
-      destinationOriginRow = originRow;
-      destinationRows = rows;
-      dataRange.clearContent();
+      originRow = namedRange.originRow;
+      rows = namedRange.rows;
+      namedRange.dataRange.clearContent();
     }
 
-    while (length > destinationRows) {
-      const rowsToAdd = Math.min(destinationRows, length - destinationRows);
+    while (length > rows) {
+      const rowsToAdd = Math.min(rows, length - rows);
       this.logger.trace(`Inserting ${rowsToAdd} rows into range`);
-      const addedRowsRange = sheet.getRange(destinationOriginRow, originColumn, rowsToAdd, columns);
+      const addedRowsRange = namedRange.sheet.getRange(originRow,
+        namedRange.originColumn, rowsToAdd, namedRange.columns);
       addedRowsRange.insertCells(SpreadsheetApp.Dimension.ROWS);
-      destinationRows += rowsToAdd;
+      rows += rowsToAdd;
     }
 
-    return { destinationOriginRow, destinationRows };
+    return { originRow, rows };
   }
 
-  private setValues(tableName: string, sheet: GoogleAppsScript.Spreadsheet.Sheet,
-    namedRange: GoogleAppsScript.Spreadsheet.NamedRange, append: boolean, mappedValues: unknown[][],
-    originRow: number, originColumn: number, rows: number, columns: number,
-    destinationOriginRow: number, destinationRows: number): void {
+  private setValues(namedRange: NamedRange, destination: DestinationRange, append: boolean,
+    mappedValues: unknown[][]): void {
     this.logger.trace(`Setting values of ${mappedValues.length} rows`);
-    const destinationRange = sheet.getRange(destinationOriginRow, originColumn,
-      Math.min(mappedValues.length, destinationRows), columns);
+    const destinationRange = namedRange.sheet.getRange(destination.originRow,
+      namedRange.originColumn, Math.min(mappedValues.length, destination.rows), namedRange.columns);
     destinationRange.setValues(mappedValues);
 
     const wholeRows = append
-      ? Math.max(destinationOriginRow - originRow + destinationRows + 1)
-      : Math.max(rows, destinationRows + 1);
-    this.logger.trace(`Setting '${tableName}'' range dimension to have ${wholeRows} rows starting from row ${originRow - 1}`);
-    const wholeRange = sheet.getRange(originRow - 1, originColumn, wholeRows, columns);
-    namedRange.setRange(wholeRange);
+      ? Math.max(destination.originRow - namedRange.originRow + destination.rows + 1)
+      : Math.max(namedRange.rows, destination.rows + 1);
+    this.logger.trace(`Setting '${namedRange.name}'' range dimension to have ${wholeRows} rows starting from row ${namedRange.originRow - 1}`);
+    const wholeRange = namedRange.sheet.getRange(namedRange.originRow - 1, namedRange.originColumn,
+      wholeRows, namedRange.columns);
+    namedRange.namedRange.setRange(wholeRange);
   }
 
   @intoMethod('NAMEDRANGE')
   public intoNamedRange(tableName: string, options: IIntoMethodOptions, columnNames: string[],
     data: unknown[]): void {
     this.logger.debug(`${options.append ? 'Appending' : 'Inserting'} data ${options.append ? 'to' : 'into'} named range '${tableName}'`);
-    const {
-      sheet, dataRange, namedRange, names, originRow, originColumn, rows, columns,
-    } = this.getNamedRange(tableName, false);
+    const namedRange = this.getNamedRange(tableName, false);
 
-    const mappedValues = this.mapValues(tableName, names, columnNames, data);
-    const { destinationOriginRow, destinationRows } = this.prepareTargetRange(options.append, sheet,
-      originRow, originColumn, rows, columns, dataRange, mappedValues.length);
-    this.setValues(tableName, sheet, namedRange, options.append, mappedValues, originRow,
-      originColumn, rows, columns, destinationOriginRow, destinationRows);
+    const mappedValues = this.mapValues(tableName, namedRange.names, columnNames, data);
+    const destinationRange = this.prepareTargetRange(namedRange, options.append,
+      mappedValues.length);
+    this.setValues(namedRange, destinationRange, options.append, mappedValues);
   }
 
   public loadFile(file: IFile): void {

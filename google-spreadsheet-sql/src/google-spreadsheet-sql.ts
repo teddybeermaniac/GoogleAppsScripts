@@ -26,6 +26,9 @@ import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 import objectHash from 'object-hash';
 
+import InvalidParametersError from './errors/invalid-parameters-error';
+import type Parameters from './parameters';
+import { ParametersRuntype } from './parameters';
 import { GoogleSpreadsheetSQLSymbol } from './symbols';
 
 @setBindMetadata(GoogleSpreadsheetSQLSymbol, Scope.Singleton)
@@ -34,10 +37,13 @@ export default class GoogleSpreadsheetSQL {
     @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {}
 
   @exportMethod(true, 'SQL')
-  public sql(query: string, parameters?: [string, unknown][], cacheKey?: string | boolean):
+  public sql(query: string, parameters?: Parameters, cacheKey?: string | boolean):
   unknown[][] | undefined {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
     const queryableProvider = this.queryable.fromCurrentSpreadsheet();
+    if (parameters && !ParametersRuntype.check(parameters)) {
+      throw new InvalidParametersError(parameters);
+    }
 
     return queryableProvider.queryAny(query,
       parameters ? Object.fromEntries(parameters) : parameters, cacheKey);

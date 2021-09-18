@@ -30,13 +30,13 @@ import {
 import NoMethodsExportedError from './errors/no-methods-exported-error';
 import NotExportedMethodError from './errors/not-exported-method-error';
 import type IExportedMethod from './iexported-method';
+import type IExportedMethodItem from './iexported-method-item';
 import type IExportedMethodProvider from './iexported-method-provider';
 import { exportedMethodContainerSymbol, exportedMethodsSymbol, IExportedMethodProviderSymbol } from './symbols';
 
 @setBindMetadata(IExportedMethodProviderSymbol, Scope.Singleton)
 export default class ExportedMethodProvider implements IExportedMethodProvider {
-  private readonly exportedMethods:
-  (IExportedMethod & { exportedName: string, symbol: symbol })[] = [];
+  private readonly exportedMethods: IExportedMethodItem[] = [];
 
   constructor(@inject(UTILITIES_TYPES.Container) private readonly container: interfaces.Container,
     @multiInject(exportedMethodContainerSymbol) targets: interfaces.Newable<unknown>[],

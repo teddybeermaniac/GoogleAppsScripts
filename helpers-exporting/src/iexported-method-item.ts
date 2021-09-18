@@ -19,9 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type FromMethodCallback from './from-method-callback';
+import type IExportedMethod from './iexported-method';
 
-export default interface IFromMethod {
-  name: string;
-  callback: FromMethodCallback;
+export default interface IExportedMethodItem extends IExportedMethod {
+  readonly exportedName: string;
+  readonly symbol: symbol;
 }

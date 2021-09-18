@@ -23,9 +23,10 @@ import createContext from 'context';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { v4 } from 'uuid';
 
-import MissingExecutionContextError from '../../errors/missing-execution-context-error';
-import { IExecutionContextSymbol } from '../../symbols';
-import type BaseAlaSQLQueryableProvider from './base-alasql-queryable-provider';
+import MissingExecutionContextError from '../../../errors/missing-execution-context-error';
+import { IExecutionContextSymbol } from '../../../symbols';
+import type BaseAlaSQLQueryableProvider from '../base-alasql-queryable-provider';
+import type ExecutionContextCallback from './execution-context-callback';
 import type IExecutionContext from './iexecution-context';
 import type IExecutionContextData from './iexecution-context-data';
 
@@ -54,7 +55,8 @@ export default class ExecutionContext implements IExecutionContext {
     return this.executionContextData.provider;
   }
 
-  public execute<TReturn>(provider: BaseAlaSQLQueryableProvider, callback: () => TReturn): TReturn {
+  public execute<TReturn>(provider: BaseAlaSQLQueryableProvider,
+    callback: ExecutionContextCallback<TReturn>): TReturn {
     return this.context.run(
       {
         id: v4({ random: Array.from({ length: 16 }).map(() => Math.floor(Math.random() * 255)) }),

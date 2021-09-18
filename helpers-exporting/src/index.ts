@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bind } from 'helpers-utilities';
+import { bind, BuilderCallback } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import ExportingError from './errors/exporting-error';
@@ -33,7 +33,7 @@ import type IExportedMethodProvider from './iexported-method-provider';
 import { IExportedMethodProviderSymbol } from './symbols';
 
 export default function addExporting(container: interfaces.Container,
-  build: (builder: ExportingBuilder) => void): void {
+  build: BuilderCallback<ExportingBuilder>): void {
   const builder = new ExportingBuilder(container);
   build(builder);
 

@@ -19,9 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type FromMethodCallback from './from-method-callback';
+import type IIntoMethodOptions from './iinto-method-options';
 
-export default interface IFromMethod {
-  name: string;
-  callback: FromMethodCallback;
-}
+type IntoMethodCallback = (tableName: string, options: IIntoMethodOptions, columns: string[],
+  data: unknown[]) => void;
+export default IntoMethodCallback;

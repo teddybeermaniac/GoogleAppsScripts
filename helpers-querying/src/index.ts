@@ -22,6 +22,7 @@
 import { bind } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
+import type InternalProviderError from './errors/internal-provider-error';
 import type InvalidFromMethodError from './errors/invalid-from-method-error';
 import type InvalidFunctionError from './errors/invalid-function-error';
 import type InvalidIntoMethodError from './errors/invalid-into-method-error';
@@ -31,11 +32,11 @@ import type NotAQueryableFileError from './errors/not-a-queryable-file-error';
 import type NotASpreadsheetContextError from './errors/not-a-spreadsheet-context-error';
 import type NotConfiguredFilesystemError from './errors/not-configured-filesystem-error';
 import type IQueryable from './iqueryable';
-import ExecutionContext from './providers/base-alasql-queryable-provider/execution-context';
-import ExchangeFunction from './providers/base-alasql-queryable-provider/function/exchange-function';
-import type IAlaSQLFunction from './providers/base-alasql-queryable-provider/function/ialasql-function';
-import MomentFunction from './providers/base-alasql-queryable-provider/function/moment-function';
-import WindowFunction from './providers/base-alasql-queryable-provider/function/window-function';
+import ExecutionContext from './providers/base-alasql-queryable-provider/execution-context/execution-context';
+import ExchangeFunction from './providers/base-alasql-queryable-provider/functions/exchange-function';
+import type IAlaSQLFunction from './providers/base-alasql-queryable-provider/functions/ialasql-function';
+import MomentFunction from './providers/base-alasql-queryable-provider/functions/moment-function';
+import WindowFunction from './providers/base-alasql-queryable-provider/functions/window-function/window-function';
 import GoogleSpreadsheetQueryableProvider from './providers/google-spreadsheet-queryable-provider/google-spreadsheet-queryable-provider';
 import type IQueryableProvider from './providers/iqueryable-provider';
 import MemoryQueryableProvider from './providers/memory-queryable-provider/memory-queryable-provider';
@@ -71,6 +72,7 @@ export type {
 };
 
 export {
+  InternalProviderError,
   InvalidFromMethodError,
   InvalidFunctionError,
   InvalidIntoMethodError,

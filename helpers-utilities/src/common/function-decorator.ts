@@ -1,3 +1,5 @@
+import type Constructable from './constructable';
+
 /*
  * Copyright © 2021 Michał Przybyś <michal@przybys.eu>
  *
@@ -19,9 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type FromMethodCallback from './from-method-callback';
-
-export default interface IFromMethod {
-  name: string;
-  callback: FromMethodCallback;
-}
+type FunctionDecorator<TFunction, TTarget = Constructable> = (target: TTarget, propertyKey: string,
+  descriptor: TypedPropertyDescriptor<TFunction>) => void;
+export default FunctionDecorator;

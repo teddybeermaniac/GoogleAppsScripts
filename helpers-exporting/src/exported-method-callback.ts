@@ -19,9 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type FromMethodCallback from './from-method-callback';
-
-export default interface IFromMethod {
-  name: string;
-  callback: FromMethodCallback;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ExportedMethodCallback = (...parameters: any[]) => any;
+export default ExportedMethodCallback;

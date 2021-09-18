@@ -19,23 +19,5 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { IExchange, TYPES as EXCHANGE_TYPES } from 'helpers-exchange';
-import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { Scope, setBindMetadata } from 'helpers-utilities';
-import { inject } from 'inversify';
-
-import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../symbols';
-import type IExecutionContext from '../iexecution-context';
-import type IAlaSQLFunction from './ialasql-function';
-
-@setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'EXCHANGE')
-export default class ExchangeFunction implements IAlaSQLFunction {
-  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(EXCHANGE_TYPES.IExchange) private readonly exchange: IExchange,
-    @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) {}
-
-  callback(value: number, from: string, to: string): number {
-    this.logger.trace(`Running in context '${this.context.id}' with value '${value}', from '${from}' and to '${to}'`);
-    return this.exchange.convert(value, from, to);
-  }
-}
+type BuilderCallback<TBuilder> = (builder: TBuilder) => void;
+export default BuilderCallback;

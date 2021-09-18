@@ -19,9 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type FromMethodCallback from './from-method-callback';
-
-export default interface IFromMethod {
-  name: string;
-  callback: FromMethodCallback;
+export default interface NamedRange {
+  readonly name: string;
+  readonly sheet: GoogleAppsScript.Spreadsheet.Sheet;
+  readonly namedRange: GoogleAppsScript.Spreadsheet.NamedRange;
+  readonly dataRange: GoogleAppsScript.Spreadsheet.Range;
+  readonly names: string[];
+  readonly data: unknown[][];
+  readonly originRow: number;
+  readonly originColumn: number;
+  readonly rows: number;
+  readonly columns: number;
 }

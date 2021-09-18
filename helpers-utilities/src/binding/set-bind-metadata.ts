@@ -19,14 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { decorate, injectable, interfaces } from 'inversify';
+import { decorate, injectable } from 'inversify';
 
+import type ObjectDecorator from '../common/object-decorator';
 import { bindMetadataSymbol } from '../symbols';
 import type IBindMetadata from './ibind-metadata';
 import type Scope from './scope';
 
-export default function setBindMetadata<TTarget>(symbol: symbol, scope: Scope, name?: string):
-(target: interfaces.Newable<TTarget>) => void {
+export default function setBindMetadata(symbol: symbol, scope: Scope, name?: string):
+ObjectDecorator {
   return (target) => {
     const metadata: IBindMetadata = {
       symbol,

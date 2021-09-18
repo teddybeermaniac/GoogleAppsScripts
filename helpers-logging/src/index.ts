@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bindInitializable } from 'helpers-utilities';
+import { bindInitializable, BuilderCallback } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import InvalidLogLevelError from './errors/invalid-log-level-error';
@@ -30,8 +30,8 @@ import LoggingBuilder from './logging-builder';
 import ProviderType from './providers/provider-type';
 import { ILoggerSymbol } from './symbols';
 
-export default function addLogging(container: interfaces.Container, build: (builder: LoggingBuilder)
-=> void): void {
+export default function addLogging(container: interfaces.Container,
+  build: BuilderCallback<LoggingBuilder>): void {
   const builder = new LoggingBuilder(container);
   build(builder);
 

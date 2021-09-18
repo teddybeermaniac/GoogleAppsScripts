@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bind } from 'helpers-utilities';
+import { bind, BuilderCallback } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import DuplicatePathError from './errors/duplicate-path-error';
@@ -39,8 +39,8 @@ import ItemType from './item-type';
 import ProviderType from './providers/provider-type';
 import { IFilesystemSymbol } from './symbols';
 
-export default function addFilesystem(container: interfaces.Container, build:
-(builder: FilesystemBuilder) => void) : void {
+export default function addFilesystem(container: interfaces.Container,
+  build: BuilderCallback<FilesystemBuilder>): void {
   const builder = new FilesystemBuilder(container);
   build(builder);
 

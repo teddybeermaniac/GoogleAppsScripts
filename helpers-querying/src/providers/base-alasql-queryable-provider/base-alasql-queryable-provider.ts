@@ -38,10 +38,10 @@ import {
 } from '../../symbols';
 import BaseQueryableProvider from '../base-queryable-provider';
 import type ProviderType from '../provider-type';
+import type IExecutionContext from './execution-context/iexecution-context';
 import type IFromMethod from './from-method/ifrom-method';
 import type IFromMethodOptions from './from-method/ifrom-method-options';
-import type IAlaSQLFunction from './function/ialasql-function';
-import type IExecutionContext from './iexecution-context';
+import type IAlaSQLFunction from './functions/ialasql-function';
 import type IIntoMethod from './into-method/iinto-method';
 import type IIntoMethodOptions from './into-method/iinto-method-options';
 

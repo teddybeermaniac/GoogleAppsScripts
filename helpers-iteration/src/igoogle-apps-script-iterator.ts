@@ -20,6 +20,6 @@
  * SOFTWARE.
  */
 export default interface IGoogleAppsScriptIterator<TItem> {
-  hasNext: () => boolean;
-  next: () => TItem;
+  hasNext(): boolean;
+  next(): TItem;
 }

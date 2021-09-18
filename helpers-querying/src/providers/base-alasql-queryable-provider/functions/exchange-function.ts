@@ -19,40 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import alasql from 'alasql';
+import { IExchange, TYPES as EXCHANGE_TYPES } from 'helpers-exchange';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { JSONEx, Scope, setBindMetadata } from 'helpers-utilities';
+import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
 import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../symbols';
-import type IExecutionContext from '../iexecution-context';
+import type IExecutionContext from '../execution-context/iexecution-context';
 import type IAlaSQLFunction from './ialasql-function';
 
-@setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'WINDOW')
-export default class WindowFunction implements IAlaSQLFunction {
+@setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'EXCHANGE')
+export default class ExchangeFunction implements IAlaSQLFunction {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
+    @inject(EXCHANGE_TYPES.IExchange) private readonly exchange: IExchange,
     @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) {}
 
-  callback(id: string, query: string, partition: string, value: unknown,
-    parameters: Record<string, unknown>): unknown {
-    this.logger.trace(() => `Running in context '${this.context.id}' with id '${id}', query '${query}', partition '${partition}', value '${JSONEx.stringify(value)}' and parameters '${JSONEx.stringify(parameters)}'`);
-    if (!this.context.data[`WINDOW_${id}`]) {
-      this.context.data[`WINDOW_${id}`] = {};
-    }
-    const data = <{ [partition: string]: { Number: number, Value: unknown; }[]; }>
-      this.context.data[`WINDOW_${id}`];
-
-    let partitionData = data[partition];
-    if (!partitionData) {
-      partitionData = [];
-      data[partition] = partitionData;
-    }
-
-    const result: unknown = alasql(query,
-      { ...parameters, PastValues: partitionData, CurrentValue: value });
-
-    partitionData.push({ Number: partitionData.length + 1, Value: result });
-
-    return result;
+  callback(value: number, from: string, to: string): number {
+    this.logger.trace(`Running in context '${this.context.id}' with value '${value}', from '${from}' and to '${to}'`);
+    return this.exchange.convert(value, from, to);
   }
 }

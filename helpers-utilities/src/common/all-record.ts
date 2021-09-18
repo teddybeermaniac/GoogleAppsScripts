@@ -19,9 +19,5 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type FromMethodCallback from './from-method-callback';
-
-export default interface IFromMethod {
-  name: string;
-  callback: FromMethodCallback;
-}
+type AllRecord<TKey extends string | number | symbol, TValue> = { [key in TKey]: TValue; };
+export default AllRecord;

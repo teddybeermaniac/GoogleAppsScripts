@@ -19,15 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type { FunctionDecorator } from 'helpers-utilities';
+
 import InvalidExportedMethodError from './errors/invalid-exported-method-error';
+import type ExportedMethodCallback from './exported-method-callback';
 import type IExportedMethod from './iexported-method';
-import type IExportedMethodCallback from './iexported-method-callback';
 import { exportedMethodsSymbol } from './symbols';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export default function exportMethod<TTarget extends { constructor: Function; }>(asIs?: boolean,
-  name?: string): (target: TTarget, propertyKey: string,
-    descriptor: TypedPropertyDescriptor<IExportedMethodCallback>) => void {
+export default function exportMethod(asIs?: boolean,
+  name?: string): FunctionDecorator<ExportedMethodCallback> {
   return (target, propertyKey, descriptor) => {
     if (!descriptor.value) {
       throw new InvalidExportedMethodError(propertyKey, target.constructor.name);

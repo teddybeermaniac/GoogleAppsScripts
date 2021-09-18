@@ -19,9 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type FromMethodCallback from './from-method-callback';
+import {
+  Array, Static, String, Tuple, Unknown,
+} from 'runtypes';
 
-export default interface IFromMethod {
-  name: string;
-  callback: FromMethodCallback;
-}
+export const ParametersRuntype = Array(Tuple(
+  String,
+  Unknown,
+));
+
+type Parameters = Static<typeof ParametersRuntype>;
+export default Parameters;

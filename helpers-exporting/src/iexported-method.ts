@@ -19,10 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type IExportedMethodCallback from './iexported-method-callback';
+import type ExportedMethodCallback from './exported-method-callback';
 
 export default interface IExportedMethod {
-  callback: IExportedMethodCallback;
+  callback: ExportedMethodCallback;
   name: string;
   asIs: boolean;
 }

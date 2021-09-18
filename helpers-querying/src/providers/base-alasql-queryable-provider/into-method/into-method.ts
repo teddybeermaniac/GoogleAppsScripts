@@ -19,15 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type { FunctionDecorator } from 'helpers-utilities';
+
 import InvalidIntoMethodError from '../../../errors/invalid-into-method-error';
 import { intoMethodsSymbol } from '../../../symbols';
 import type BaseAlaSQLQueryableProvider from '../base-alasql-queryable-provider';
 import type IIntoMethod from './iinto-method';
-import type IIntoMethodOptions from './iinto-method-options';
+import type IntoMethodCallback from './into-method-callback';
 
-export default function intoMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: string):
-(target: TTarget, propertyKey: string, descriptor: TypedPropertyDescriptor<(tableName: string,
-  options: IIntoMethodOptions, columnNames: string[], data: unknown[]) => void>) => void {
+export default function intoMethod(name: string): FunctionDecorator<IntoMethodCallback,
+BaseAlaSQLQueryableProvider> {
   return (target, propertyKey, descriptor) => {
     if (!descriptor.value) {
       throw new InvalidIntoMethodError(propertyKey, target.constructor.name);

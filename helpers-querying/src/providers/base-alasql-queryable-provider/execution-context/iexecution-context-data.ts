@@ -19,9 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type FromMethodCallback from './from-method-callback';
+import type BaseAlaSQLQueryableProvider from '../base-alasql-queryable-provider';
 
-export default interface IFromMethod {
-  name: string;
-  callback: FromMethodCallback;
+export default interface IExecutionContextData {
+  readonly id: string;
+  readonly data: Record<string, unknown>;
+  readonly provider: BaseAlaSQLQueryableProvider;
 }

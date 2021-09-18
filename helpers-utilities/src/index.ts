@@ -27,11 +27,16 @@ import { Container, interfaces } from 'inversify';
 import bind from './binding/bind';
 import bindInitializable from './binding/bind-initializable';
 import bindSettings from './binding/bind-settings';
+import type BuilderCallback from './binding/builder-callback';
 import getBindMetadata from './binding/get-bind-metadata';
 import getOwnerType from './binding/get-owner-type';
 import type IInitializable from './binding/iinitializable';
 import Scope from './binding/scope';
 import setBindMetadata from './binding/set-bind-metadata';
+import type AllRecord from './common/all-record';
+import type Constructable from './common/constructable';
+import type FunctionDecorator from './common/function-decorator';
+import type ObjectDecorator from './common/object-decorator';
 import AlreadyInitializedError from './errors/already-initialized-error';
 import InvalidScopeDefinedError from './errors/invalid-scope-defined-error';
 import NoBindMetadataDefinedError from './errors/no-bind-metadata-defined-error';
@@ -54,7 +59,12 @@ export const TYPES = {
 };
 
 export type {
+  AllRecord,
+  BuilderCallback,
+  Constructable,
+  FunctionDecorator,
   IInitializable,
+  ObjectDecorator,
 };
 
 export {

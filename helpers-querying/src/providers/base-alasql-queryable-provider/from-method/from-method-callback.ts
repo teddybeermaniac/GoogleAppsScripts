@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export default interface IExportedMethodCallback {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (...parameters: any[]): any;
-}
+import type IFromMethodOptions from './ifrom-method-options';
+
+type FromMethodCallback = (tableName: string, options: IFromMethodOptions) => unknown[];
+export default FromMethodCallback;

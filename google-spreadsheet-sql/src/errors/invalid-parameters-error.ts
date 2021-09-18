@@ -19,9 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type FromMethodCallback from './from-method-callback';
+import { JSONEx } from 'helpers-utilities';
 
-export default interface IFromMethod {
-  name: string;
-  callback: FromMethodCallback;
+import GoogleSpreadsheetSQLError from './google-spreadsheet-sql-error';
+
+export default class InvalidParametersError extends GoogleSpreadsheetSQLError {
+  constructor(parameters: unknown) {
+    super(`Invalid parameters '${JSONEx.stringify(parameters)}'`);
+    this.name = 'InvalidParametersError';
+  }
 }

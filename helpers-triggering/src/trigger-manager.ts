@@ -31,6 +31,7 @@ import AlreadyExistsTriggerError from './errors/already-exists-trigger-error';
 import type ITriggerManager from './itrigger-manager';
 import type Minutes from './minutes';
 import { ITriggerManagerSymbol } from './symbols';
+import type TriggerBuilder from './trigger-builder';
 
 @setBindMetadata(ITriggerManagerSymbol, Scope.Transient)
 export default class TriggerManager implements ITriggerManager {
@@ -71,9 +72,7 @@ export default class TriggerManager implements ITriggerManager {
     return existingTrigger;
   }
 
-  private build(method: string,
-    builder: (trigger: GoogleAppsScript.Script.ClockTriggerBuilder) => void, replace?: boolean):
-    void {
+  private build(method: string, builder: TriggerBuilder, replace?: boolean): void {
     this.logger.trace(() => {
       const descriptionMessage = this.symbol.description ? ` from '${this.symbol.description}'` : '';
 

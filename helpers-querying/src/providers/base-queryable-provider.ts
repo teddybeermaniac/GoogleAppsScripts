@@ -26,6 +26,7 @@ import objectHash from 'object-hash';
 
 import type IQueryableProvider from './iqueryable-provider';
 import type ProviderType from './provider-type';
+import type QueryCallback from './query-callback';
 
 export default abstract class BaseQueryableProvider implements IQueryableProvider {
   public abstract get providerType(): ProviderType;
@@ -49,8 +50,7 @@ export default abstract class BaseQueryableProvider implements IQueryableProvide
   }
 
   private queryInternal<TRow>(query: string, cacheKey: string | boolean | undefined,
-    parameters: unknown, callback: (query: string, parameters: unknown) => TRow[] | undefined):
-    TRow[] | undefined {
+    parameters: unknown, callback: QueryCallback<TRow>): TRow[] | undefined {
     if (cacheKey) {
       const cached = this.getCache<TRow[]>(query, cacheKey, parameters);
       if (cached) {

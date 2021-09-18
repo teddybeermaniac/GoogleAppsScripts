@@ -19,15 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type { FunctionDecorator } from 'helpers-utilities';
+
 import InvalidFromMethodError from '../../../errors/invalid-from-method-error';
 import { fromMethodsSymbol } from '../../../symbols';
 import type BaseAlaSQLQueryableProvider from '../base-alasql-queryable-provider';
+import type FromMethodCallback from './from-method-callback';
 import type IFromMethod from './ifrom-method';
-import type IFromMethodOptions from './ifrom-method-options';
 
-export default function fromMethod<TTarget extends BaseAlaSQLQueryableProvider>(name: string):
-(target: TTarget, propertyKey: string, descriptor: TypedPropertyDescriptor<(tableName: string,
-  options?: IFromMethodOptions) => unknown[]>) => void {
+export default function fromMethod(name: string): FunctionDecorator<FromMethodCallback,
+BaseAlaSQLQueryableProvider> {
   return (target, propertyKey, descriptor) => {
     if (!descriptor.value) {
       throw new InvalidFromMethodError(propertyKey, target.constructor.name);

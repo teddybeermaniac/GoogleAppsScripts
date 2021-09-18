@@ -19,10 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type BaseAlaSQLQueryableProvider from './base-alasql-queryable-provider';
-
-export default interface IExecutionContextData {
-  readonly id: string;
-  readonly data: Record<string, unknown>;
-  readonly provider: BaseAlaSQLQueryableProvider;
+export default class GoogleSpreadsheetSQLError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'GoogleSpreadsheetSQLError';
+  }
 }

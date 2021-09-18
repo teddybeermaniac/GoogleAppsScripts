@@ -29,6 +29,7 @@ import { GoogleAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } f
 import type ILoggerProvider from '../ilogger-provider';
 import ProviderType from '../provider-type';
 import type GoogleAppsScriptLoggerProviderSettings from './google-apps-script-logger-provider-settings';
+import type LogMethod from './log-method';
 
 @setBindMetadata(ILoggerProviderSymbol, Scope.Singleton)
 export default class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
@@ -46,7 +47,7 @@ export default class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
       return;
     }
 
-    let method: (message: string) => void;
+    let method: LogMethod;
     let prefix: string;
     switch (level) {
       case 'Trace':

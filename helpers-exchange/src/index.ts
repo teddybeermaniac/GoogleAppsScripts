@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bind } from 'helpers-utilities';
+import { bind, BuilderCallback } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import BadRateFetchResponseError from './errors/bad-rate-fetch-response-error';
@@ -33,7 +33,7 @@ import type ProviderType from './providers/provider-type';
 import { IExchangeSymbol } from './symbols';
 
 export default function addExchange(container: interfaces.Container,
-  build: (builder: ExchangeBuilder) => void): void {
+  build: BuilderCallback<ExchangeBuilder>): void {
   const builder = new ExchangeBuilder(container);
   build(builder);
 

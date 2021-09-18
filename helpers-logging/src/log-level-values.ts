@@ -19,9 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type { AllRecord } from 'helpers-utilities';
+
 import type LogLevel from './log-level';
 
-const logLevelValues: { [key in LogLevel]: number; } = {
+const logLevelValues: AllRecord<LogLevel, number> = {
   Trace: 0,
   Debug: 1,
   Information: 2,
