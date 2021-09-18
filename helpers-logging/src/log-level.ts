@@ -32,11 +32,3 @@ export const LogLevelRuntype = Union(
 
 type LogLevel = Static<typeof LogLevelRuntype>;
 export default LogLevel;
-
-export const logLevelValues: { [key in LogLevel]: number; } = {
-  Trace: 0,
-  Debug: 1,
-  Information: 2,
-  Warning: 3,
-  Error: 4,
-};

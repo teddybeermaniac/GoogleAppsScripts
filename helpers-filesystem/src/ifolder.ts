@@ -21,5 +21,5 @@
  */
 import type IItem from './iitem';
 
-type IFolder = IItem;
-export default IFolder;
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export default interface IFolder extends IItem {}

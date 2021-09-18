@@ -23,7 +23,8 @@ import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
 import InvalidLogLevelError from '../../errors/invalid-log-level-error';
-import LogLevel, { logLevelValues } from '../../log-level';
+import type LogLevel from '../../log-level';
+import logLevelValues from '../../log-level-values';
 import { GoogleAppsScriptLoggerProviderSettingsSymbol, ILoggerProviderSymbol } from '../../symbols';
 import type ILoggerProvider from '../ilogger-provider';
 import ProviderType from '../provider-type';

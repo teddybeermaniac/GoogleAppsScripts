@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 import InvalidExportedMethodError from './errors/invalid-exported-method-error';
-import type { IExportedMethodCallback } from './iexported-method';
 import type IExportedMethod from './iexported-method';
+import type IExportedMethodCallback from './iexported-method-callback';
 import { exportedMethodsSymbol } from './symbols';
 
 // eslint-disable-next-line @typescript-eslint/ban-types

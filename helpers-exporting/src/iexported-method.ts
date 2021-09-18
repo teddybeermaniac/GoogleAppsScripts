@@ -19,8 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type IExportedMethodCallback = (...parameters: any[]) => any;
+import type IExportedMethodCallback from './iexported-method-callback';
 
 export default interface IExportedMethod {
   callback: IExportedMethodCallback;

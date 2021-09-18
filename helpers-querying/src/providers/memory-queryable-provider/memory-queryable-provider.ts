@@ -24,13 +24,13 @@ import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { Scope, setBindMetadata, TYPES as UTILITIES_TYPES } from 'helpers-utilities';
 import { inject, interfaces } from 'inversify';
 
-import { MemoryQueryableProviderSymbol } from '../../../symbols';
-import ProviderType from '../../provider-type';
-import BaseAlaSQLQueryableProvider from '../base-alasql-queryable-provider';
-import fromMethod from '../from-method/from-method';
-import type IFromMethodOptions from '../from-method/ifrom-method-options';
-import type IIntoMethodOptions from '../into-method/iinto-method-options';
-import intoMethod from '../into-method/into-method';
+import { MemoryQueryableProviderSymbol } from '../../symbols';
+import BaseAlaSQLQueryableProvider from '../base-alasql-queryable-provider/base-alasql-queryable-provider';
+import fromMethod from '../base-alasql-queryable-provider/from-method/from-method';
+import type IFromMethodOptions from '../base-alasql-queryable-provider/from-method/ifrom-method-options';
+import type IIntoMethodOptions from '../base-alasql-queryable-provider/into-method/iinto-method-options';
+import intoMethod from '../base-alasql-queryable-provider/into-method/into-method';
+import ProviderType from '../provider-type';
 
 @setBindMetadata(MemoryQueryableProviderSymbol, Scope.Transient)
 export default class MemoryQueryableProvider extends BaseAlaSQLQueryableProvider {

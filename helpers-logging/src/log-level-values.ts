@@ -19,20 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type IGoogleAppsScriptIterator from './igoogle-apps-script-iterator';
+import type LogLevel from './log-level';
 
-export default class SimpleIterator<TItem> implements Iterator<TItem> {
-  constructor(private readonly iterator: IGoogleAppsScriptIterator<TItem>) {}
-
-  public [Symbol.iterator](): Iterator<TItem> {
-    return this;
-  }
-
-  public next(): IteratorResult<TItem> {
-    if (this.iterator.hasNext()) {
-      return { value: this.iterator.next(), done: false };
-    }
-
-    return { value: undefined, done: true };
-  }
-}
+const logLevelValues: { [key in LogLevel]: number; } = {
+  Trace: 0,
+  Debug: 1,
+  Information: 2,
+  Warning: 3,
+  Error: 4,
+};
+export default logLevelValues;

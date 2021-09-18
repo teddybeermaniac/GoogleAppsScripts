@@ -25,7 +25,8 @@ import {
 import { inject, interfaces, multiInject } from 'inversify';
 
 import type ILogger from './ilogger';
-import LogLevel, { logLevelValues } from './log-level';
+import type LogLevel from './log-level';
+import logLevelValues from './log-level-values';
 import type LoggerSettings from './logger-settings';
 import type ILoggerProvider from './providers/ilogger-provider';
 import type ProviderType from './providers/provider-type';

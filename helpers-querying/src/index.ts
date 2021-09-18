@@ -36,9 +36,9 @@ import ExchangeFunction from './providers/base-alasql-queryable-provider/functio
 import type IAlaSQLFunction from './providers/base-alasql-queryable-provider/function/ialasql-function';
 import MomentFunction from './providers/base-alasql-queryable-provider/function/moment-function';
 import WindowFunction from './providers/base-alasql-queryable-provider/function/window-function';
-import MemoryQueryableProvider from './providers/base-alasql-queryable-provider/memory-queryable-provider/memory-queryable-provider';
 import GoogleSpreadsheetQueryableProvider from './providers/google-spreadsheet-queryable-provider/google-spreadsheet-queryable-provider';
 import type IQueryableProvider from './providers/iqueryable-provider';
+import MemoryQueryableProvider from './providers/memory-queryable-provider/memory-queryable-provider';
 import type ProviderType from './providers/provider-type';
 import Queryable from './queryable';
 import { IAlaSQLFunctionDefinitionSymbol, IQueryableSymbol } from './symbols';
