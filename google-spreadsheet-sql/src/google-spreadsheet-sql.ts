@@ -34,12 +34,13 @@ export default class GoogleSpreadsheetSQL {
     @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {}
 
   @exportMethod(true, 'SQL')
-  public sql(query: string, parameters: [string, unknown][], cacheKey?: string | boolean):
+  public sql(query: string, parameters?: [string, unknown][], cacheKey?: string | boolean):
   unknown[][] | undefined {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
     const queryableProvider = this.queryable.fromCurrentSpreadsheet();
 
-    return queryableProvider.queryAny(query, Object.fromEntries(parameters), cacheKey);
+    return queryableProvider.queryAny(query,
+      parameters ? Object.fromEntries(parameters) : parameters, cacheKey);
   }
 
   @exportMethod(true, 'CACHEKEY')

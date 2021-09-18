@@ -13,7 +13,7 @@ To install this script:
 8. Then in that script add:
 ```js
 function SQL(query, parameters, cacheKey) {
-  return GoogleSpreadsheetSQL.SQL(query, cacheKey, parameters);
+  return GoogleSpreadsheetSQL.SQL(query, parameters, cacheKey);
 }
 
 function CACHEKEY(...parameters) {
