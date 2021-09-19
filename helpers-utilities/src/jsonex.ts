@@ -21,10 +21,13 @@
  */
 export default class JSONEx {
   // eslint-disable-next-line unicorn/no-unsafe-regex
-  private static dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(?:Z|[+-]\d{2}:\d{2})$/;
+  private static isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(?:Z|[+-]\d{2}:\d{2})$/;
+
+  private static dateRegex = /^(Mon(day)?|Tue(sday)?|Wed(nesday)?|Thu(rsday)?|Fri(day)?|Sat(urday)?|Sun(day)?), \d{1,2} (Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sep(tember)?|Oct(ober)?|Nov(ember)?|Dec(ember)?) \d{4} \d{2}:\d{2}:\d{2} [+-]\d{4}$/;
 
   private static reviver(this: void, _key: string, value: unknown): unknown {
-    if (typeof value === 'string' && JSONEx.dateRegex.test(value)) {
+    if (typeof value === 'string'
+      && (JSONEx.isoDateRegex.test(value) || JSONEx.dateRegex.test(value))) {
       return new Date(value);
     }
 

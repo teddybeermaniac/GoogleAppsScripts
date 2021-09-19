@@ -19,13 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type { RuntypeBase } from 'runtypes/lib/runtype';
+import {
+  Dictionary, InstanceOf, Literal, Number, Record, Static, String,
+} from 'runtypes';
 
-import type Currency from '../currency';
-import type ProviderType from './provider-type';
+import { ExchangeRateHostCurrencyRuntype } from './exchange-rate-host-currency';
 
-export default interface IExchangeProvider {
-  readonly currencyRuntype: RuntypeBase;
-  readonly providerType: ProviderType;
-  getRate(from: Currency, to: Currency): number;
-}
+// https://api.exchangerate.host/latest
+export const ExchangeRateHostResponseRuntype = Record({
+  motd: Record({
+    msg: String,
+    url: String,
+  }),
+  success: Literal(true),
+  base: ExchangeRateHostCurrencyRuntype,
+  date: InstanceOf(Date),
+  rates: Dictionary(Number, ExchangeRateHostCurrencyRuntype),
+});
+
+type ExchangeRateHostResponse = Static<typeof ExchangeRateHostResponseRuntype>;
+export default ExchangeRateHostResponse;

@@ -28,9 +28,10 @@ export default function getOwnerType<TTarget>(context: interfaces.Context,
   target: interfaces.Newable<TTarget>): interfaces.Newable<unknown> {
   const { symbol } = getBindMetadata(target);
   let request: interfaces.Request | null = context.currentRequest;
-  while (request) {
+  let found = false;
+  while (request && !found) {
     if (request.serviceIdentifier === symbol) {
-      break;
+      found = true;
     }
 
     request = request.parentRequest;

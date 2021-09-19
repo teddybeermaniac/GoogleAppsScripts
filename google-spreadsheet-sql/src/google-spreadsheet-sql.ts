@@ -41,7 +41,7 @@ export default class GoogleSpreadsheetSQL {
   unknown[][] | undefined {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
     const queryableProvider = this.queryable.fromCurrentSpreadsheet();
-    if (parameters && !ParametersRuntype.check(parameters)) {
+    if (parameters && !ParametersRuntype.guard(parameters)) {
       throw new InvalidParametersError(parameters);
     }
 

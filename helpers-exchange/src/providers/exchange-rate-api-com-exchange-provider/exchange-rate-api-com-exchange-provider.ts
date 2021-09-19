@@ -21,19 +21,24 @@
  */
 import { ICache, TYPES as CACHING_TYPES } from 'helpers-caching';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { Scope, setBindMetadata } from 'helpers-utilities';
+import { AllRecord, Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
-import BadRateFetchResponseError from '../../errors/bad-rate-fetch-response-error';
 import { ExchangeRateApiComExchangeProviderSettingsSymbol, IExchangeProviderSymbol } from '../../symbols';
 import BaseExchangeProvider from '../base-exchange-provider';
 import ProviderType from '../provider-type';
-import currencies from './currencies.json';
 import type ExchangeRateApiComExchangeProviderSettings from './exchange-rate-api-com-exchange-provider-settings';
+import ExchangeRateApiComCurrency, { ExchangeRateApiComCurrencyRuntype } from './models/exchange-rate-api-com-currency';
+import ExchangeRateApiComResponse, { ExchangeRateApiComResponseRuntype } from './models/exchange-rate-api-com-response';
 
 @setBindMetadata(IExchangeProviderSymbol, Scope.Singleton)
-export default class ExchangeRateApiComExchangeProvider extends BaseExchangeProvider {
-  public readonly supportedCurrencies = currencies;
+export default class ExchangeRateApiComExchangeProvider
+  extends BaseExchangeProvider<ExchangeRateApiComResponse, ExchangeRateApiComCurrency> {
+  protected readonly cacheTtl = 86_400;
+
+  protected readonly responseRuntype = ExchangeRateApiComResponseRuntype;
+
+  public readonly currencyRuntype = ExchangeRateApiComCurrencyRuntype;
 
   public readonly providerType = ProviderType.ExchangeRateApiCom;
 
@@ -44,21 +49,12 @@ export default class ExchangeRateApiComExchangeProvider extends BaseExchangeProv
     super(logger, cache);
   }
 
-  getRate(from: string, to: string): number {
-    return this.getRateInternal(from, to,
-      `https://v6.exchangerate-api.com/v6/${encodeURIComponent(this.settings.apiKey)}/latest/${encodeURIComponent(from)}`,
-      86_400, (result) => {
-        // eslint-disable-next-line max-len
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-        if ((<any>result).result !== 'success') {
-        // eslint-disable-next-line max-len
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-          throw new BadRateFetchResponseError((<any>result).result);
-        }
+  protected getUrl(from: ExchangeRateApiComCurrency, _to: ExchangeRateApiComCurrency): string {
+    return `https://v6.exchangerate-api.com/v6/${encodeURIComponent(this.settings.apiKey)}/latest/${encodeURIComponent(from)}`;
+  }
 
-        // eslint-disable-next-line max-len
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-        return <{ [currency: string]: number; }>(<any>result).conversion_rates;
-      });
+  protected getRates(response: ExchangeRateApiComResponse):
+  AllRecord<ExchangeRateApiComCurrency, number> {
+    return response.conversion_rates;
   }
 }

@@ -19,6 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type Currency from './currency';
+
 export default interface IExchange {
-  convert(value: number, from: string, to: string): number;
+  convert(value: number, from: Currency, to: Currency): number;
 }
