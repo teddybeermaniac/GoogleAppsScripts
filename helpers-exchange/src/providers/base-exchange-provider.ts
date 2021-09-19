@@ -21,50 +21,56 @@
  */
 import type { ICache } from 'helpers-caching';
 import type { ILogger } from 'helpers-logging';
-import { JSONEx } from 'helpers-utilities';
+import { AllRecord, JSONEx } from 'helpers-utilities';
 import { injectable } from 'inversify';
+import type { RuntypeBase } from 'runtypes/lib/runtype';
 
+import type Currency from '../currency';
 import BadRateFetchResponseError from '../errors/bad-rate-fetch-response-error';
 import InvalidCurrencyError from '../errors/invalid-currency-error';
-import NoRatesFetchedError from '../errors/no-rates-fetched-error';
 import type IExchangeProvider from './iexchange-provider';
 import type ProviderType from './provider-type';
 
 @injectable()
-export default abstract class BaseExchangeProvider implements IExchangeProvider {
-  public abstract providerType: ProviderType;
+export default abstract class BaseExchangeProvider<TResponse, TCurrency extends string>
+implements IExchangeProvider {
+  protected abstract readonly cacheTtl: number;
 
-  public abstract supportedCurrencies: string[];
+  protected abstract readonly responseRuntype: RuntypeBase<TResponse>;
+
+  public abstract readonly currencyRuntype: RuntypeBase<TCurrency>;
+
+  public abstract readonly providerType: ProviderType;
 
   constructor(protected readonly logger: ILogger, protected readonly cache: ICache) {}
 
-  public abstract getRate(from: string, to: string): number;
+  protected abstract getUrl(from: Currency, to: Currency): string;
 
-  protected getRateInternal(from: string, to: string, url: string, cacheTtl: number,
-    callback: (result: unknown) => { [currency: string]: number; }): number {
+  protected abstract getRates(response: TResponse): AllRecord<TCurrency, number>;
+
+  public getRate(from: Currency, to: Currency): number {
     this.logger.debug(`Getting conversion rate from '${from}' to '${to}'`);
-    let rates = this.cache.get<{ [currency: string]: number; }>(`rates_${from}`);
+    let rates = this.cache.get<AllRecord<TCurrency, number>>(`rates_${from}`);
     if (!rates) {
       this.logger.trace('Conversion rates not found in cache; fetching');
-      const response = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+      const response = UrlFetchApp.fetch(this.getUrl(from, to), { muteHttpExceptions: true });
       const responseText = response.getContentText();
       if (response.getResponseCode() !== 200) {
         throw new BadRateFetchResponseError(responseText);
       }
 
       this.logger.trace(`Fetched conversion rates: ${responseText}`);
-      const result = JSONEx.parse(responseText);
-      rates = callback(result);
-
-      if (!rates) {
-        throw new NoRatesFetchedError();
+      const result = JSONEx.parse<TResponse>(responseText);
+      if (!this.responseRuntype.guard(result)) {
+        throw new BadRateFetchResponseError(`Invalid response: ${responseText}`);
       }
 
-      this.cache.set(`rates_${from}`, rates, cacheTtl);
+      rates = this.getRates(result);
+      this.cache.set(`rates_${from}`, rates, this.cacheTtl);
     }
 
-    const rate = rates[to];
-    if (rate === undefined) {
+    const rate = rates[<TCurrency>to];
+    if (!rate) {
       throw new InvalidCurrencyError(to);
     }
 

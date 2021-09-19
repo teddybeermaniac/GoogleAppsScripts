@@ -23,7 +23,7 @@ import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
-import currencies from './currencies.json';
+import Currency, { CurrencyRuntype } from './currency';
 import InvalidCurrencyError from './errors/invalid-currency-error';
 import type IExchange from './iexchange';
 import type IExchangeProvider from './providers/iexchange-provider';
@@ -34,14 +34,12 @@ export default class Exchange implements IExchange {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(IExchangeProviderSymbol) private readonly provider: IExchangeProvider) {}
 
-  convert(value: number, from: string, to: string): number {
+  convert(value: number, from: Currency, to: Currency): number {
     this.logger.debug(`Converting '${value}' from '${from}' to '${to}'`);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    if (!currencies.includes(from) || !this.provider.supportedCurrencies.includes(from)) {
+    if (!CurrencyRuntype.guard(from) || !this.provider.currencyRuntype.guard(from)) {
       throw new InvalidCurrencyError(from);
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    if (!currencies.includes(to) || !this.provider.supportedCurrencies.includes(to)) {
+    if (!CurrencyRuntype.guard(to) || !this.provider.currencyRuntype.guard(to)) {
       throw new InvalidCurrencyError(to);
     }
 

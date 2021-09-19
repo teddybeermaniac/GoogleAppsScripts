@@ -19,11 +19,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import ExchangeError from './exchange-error';
+import {
+  Dictionary, InstanceOf, Literal, Number, Record, Static, String,
+} from 'runtypes';
 
-export default class NoRatesFetchedError extends ExchangeError {
-  constructor() {
-    super('No exchange rates fetched');
-    this.name = 'NoRatesFetchedError';
-  }
-}
+import { ExchangeRateApiComCurrencyRuntype } from './exchange-rate-api-com-currency';
+
+// https://www.exchangerate-api.com/docs/standard-requests
+export const ExchangeRateApiComResponseRuntype = Record({
+  result: Literal('success'),
+  documentation: String,
+  terms_of_use: String,
+  time_last_update_unix: Number,
+  time_last_update_utc: InstanceOf(Date),
+  time_next_update_unix: Number,
+  time_next_update_utc: InstanceOf(Date),
+  base_code: ExchangeRateApiComCurrencyRuntype,
+  conversion_rates: Dictionary(Number, ExchangeRateApiComCurrencyRuntype),
+});
+
+type ExchangeRateApiComResponse = Static<typeof ExchangeRateApiComResponseRuntype>;
+export default ExchangeRateApiComResponse;

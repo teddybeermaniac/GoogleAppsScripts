@@ -21,17 +21,23 @@
  */
 import { ICache, TYPES as CACHING_TYPES } from 'helpers-caching';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { Scope, setBindMetadata } from 'helpers-utilities';
+import { AllRecord, Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
 import { IExchangeProviderSymbol } from '../../symbols';
 import BaseExchangeProvider from '../base-exchange-provider';
 import ProviderType from '../provider-type';
-import currencies from './currencies.json';
+import ExchangeRateHostCurrency, { ExchangeRateHostCurrencyRuntype } from './models/exchange-rate-host-currency';
+import ExchangeRateHostResponse, { ExchangeRateHostResponseRuntype } from './models/exchange-rate-host-response';
 
 @setBindMetadata(IExchangeProviderSymbol, Scope.Singleton)
-export default class ExchangeRateHostExchangeProvider extends BaseExchangeProvider {
-  public readonly supportedCurrencies = currencies;
+export default class ExchangeRateHostExchangeProvider
+  extends BaseExchangeProvider<ExchangeRateHostResponse, ExchangeRateHostCurrency> {
+  protected readonly cacheTtl = 3600;
+
+  protected readonly responseRuntype = ExchangeRateHostResponseRuntype;
+
+  public readonly currencyRuntype = ExchangeRateHostCurrencyRuntype;
 
   public readonly providerType = ProviderType.ExchangeRateHost;
 
@@ -41,10 +47,12 @@ export default class ExchangeRateHostExchangeProvider extends BaseExchangeProvid
     super(logger, cache);
   }
 
-  getRate(from: string, to: string): number {
-    return this.getRateInternal(from, to, `https://api.exchangerate.host/latest?base=${encodeURIComponent(from)}`,
-      // eslint-disable-next-line max-len
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-      3600, (result) => <{ [currency: string]: number; }>(<any>result).rates);
+  protected getUrl(from: ExchangeRateHostCurrency, _to: ExchangeRateHostCurrency): string {
+    return `https://api.exchangerate.host/latest?base=${encodeURIComponent(from)}`;
+  }
+
+  protected getRates(response: ExchangeRateHostResponse):
+  AllRecord<ExchangeRateHostCurrency, number> {
+    return response.rates;
   }
 }
