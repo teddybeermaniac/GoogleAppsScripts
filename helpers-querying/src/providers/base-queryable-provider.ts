@@ -50,7 +50,7 @@ export default abstract class BaseQueryableProvider implements IQueryableProvide
   }
 
   private queryInternal<TRow>(query: string, cacheKey: string | boolean | undefined,
-    parameters: unknown, callback: QueryCallback<TRow>): TRow[] | undefined {
+    parameters: unknown | undefined, callback: QueryCallback<TRow>): TRow[] | undefined {
     if (cacheKey) {
       const cached = this.getCache<TRow[]>(query, cacheKey, parameters);
       if (cached) {
@@ -74,7 +74,7 @@ export default abstract class BaseQueryableProvider implements IQueryableProvide
     return undefined;
   }
 
-  public query<TRow>(query: string, parameters: unknown, cacheKey?: string | boolean):
+  public query<TRow>(query: string, cacheKey?: string | boolean, parameters?: unknown):
   TRow[] | undefined {
     this.logger.debug(`Querying a model ${cacheKey ? 'with cache' : 'without cache'} with query '${query}'`);
     return this.queryInternal<TRow>(query, cacheKey, parameters,
@@ -82,7 +82,7 @@ export default abstract class BaseQueryableProvider implements IQueryableProvide
         parametersCallback));
   }
 
-  public queryAny(query: string, parameters: unknown, cacheKey?: string | boolean):
+  public queryAny(query: string, cacheKey?: string | boolean, parameters?: unknown):
   unknown[][] | undefined {
     this.logger.debug(`Querying any ${cacheKey ? 'with cache' : 'without cache'} with query '${query}'`);
     return this.queryInternal<unknown[]>(query, cacheKey, parameters,

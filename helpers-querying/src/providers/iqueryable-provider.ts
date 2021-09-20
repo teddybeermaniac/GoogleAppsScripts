@@ -24,8 +24,8 @@ import type ProviderType from './provider-type';
 export default interface IQueryableProvider {
   readonly providerType: ProviderType;
 
-  query<TModel>(query: string, parameters: unknown, cacheKey?: string | boolean):
+  query<TModel>(query: string, cacheKey?: string | boolean, parameters?: unknown):
   TModel[] | undefined;
-  queryAny(query: string, parameters: unknown, cacheKey?: string | boolean):
+  queryAny(query: string, cacheKey?: string | boolean, parameters?: unknown):
   unknown[][] | undefined;
 }

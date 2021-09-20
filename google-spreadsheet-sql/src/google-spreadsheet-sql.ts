@@ -37,7 +37,7 @@ export default class GoogleSpreadsheetSQL {
     @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {}
 
   @exportMethod(true, 'SQL')
-  public sql(query: string, parameters?: Parameters, cacheKey?: string | boolean):
+  public sql(query: string, cacheKey?: string | boolean, parameters?: Parameters):
   unknown[][] | undefined {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
     const queryableProvider = this.queryable.fromCurrentSpreadsheet();
@@ -45,8 +45,8 @@ export default class GoogleSpreadsheetSQL {
       throw new InvalidParametersError(parameters);
     }
 
-    return queryableProvider.queryAny(query,
-      parameters ? Object.fromEntries(parameters) : parameters, cacheKey);
+    return queryableProvider.queryAny(query, cacheKey,
+      parameters ? Object.fromEntries(parameters) : parameters);
   }
 
   @exportMethod(true, 'CACHEKEY')
