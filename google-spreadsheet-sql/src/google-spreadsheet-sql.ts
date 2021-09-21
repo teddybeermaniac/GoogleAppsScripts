@@ -22,8 +22,8 @@
 import { exportMethod } from 'helpers-exporting';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import {
-  IQueryable, Parameters as ProviderParameters, ParametersRuntype as ProviderParametersRuntype,
-  TYPES as QUERYING_TYPES,
+  IQueryable, IQueryableProvider, Parameters as ProviderParameters,
+  ParametersRuntype as ProviderParametersRuntype, TYPES as QUERYING_TYPES,
 } from 'helpers-querying';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
@@ -36,15 +36,19 @@ import { GoogleSpreadsheetSQLSymbol } from './symbols';
 
 @setBindMetadata(GoogleSpreadsheetSQLSymbol, Scope.Singleton)
 export default class GoogleSpreadsheetSQL {
+  private queryableProvider?: IQueryableProvider;
+
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {}
 
   private queryInternal(query: string, cacheKey?: string | boolean,
     parameters?: ProviderParameters): unknown[][] | undefined {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
-    const queryableProvider = this.queryable.fromCurrentSpreadsheet();
+    if (!this.queryableProvider) {
+      this.queryableProvider = this.queryable.fromCurrentSpreadsheet();
+    }
 
-    return queryableProvider.queryAny(query, cacheKey, parameters);
+    return this.queryableProvider.queryAny(query, cacheKey, parameters);
   }
 
   @exportMethod(true, 'query')
