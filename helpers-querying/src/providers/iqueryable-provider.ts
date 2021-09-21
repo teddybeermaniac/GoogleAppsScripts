@@ -19,13 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import type Parameters from './parameters';
 import type ProviderType from './provider-type';
 
 export default interface IQueryableProvider {
   readonly providerType: ProviderType;
 
-  query<TModel>(query: string, cacheKey?: string | boolean, parameters?: unknown):
+  query<TModel>(query: string, cacheKey?: string | boolean, parameters?: Parameters):
   TModel[] | undefined;
-  queryAny(query: string, cacheKey?: string | boolean, parameters?: unknown):
+  queryAny(query: string, cacheKey?: string | boolean, parameters?: Parameters):
   unknown[][] | undefined;
 }

@@ -25,6 +25,7 @@ import { JSONEx } from 'helpers-utilities';
 import objectHash from 'object-hash';
 
 import type IQueryableProvider from './iqueryable-provider';
+import type Parameters from './parameters';
 import type ProviderType from './provider-type';
 import type QueryCallback from './query-callback';
 
@@ -37,20 +38,20 @@ export default abstract class BaseQueryableProvider implements IQueryableProvide
 
   constructor(protected readonly logger: ILogger, private readonly cache: ICache) {}
 
-  private getCache<TValue>(query: string, cacheKey: string | boolean, parameters: unknown):
+  private getCache<TValue>(query: string, cacheKey: string | boolean, parameters?: Parameters):
   TValue | undefined {
     this.logger.debug(`Getting result of '${query}' query from cache`);
     return this.cache.get<TValue>(objectHash.sha1([query, cacheKey, parameters]));
   }
 
-  private putCache<TValue>(query: string, cacheKey: string | boolean, parameters: unknown,
-    result: TValue): void {
+  private putCache<TValue>(query: string, cacheKey: string | boolean,
+    parameters: Parameters | undefined, result: TValue): void {
     this.logger.debug(`Putting result of '${query}' query into cache`);
     this.cache.set(objectHash.sha1([query, cacheKey, parameters]), result);
   }
 
   private queryInternal<TRow>(query: string, cacheKey: string | boolean | undefined,
-    parameters: unknown | undefined, callback: QueryCallback<TRow>): TRow[] | undefined {
+    parameters: Parameters | undefined, callback: QueryCallback<TRow>): TRow[] | undefined {
     if (cacheKey) {
       const cached = this.getCache<TRow[]>(query, cacheKey, parameters);
       if (cached) {
@@ -74,7 +75,7 @@ export default abstract class BaseQueryableProvider implements IQueryableProvide
     return undefined;
   }
 
-  public query<TRow>(query: string, cacheKey?: string | boolean, parameters?: unknown):
+  public query<TRow>(query: string, cacheKey?: string | boolean, parameters?: Parameters):
   TRow[] | undefined {
     this.logger.debug(`Querying a model ${cacheKey ? 'with cache' : 'without cache'} with query '${query}'`);
     return this.queryInternal<TRow>(query, cacheKey, parameters,
@@ -82,7 +83,7 @@ export default abstract class BaseQueryableProvider implements IQueryableProvide
         parametersCallback));
   }
 
-  public queryAny(query: string, cacheKey?: string | boolean, parameters?: unknown):
+  public queryAny(query: string, cacheKey?: string | boolean, parameters?: Parameters):
   unknown[][] | undefined {
     this.logger.debug(`Querying any ${cacheKey ? 'with cache' : 'without cache'} with query '${query}'`);
     return this.queryInternal<unknown[]>(query, cacheKey, parameters,

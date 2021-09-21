@@ -40,6 +40,8 @@ import WindowFunction from './providers/base-alasql-queryable-provider/functions
 import GoogleSpreadsheetQueryableProvider from './providers/google-spreadsheet-queryable-provider/google-spreadsheet-queryable-provider';
 import type IQueryableProvider from './providers/iqueryable-provider';
 import MemoryQueryableProvider from './providers/memory-queryable-provider/memory-queryable-provider';
+import type Parameters from './providers/parameters';
+import { ParametersRuntype } from './providers/parameters';
 import type ProviderType from './providers/provider-type';
 import Queryable from './queryable';
 import { IAlaSQLFunctionDefinitionSymbol, IQueryableSymbol } from './symbols';
@@ -69,6 +71,7 @@ export const TYPES = {
 export type {
   IQueryable,
   IQueryableProvider,
+  Parameters,
 };
 
 export {
@@ -81,5 +84,6 @@ export {
   NotAQueryableFileError,
   NotASpreadsheetContextError,
   NotConfiguredFilesystemError,
+  ParametersRuntype,
   ProviderType,
 };

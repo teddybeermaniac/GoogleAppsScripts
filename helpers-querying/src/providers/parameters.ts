@@ -19,7 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type Parameters from './parameters';
+import {
+  Dictionary, Static, String, Unknown,
+} from 'runtypes';
 
-type QueryCallback<TRow> = (query: string, parameters?: Parameters) => TRow[] | undefined;
-export default QueryCallback;
+export const ParametersRuntype = Dictionary(Unknown, String);
+
+type Parameters = Static<typeof ParametersRuntype>;
+export default Parameters;

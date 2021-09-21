@@ -21,7 +21,10 @@
  */
 import { exportMethod } from 'helpers-exporting';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { IQueryable, TYPES as QUERYING_TYPES } from 'helpers-querying';
+import {
+  IQueryable, Parameters as ProviderParameters, ParametersRuntype as ProviderParametersRuntype,
+  TYPES as QUERYING_TYPES,
+} from 'helpers-querying';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 import objectHash from 'object-hash';
@@ -36,16 +39,32 @@ export default class GoogleSpreadsheetSQL {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {}
 
+  private queryInternal(query: string, cacheKey?: string | boolean,
+    parameters?: ProviderParameters): unknown[][] | undefined {
+    this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
+    const queryableProvider = this.queryable.fromCurrentSpreadsheet();
+
+    return queryableProvider.queryAny(query, cacheKey, parameters);
+  }
+
+  @exportMethod(true, 'query')
+  public query(query: string, cacheKey?: string | boolean, parameters?: ProviderParameters):
+  unknown[][] | undefined {
+    if (parameters && !ProviderParametersRuntype.guard(parameters)) {
+      throw new InvalidParametersError(parameters);
+    }
+
+    return this.queryInternal(query, cacheKey, parameters);
+  }
+
   @exportMethod(true, 'SQL')
   public sql(query: string, cacheKey?: string | boolean, parameters?: Parameters):
   unknown[][] | undefined {
-    this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
-    const queryableProvider = this.queryable.fromCurrentSpreadsheet();
     if (parameters && !ParametersRuntype.guard(parameters)) {
       throw new InvalidParametersError(parameters);
     }
 
-    return queryableProvider.queryAny(query, cacheKey,
+    return this.queryInternal(query, cacheKey,
       parameters ? Object.fromEntries(parameters) : parameters);
   }
 
