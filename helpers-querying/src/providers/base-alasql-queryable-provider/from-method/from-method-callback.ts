@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type IFromMethodOptions from './ifrom-method-options';
+import type FromMethodOptions from './from-method-options';
 
-type FromMethodCallback = (tableName: string, options: IFromMethodOptions) => unknown[];
+type FromMethodCallback = (tableName: string, options: FromMethodOptions) => unknown[];
 export default FromMethodCallback;

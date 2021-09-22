@@ -38,7 +38,7 @@ export default class Logger implements ILogger {
 
   public readonly providerTypes: ProviderType[];
 
-  private nameInternal?: string;
+  private nameInternal: string | undefined;
 
   private initialized = false;
 
@@ -56,7 +56,7 @@ export default class Logger implements ILogger {
     this.providerTypes = this.providers.map((provider) => provider.providerType);
   }
 
-  private log(level: LogLevel, message: string | (() => string), error?: Error) {
+  private log(level: LogLevel, message: string | (() => string), error: Error | undefined) {
     if (logLevelValues[level] < this.logLevel) {
       return;
     }
@@ -82,19 +82,19 @@ export default class Logger implements ILogger {
   }
 
   public trace(message: string | (() => string)): void {
-    this.log('Trace', message);
+    this.log('Trace', message, undefined);
   }
 
   public debug(message: string | (() => string)): void {
-    this.log('Debug', message);
+    this.log('Debug', message, undefined);
   }
 
   public information(message: string | (() => string)): void {
-    this.log('Information', message);
+    this.log('Information', message, undefined);
   }
 
   public warning(message: string | (() => string)): void {
-    this.log('Warning', message);
+    this.log('Warning', message, undefined);
   }
 
   public error(message: string | (() => string), error?: Error): void {

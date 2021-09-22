@@ -19,6 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export default interface IIntoMethodOptions {
-  append: boolean;
-}
+import { Record, Static } from 'runtypes';
+
+export const FromMethodOptionsRuntype = Record({});
+
+type FromMethodOptions = Static<typeof FromMethodOptionsRuntype>;
+export default FromMethodOptions;

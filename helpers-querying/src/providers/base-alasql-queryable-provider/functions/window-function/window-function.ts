@@ -24,7 +24,10 @@ import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { JSONEx, Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
+import InvalidParameterError from '../../../../errors/invalid-parameter-error';
 import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../../symbols';
+import type Parameters from '../../../parameters';
+import { ParametersRuntype } from '../../../parameters';
 import type IExecutionContext from '../../execution-context/iexecution-context';
 import type IAlaSQLFunction from '../ialasql-function';
 import type WindowFunctionItem from './window-function-item';
@@ -34,9 +37,22 @@ export default class WindowFunction implements IAlaSQLFunction {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) {}
 
-  callback(id: string, query: string, partition: string, value: unknown,
-    parameters: Record<string, unknown>): unknown {
+  callback(id: string, query: string, partition: string, value: unknown, parameters?: Parameters):
+  unknown {
     this.logger.trace(() => `Running in context '${this.context.id}' with id '${id}', query '${query}', partition '${partition}', value '${JSONEx.stringify(value)}' and parameters '${JSONEx.stringify(parameters)}'`);
+    if (!id || typeof id !== 'string') {
+      throw new InvalidParameterError('WINDOW', 'id', id);
+    }
+    if (!query || typeof query !== 'string') {
+      throw new InvalidParameterError('WINDOW', 'query', query);
+    }
+    if (!partition || typeof partition !== 'string') {
+      throw new InvalidParameterError('WINDOW', 'partition', partition);
+    }
+    if (parameters && !ParametersRuntype.guard(parameters)) {
+      throw new InvalidParameterError('WINDOW', 'parameters', parameters);
+    }
+
     if (!this.context.data[`WINDOW_${id}`]) {
       this.context.data[`WINDOW_${id}`] = {};
     }

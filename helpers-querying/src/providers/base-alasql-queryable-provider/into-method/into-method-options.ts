@@ -19,5 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export default interface IFromMethodOptions { }
+import { Boolean, Record, Static } from 'runtypes';
+
+export const IntoMethodOptionsRuntype = Record({
+  append: Boolean,
+});
+
+type IntoMethodOptions = Static<typeof IntoMethodOptionsRuntype>;
+export default IntoMethodOptions;

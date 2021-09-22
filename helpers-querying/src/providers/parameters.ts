@@ -19,32 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type IFile from '../../ifile';
-import ItemType from '../../item-type';
-import GoogleDriveItem from './google-drive-item';
+import {
+  Dictionary, Static, String, Unknown,
+} from 'runtypes';
 
-export default class GoogleDriveFile extends GoogleDriveItem implements IFile {
-  private sizeInternal: number | undefined;
+export const ParametersRuntype = Dictionary(Unknown, String);
 
-  private mimeTypeInternal: string | undefined;
-
-  public get size(): number {
-    if (this.sizeInternal === undefined) {
-      this.sizeInternal = this.file.getSize();
-    }
-
-    return this.sizeInternal;
-  }
-
-  public get mimeType(): string {
-    if (this.mimeTypeInternal === undefined) {
-      this.mimeTypeInternal = this.file.getMimeType();
-    }
-
-    return this.mimeTypeInternal;
-  }
-
-  constructor(private readonly file: GoogleAppsScript.Drive.File, path: string) {
-    super(file, ItemType.File, path);
-  }
-}
+type Parameters = Static<typeof ParametersRuntype>;
+export default Parameters;

@@ -19,32 +19,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type IFile from '../../ifile';
-import ItemType from '../../item-type';
-import GoogleDriveItem from './google-drive-item';
+import { isMoment } from 'moment';
+import {
+  Array, InstanceOf, Null, Number, Record, Static, String, Undefined, Union, Unknown,
+} from 'runtypes';
 
-export default class GoogleDriveFile extends GoogleDriveItem implements IFile {
-  private sizeInternal: number | undefined;
+export const InputRuntype = Union(
+  Unknown.withGuard(isMoment),
+  InstanceOf(Date),
+  String,
+  Number,
+  Array(Union(Number, String)),
+  Record({
+    years: Number.optional(),
+    year: Number.optional(),
+    y: Number.optional(),
+    months: Number.optional(),
+    month: Number.optional(),
+    M: Number.optional(),
+    days: Number.optional(),
+    day: Number.optional(),
+    d: Number.optional(),
+    dates: Number.optional(),
+    date: Number.optional(),
+    D: Number.optional(),
+    hours: Number.optional(),
+    hour: Number.optional(),
+    h: Number.optional(),
+    minutes: Number.optional(),
+    minute: Number.optional(),
+    m: Number.optional(),
+    seconds: Number.optional(),
+    second: Number.optional(),
+    s: Number.optional(),
+    milliseconds: Number.optional(),
+    millisecond: Number.optional(),
+    ms: Number.optional(),
+  }),
+  Null,
+  Undefined,
+);
 
-  private mimeTypeInternal: string | undefined;
-
-  public get size(): number {
-    if (this.sizeInternal === undefined) {
-      this.sizeInternal = this.file.getSize();
-    }
-
-    return this.sizeInternal;
-  }
-
-  public get mimeType(): string {
-    if (this.mimeTypeInternal === undefined) {
-      this.mimeTypeInternal = this.file.getMimeType();
-    }
-
-    return this.mimeTypeInternal;
-  }
-
-  constructor(private readonly file: GoogleAppsScript.Drive.File, path: string) {
-    super(file, ItemType.File, path);
-  }
-}
+type Input = Static<typeof InputRuntype>;
+export default Input;

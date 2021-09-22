@@ -57,6 +57,8 @@ module.exports = {
     "simple-import-sort/exports": "error",
     // Force imports to be sorted.
     "simple-import-sort/imports": "error",
+    // This rule is a bit overzealous and leads to compiler errors.
+    "unicorn/no-useless-undefined": "off",
     // Too new for Google Appss Script?
     "unicorn/prefer-at": "off",
     // Too new for Google Appss Script?

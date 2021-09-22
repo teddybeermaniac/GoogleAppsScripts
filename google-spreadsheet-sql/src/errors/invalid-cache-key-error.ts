@@ -19,23 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { Scope, setBindMetadata } from 'helpers-utilities';
-import { inject } from 'inversify';
-import moment from 'moment';
+import { JSONEx } from 'helpers-utilities';
 
-import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../symbols';
-import type IExecutionContext from '../execution-context/iexecution-context';
-import type IAlaSQLFunction from './ialasql-function';
+import GoogleSpreadsheetSQLError from './google-spreadsheet-sql-error';
 
-@setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'MOMENT')
-export default class MomentFunction implements IAlaSQLFunction {
-  constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) {}
-
-  public callback(input?: moment.MomentInput): moment.Moment {
-    const inputMessage = input?.toString() ? ` with '${input.toString()}' input` : ' without input';
-    this.logger.trace(() => `Running in context '${this.context.id}'${inputMessage}`);
-    return moment(input);
+export default class InvalidCacheKeyError extends GoogleSpreadsheetSQLError {
+  constructor(public readonly cacheKey: unknown) {
+    super(`Invalid cache key '${JSONEx.stringify(cacheKey)}'`);
+    this.name = 'InvalidCacheKeyError';
   }
 }

@@ -26,6 +26,7 @@ import type InternalProviderError from './errors/internal-provider-error';
 import type InvalidFromMethodError from './errors/invalid-from-method-error';
 import type InvalidFunctionError from './errors/invalid-function-error';
 import type InvalidIntoMethodError from './errors/invalid-into-method-error';
+import type InvalidParameterError from './errors/invalid-parameter-error';
 import type InvalidQueryError from './errors/invalid-query-error';
 import type MissingExecutionContextError from './errors/missing-execution-context-error';
 import type NotAQueryableFileError from './errors/not-a-queryable-file-error';
@@ -35,11 +36,15 @@ import type IQueryable from './iqueryable';
 import ExecutionContext from './providers/base-alasql-queryable-provider/execution-context/execution-context';
 import ExchangeFunction from './providers/base-alasql-queryable-provider/functions/exchange-function';
 import type IAlaSQLFunction from './providers/base-alasql-queryable-provider/functions/ialasql-function';
-import MomentFunction from './providers/base-alasql-queryable-provider/functions/moment-function';
+import MomentFunction from './providers/base-alasql-queryable-provider/functions/moment-function/moment-function';
 import WindowFunction from './providers/base-alasql-queryable-provider/functions/window-function/window-function';
+import type CacheKey from './providers/cache-key';
+import { CacheKeyRuntype } from './providers/cache-key';
 import GoogleSpreadsheetQueryableProvider from './providers/google-spreadsheet-queryable-provider/google-spreadsheet-queryable-provider';
 import type IQueryableProvider from './providers/iqueryable-provider';
 import MemoryQueryableProvider from './providers/memory-queryable-provider/memory-queryable-provider';
+import type Parameters from './providers/parameters';
+import { ParametersRuntype } from './providers/parameters';
 import type ProviderType from './providers/provider-type';
 import Queryable from './queryable';
 import { IAlaSQLFunctionDefinitionSymbol, IQueryableSymbol } from './symbols';
@@ -67,19 +72,24 @@ export const TYPES = {
 };
 
 export type {
+  CacheKey,
   IQueryable,
   IQueryableProvider,
+  Parameters,
 };
 
 export {
+  CacheKeyRuntype,
   InternalProviderError,
   InvalidFromMethodError,
   InvalidFunctionError,
   InvalidIntoMethodError,
+  InvalidParameterError,
   InvalidQueryError,
   MissingExecutionContextError,
   NotAQueryableFileError,
   NotASpreadsheetContextError,
   NotConfiguredFilesystemError,
+  ParametersRuntype,
   ProviderType,
 };

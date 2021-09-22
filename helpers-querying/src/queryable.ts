@@ -39,7 +39,7 @@ export default class Queryable implements IQueryable {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(UTILITIES_TYPES.Container) private readonly container: interfaces.Container,
     @inject(FILESYSTEM_TYPES.IFilesystem) @optional()
-    private readonly filesystem?: IFilesystem) {}
+    private readonly filesystem: IFilesystem | undefined) {}
 
   public fromMemory(): IQueryableProvider {
     this.logger.information('Creating a queryable from memory');

@@ -23,6 +23,7 @@ import { bind, BuilderCallback } from 'helpers-utilities';
 import type { interfaces } from 'inversify';
 
 import type Currency from './currency';
+import { CurrencyRuntype } from './currency';
 import BadRateFetchResponseError from './errors/bad-rate-fetch-response-error';
 import ExchangeError from './errors/exchange-error';
 import InvalidCurrencyError from './errors/invalid-currency-error';
@@ -51,6 +52,7 @@ export type {
 
 export {
   BadRateFetchResponseError,
+  CurrencyRuntype,
   ExchangeError,
   InvalidCurrencyError,
   ProviderType,

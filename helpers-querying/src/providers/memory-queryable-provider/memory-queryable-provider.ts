@@ -27,9 +27,9 @@ import { inject, interfaces } from 'inversify';
 import { MemoryQueryableProviderSymbol } from '../../symbols';
 import BaseAlaSQLQueryableProvider from '../base-alasql-queryable-provider/base-alasql-queryable-provider';
 import fromMethod from '../base-alasql-queryable-provider/from-method/from-method';
-import type IFromMethodOptions from '../base-alasql-queryable-provider/from-method/ifrom-method-options';
-import type IIntoMethodOptions from '../base-alasql-queryable-provider/into-method/iinto-method-options';
+import type FromMethodOptions from '../base-alasql-queryable-provider/from-method/from-method-options';
 import intoMethod from '../base-alasql-queryable-provider/into-method/into-method';
+import type IntoMethodOptions from '../base-alasql-queryable-provider/into-method/into-method-options';
 import ProviderType from '../provider-type';
 
 @setBindMetadata(MemoryQueryableProviderSymbol, Scope.Transient)
@@ -46,13 +46,13 @@ export default class MemoryQueryableProvider extends BaseAlaSQLQueryableProvider
   }
 
   @fromMethod('MEMORY')
-  public fromMemory(tableName: string, _options?: IFromMethodOptions): unknown[] {
+  public fromMemory(tableName: string, _options: FromMethodOptions): unknown[] {
     this.logger.debug(`Getting data from memory table '${tableName}'`);
     return [...(this.storage[tableName] ?? [])];
   }
 
   @intoMethod('MEMORY')
-  public intoMemory(tableName: string, options: IIntoMethodOptions, _columns: string[],
+  public intoMemory(tableName: string, options: IntoMethodOptions, _columns: string[],
     data: unknown[])
     : void {
     this.logger.debug(`${options.append ? 'Appending' : 'Inserting'} data ${options.append ? 'to' : 'into'} memory table '${tableName}'`);

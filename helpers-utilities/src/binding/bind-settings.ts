@@ -30,7 +30,7 @@ declare let process: Process;
 
 export default function bindSettings<TSettings>(container: interfaces.Container, symbol: symbol,
   name: string, runtype: RuntypeBase<TSettings>, defaults: Partial<TSettings>,
-  statics?: Partial<TSettings>): void {
+  statics: Partial<TSettings> | undefined): void {
   const prefixRegex = new RegExp(`^${constantCase(name)}_`);
   const environment = Object.fromEntries(Object.entries(process.env)
     .filter(([key, _value]) => prefixRegex.test(key))

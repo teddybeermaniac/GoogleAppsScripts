@@ -35,7 +35,7 @@ import type TriggerBuilder from './trigger-builder';
 
 @setBindMetadata(ITriggerManagerSymbol, Scope.Transient)
 export default class TriggerManager implements ITriggerManager {
-  private symbolInternal?: symbol;
+  private symbolInternal: symbol | undefined;
 
   private initialized = false;
 
@@ -72,7 +72,7 @@ export default class TriggerManager implements ITriggerManager {
     return existingTrigger;
   }
 
-  private build(method: string, builder: TriggerBuilder, replace?: boolean): void {
+  private build(method: string, builder: TriggerBuilder, replace: boolean): void {
     this.logger.trace(() => {
       const descriptionMessage = this.symbol.description ? ` from '${this.symbol.description}'` : '';
 
@@ -118,7 +118,7 @@ export default class TriggerManager implements ITriggerManager {
         return `Adding trigger for method '${method}'${descriptionMessage} running every ${minutes} minutes`;
       });
       builder.everyMinutes(minutes);
-    }, replace);
+    }, replace ?? false);
   }
 
   public addEveryHours(method: string, hours: number, replace?: boolean): void {
@@ -130,7 +130,7 @@ export default class TriggerManager implements ITriggerManager {
       });
       builder.everyHours(hours)
         .nearMinute(0);
-    }, replace);
+    }, replace ?? false);
   }
 
   public addEveryDays(method: string, days: number, replace?: boolean): void {
@@ -143,7 +143,7 @@ export default class TriggerManager implements ITriggerManager {
       builder.everyDays(days)
         .atHour(0)
         .nearMinute(0);
-    }, replace);
+    }, replace ?? false);
   }
 
   public exists(method: string): boolean {

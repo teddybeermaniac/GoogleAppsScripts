@@ -22,7 +22,7 @@ function googleAppsScript() {
       const provider = container.get(Symbol.for('IExportedMethodProvider'));
       const methods = {};
       provider.getExportedMethods().forEach((method) => {
-        methods[method] = `function ${method}(...args) {\n  return ${options.name}.container.get(Symbol.for('IExportedMethodProvider')).callExportedMethod('${method}', args);\n}`;
+        methods[method] = `function ${method}(...parameters) {\n  return ${options.name}.container.get(Symbol.for('IExportedMethodProvider')).callExportedMethod('${method}', parameters);\n}`;
       });
 
       const methodsNames = Object.keys(methods);

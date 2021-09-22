@@ -19,5 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-type QueryCallback<TRow> = (query: string, parameters: unknown) => TRow[] | undefined;
+import type Parameters from './parameters';
+
+type QueryCallback<TRow> = (query: string, parameters: Parameters | undefined)
+=> TRow[] | undefined;
 export default QueryCallback;

@@ -23,19 +23,19 @@ import type IItem from '../../iitem';
 import type ItemType from '../../item-type';
 
 export default class GoogleDriveItem implements IItem {
-  private idInternal?: string;
+  private idInternal: string | undefined;
 
-  private nameInternal?: string;
+  private nameInternal: string | undefined;
 
-  private creationDateInternal?: Date;
+  private creationDateInternal: Date | undefined;
 
-  private modificationDateInternal?: Date;
+  private modificationDateInternal: Date | undefined;
 
-  private ownerInternal?: string;
+  private ownerInternal: string | undefined;
 
-  private readersInternal?: string[];
+  private readersInternal: string[] | undefined;
 
-  private editorsInternal?: string[];
+  private editorsInternal: string[] | undefined;
 
   public get id(): string {
     if (this.idInternal === undefined) {

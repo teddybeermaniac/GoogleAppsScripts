@@ -19,41 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type FromMethodOptions from '../providers/base-alasql-queryable-provider/from-method/from-method-options';
-import type IntoMethodOptions from '../providers/base-alasql-queryable-provider/into-method/into-method-options';
+import { JSONEx } from 'helpers-utilities';
 
-interface FromMethodCallback {
-  (data: unknown[], index: number, query: unknown): unknown;
+import QueryingError from './querying-error';
+
+export default class InvalidParameterError extends QueryingError {
+  constructor(public readonly method: string, public readonly parameter: string,
+    public readonly value: unknown) {
+    super(`Invalid parameter '${parameter}' to '${method}' method: ${JSONEx.stringify(value)}`);
+    this.name = 'InvalidParameterError';
+  }
 }
-
-interface FromMethod {
-  (tableName: string, options: Partial<FromMethodOptions> | undefined, callback: FromMethodCallback,
-    index: number, query: unknown): unknown | undefined
-}
-
-interface ColumnDefinition {
-  columnid: string;
-}
-
-interface IntoMethodCallback {
-  (): void;
-}
-
-interface IntoMethod {
-  (tableName: string, options: Partial<IntoMethodOptions> | undefined, data: unknown[],
-    columns: ColumnDefinition[], callback: IntoMethodCallback): unknown | undefined;
-}
-
-interface CustomFunction {
-  (...parameters: unknown[]): unknown | undefined;
-}
-
-export interface AlaSQL {
-  (sql: string, parameters?: unknown): unknown[] | null | undefined;
-  fn: Record<string, CustomFunction>;
-  from: Record<string, FromMethod>;
-  into: Record<string, IntoMethod>;
-}
-
-declare const alasql: AlaSQL;
-export default alasql;

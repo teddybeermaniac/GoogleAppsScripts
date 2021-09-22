@@ -25,5 +25,5 @@ import type ProviderType from './provider-type';
 export default interface IFilesystemProvider {
   readonly providerType: ProviderType;
   list(path: string): IItem[];
-  stat(path: string, resolve?: boolean): IItem | undefined;
+  stat(path: string, resolve: boolean): IItem | undefined;
 }

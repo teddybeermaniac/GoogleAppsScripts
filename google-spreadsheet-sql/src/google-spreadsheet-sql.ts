@@ -21,11 +21,15 @@
  */
 import { exportMethod } from 'helpers-exporting';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
-import { IQueryable, TYPES as QUERYING_TYPES } from 'helpers-querying';
+import {
+  CacheKey, CacheKeyRuntype, IQueryable, IQueryableProvider, Parameters as ProviderParameters,
+  ParametersRuntype as ProviderParametersRuntype, TYPES as QUERYING_TYPES,
+} from 'helpers-querying';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 import objectHash from 'object-hash';
 
+import InvalidCacheKeyError from './errors/invalid-cache-key-error';
 import InvalidParametersError from './errors/invalid-parameters-error';
 import type Parameters from './parameters';
 import { ParametersRuntype } from './parameters';
@@ -33,20 +37,43 @@ import { GoogleSpreadsheetSQLSymbol } from './symbols';
 
 @setBindMetadata(GoogleSpreadsheetSQLSymbol, Scope.Singleton)
 export default class GoogleSpreadsheetSQL {
+  private queryableProvider: IQueryableProvider | undefined;
+
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {}
 
-  @exportMethod(true, 'SQL')
-  public sql(query: string, parameters?: Parameters, cacheKey?: string | boolean):
-  unknown[][] | undefined {
+  private queryInternal(query: string, cacheKey: CacheKey | undefined,
+    parameters: ProviderParameters | undefined): unknown[][] | undefined {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
-    const queryableProvider = this.queryable.fromCurrentSpreadsheet();
+    if (cacheKey !== undefined && !CacheKeyRuntype.guard(cacheKey)) {
+      throw new InvalidCacheKeyError(cacheKey);
+    }
+
+    if (!this.queryableProvider) {
+      this.queryableProvider = this.queryable.fromCurrentSpreadsheet();
+    }
+
+    return this.queryableProvider.queryAny(query, cacheKey, parameters);
+  }
+
+  @exportMethod(true)
+  public query(query: string, cacheKey?: CacheKey, parameters?: ProviderParameters):
+  unknown[][] | undefined {
+    if (parameters && !ProviderParametersRuntype.guard(parameters)) {
+      throw new InvalidParametersError(parameters);
+    }
+
+    return this.queryInternal(query, cacheKey, parameters);
+  }
+
+  @exportMethod(true, 'SQL')
+  public sql(query: string, cacheKey?: CacheKey, parameters?: Parameters): unknown[][] | undefined {
     if (parameters && !ParametersRuntype.guard(parameters)) {
       throw new InvalidParametersError(parameters);
     }
 
-    return queryableProvider.queryAny(query,
-      parameters ? Object.fromEntries(parameters) : parameters, cacheKey);
+    return this.queryInternal(query, cacheKey,
+      parameters ? Object.fromEntries(parameters) : parameters);
   }
 
   @exportMethod(true, 'CACHEKEY')

@@ -40,7 +40,7 @@ export default class ExportedMethodProvider implements IExportedMethodProvider {
 
   constructor(@inject(UTILITIES_TYPES.Container) private readonly container: interfaces.Container,
     @multiInject(exportedMethodContainerSymbol) targets: interfaces.Newable<unknown>[],
-    @inject(LOGGING_TYPES.ILogger) @optional() private readonly logger?: ILogger) {
+    @inject(LOGGING_TYPES.ILogger) @optional() private readonly logger: ILogger | undefined) {
     this.prepare(targets);
   }
 

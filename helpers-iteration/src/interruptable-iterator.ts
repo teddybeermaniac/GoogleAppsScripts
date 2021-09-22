@@ -49,12 +49,12 @@ implements IInterruptableIterator<TToken> {
 
   private iterations = 0;
 
-  private iterationStarted?: number;
+  private iterationStarted: number | undefined;
 
   constructor(protected readonly logger: ILogger, protected readonly cache: ICache,
     private readonly triggerManager: ITriggerManager) {}
 
-  protected abstract next(iterationToken?: TToken): TToken | undefined;
+  protected abstract next(iterationToken: TToken | undefined): TToken | undefined;
 
   private shouldContinue(): boolean {
     const iterationStartedPrevious = this.iterationStarted;

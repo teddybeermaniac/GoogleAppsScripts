@@ -19,32 +19,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import {
-  Currency, CurrencyRuntype, IExchange, InvalidCurrencyError, TYPES as EXCHANGE_TYPES,
-} from 'helpers-exchange';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
+import moment from 'moment';
 
-import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../symbols';
-import type IExecutionContext from '../execution-context/iexecution-context';
-import type IAlaSQLFunction from './ialasql-function';
+import InvalidParameterError from '../../../../errors/invalid-parameter-error';
+import { IAlaSQLFunctionSymbol, IExecutionContextSymbol } from '../../../../symbols';
+import type IExecutionContext from '../../execution-context/iexecution-context';
+import type IAlaSQLFunction from '../ialasql-function';
+import type Input from './input';
+import { InputRuntype } from './input';
 
-@setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'EXCHANGE')
-export default class ExchangeFunction implements IAlaSQLFunction {
+@setBindMetadata(IAlaSQLFunctionSymbol, Scope.Transient, 'MOMENT')
+export default class MomentFunction implements IAlaSQLFunction {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
-    @inject(EXCHANGE_TYPES.IExchange) private readonly exchange: IExchange,
     @inject(IExecutionContextSymbol) private readonly context: IExecutionContext) {}
 
-  callback(value: number, from: Currency, to: Currency): number {
-    this.logger.trace(`Running in context '${this.context.id}' with value '${value}', from '${from}' and to '${to}'`);
-    if (!CurrencyRuntype.guard(from)) {
-      throw new InvalidCurrencyError(from);
-    }
-    if (!CurrencyRuntype.guard(to)) {
-      throw new InvalidCurrencyError(to);
+  public callback(input?: Input): moment.Moment {
+    const inputMessage = input?.toString() ? ` with '${input.toString()}' input` : ' without input';
+    this.logger.trace(() => `Running in context '${this.context.id}'${inputMessage}`);
+    if (input && !InputRuntype.guard(input)) {
+      throw new InvalidParameterError('MOMENT', 'input', input);
     }
 
-    return this.exchange.convert(value, from, to);
+    return moment(input);
   }
 }
