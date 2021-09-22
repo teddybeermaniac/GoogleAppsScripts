@@ -24,7 +24,7 @@ import { JSONEx } from 'helpers-utilities';
 import GoogleSpreadsheetSQLError from './google-spreadsheet-sql-error';
 
 export default class InvalidParametersError extends GoogleSpreadsheetSQLError {
-  constructor(parameters: unknown) {
+  constructor(public readonly parameters: unknown) {
     super(`Invalid parameters '${JSONEx.stringify(parameters)}'`);
     this.name = 'InvalidParametersError';
   }

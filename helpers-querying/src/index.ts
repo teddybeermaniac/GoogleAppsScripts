@@ -38,6 +38,8 @@ import ExchangeFunction from './providers/base-alasql-queryable-provider/functio
 import type IAlaSQLFunction from './providers/base-alasql-queryable-provider/functions/ialasql-function';
 import MomentFunction from './providers/base-alasql-queryable-provider/functions/moment-function/moment-function';
 import WindowFunction from './providers/base-alasql-queryable-provider/functions/window-function/window-function';
+import type CacheKey from './providers/cache-key';
+import { CacheKeyRuntype } from './providers/cache-key';
 import GoogleSpreadsheetQueryableProvider from './providers/google-spreadsheet-queryable-provider/google-spreadsheet-queryable-provider';
 import type IQueryableProvider from './providers/iqueryable-provider';
 import MemoryQueryableProvider from './providers/memory-queryable-provider/memory-queryable-provider';
@@ -70,12 +72,14 @@ export const TYPES = {
 };
 
 export type {
+  CacheKey,
   IQueryable,
   IQueryableProvider,
   Parameters,
 };
 
 export {
+  CacheKeyRuntype,
   InternalProviderError,
   InvalidFromMethodError,
   InvalidFunctionError,

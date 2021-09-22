@@ -19,13 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type CacheKey from './cache-key';
-import type Parameters from './parameters';
-import type ProviderType from './provider-type';
+import { JSONEx } from 'helpers-utilities';
 
-export default interface IQueryableProvider {
-  readonly providerType: ProviderType;
+import GoogleSpreadsheetSQLError from './google-spreadsheet-sql-error';
 
-  query<TModel>(query: string, cacheKey?: CacheKey, parameters?: Parameters): TModel[] | undefined;
-  queryAny(query: string, cacheKey?: CacheKey, parameters?: Parameters): unknown[][] | undefined;
+export default class InvalidCacheKeyError extends GoogleSpreadsheetSQLError {
+  constructor(public readonly cacheKey: unknown) {
+    super(`Invalid cache key '${JSONEx.stringify(cacheKey)}'`);
+    this.name = 'InvalidCacheKeyError';
+  }
 }

@@ -22,13 +22,14 @@
 import { exportMethod } from 'helpers-exporting';
 import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import {
-  IQueryable, IQueryableProvider, Parameters as ProviderParameters,
+  CacheKey, CacheKeyRuntype, IQueryable, IQueryableProvider, Parameters as ProviderParameters,
   ParametersRuntype as ProviderParametersRuntype, TYPES as QUERYING_TYPES,
 } from 'helpers-querying';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 import objectHash from 'object-hash';
 
+import InvalidCacheKeyError from './errors/invalid-cache-key-error';
 import InvalidParametersError from './errors/invalid-parameters-error';
 import type Parameters from './parameters';
 import { ParametersRuntype } from './parameters';
@@ -41,9 +42,13 @@ export default class GoogleSpreadsheetSQL {
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {}
 
-  private queryInternal(query: string, cacheKey: string | boolean | undefined,
+  private queryInternal(query: string, cacheKey: CacheKey | undefined,
     parameters: ProviderParameters | undefined): unknown[][] | undefined {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
+    if (cacheKey !== undefined && !CacheKeyRuntype.guard(cacheKey)) {
+      throw new InvalidCacheKeyError(cacheKey);
+    }
+
     if (!this.queryableProvider) {
       this.queryableProvider = this.queryable.fromCurrentSpreadsheet();
     }
@@ -52,7 +57,7 @@ export default class GoogleSpreadsheetSQL {
   }
 
   @exportMethod(true)
-  public query(query: string, cacheKey?: string | boolean, parameters?: ProviderParameters):
+  public query(query: string, cacheKey?: CacheKey, parameters?: ProviderParameters):
   unknown[][] | undefined {
     if (parameters && !ProviderParametersRuntype.guard(parameters)) {
       throw new InvalidParametersError(parameters);
@@ -62,8 +67,7 @@ export default class GoogleSpreadsheetSQL {
   }
 
   @exportMethod(true, 'SQL')
-  public sql(query: string, cacheKey?: string | boolean, parameters?: Parameters):
-  unknown[][] | undefined {
+  public sql(query: string, cacheKey?: CacheKey, parameters?: Parameters): unknown[][] | undefined {
     if (parameters && !ParametersRuntype.guard(parameters)) {
       throw new InvalidParametersError(parameters);
     }

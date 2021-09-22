@@ -19,13 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type CacheKey from './cache-key';
-import type Parameters from './parameters';
-import type ProviderType from './provider-type';
+import {
+  Boolean, Static, String, Union,
+} from 'runtypes';
 
-export default interface IQueryableProvider {
-  readonly providerType: ProviderType;
+export const CacheKeyRuntype = Union(
+  String,
+  Boolean,
+);
 
-  query<TModel>(query: string, cacheKey?: CacheKey, parameters?: Parameters): TModel[] | undefined;
-  queryAny(query: string, cacheKey?: CacheKey, parameters?: Parameters): unknown[][] | undefined;
-}
+type CacheKey = Static<typeof CacheKeyRuntype>;
+export default CacheKey;
