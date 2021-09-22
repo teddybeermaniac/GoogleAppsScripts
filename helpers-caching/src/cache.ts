@@ -34,7 +34,7 @@ import { ICacheProviderSymbol, ICacheSymbol } from './symbols';
 export default class Cache implements ICache {
   public readonly providerType: ProviderType;
 
-  private prefixInternal?: string;
+  private prefixInternal: string | undefined;
 
   private initialized = false;
 

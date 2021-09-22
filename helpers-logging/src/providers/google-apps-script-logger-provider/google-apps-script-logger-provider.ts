@@ -42,7 +42,8 @@ export default class GoogleAppsScriptLoggerProvider implements ILoggerProvider {
     this.logLevel = logLevelValues[this.settings.level];
   }
 
-  public log(name: string, level: LogLevel, message: string | (() => string), error?: Error): void {
+  public log(name: string, level: LogLevel, message: string | (() => string),
+    error: Error | undefined): void {
     if (logLevelValues[level] < this.logLevel) {
       return;
     }

@@ -55,12 +55,13 @@ export default class GoogleAppsScriptCacheProvider implements ICacheProvider {
     return this.cache.get(GoogleAppsScriptCacheProvider.getKey(prefix, key)) || undefined;
   }
 
-  public set(prefix: string, key: string, value: string, ttl?: number): void {
+  public set(prefix: string, key: string, value: string, ttl: number | undefined): void {
     if (key !== GoogleAppsScriptCacheProvider.ALL_KEYS_KEY) {
       const allKeys = this.getAllKeys(prefix);
       if (!allKeys.includes(key)) {
         allKeys.push(key);
-        this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSONEx.stringify(allKeys));
+        this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSONEx.stringify(allKeys),
+          undefined);
       }
     }
 
@@ -84,7 +85,8 @@ export default class GoogleAppsScriptCacheProvider implements ICacheProvider {
     const keyIndex = allKeys.indexOf(key);
     if (keyIndex !== -1) {
       allKeys.splice(keyIndex, 1);
-      this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSONEx.stringify(allKeys));
+      this.set(prefix, GoogleAppsScriptCacheProvider.ALL_KEYS_KEY, JSONEx.stringify(allKeys),
+        undefined);
     }
   }
 

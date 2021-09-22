@@ -24,7 +24,7 @@ import type ProviderType from './provider-type';
 export default interface ICacheProvider {
   readonly providerType: ProviderType;
   get(prefix: string, key: string): string | undefined;
-  set(prefix: string, key: string, value: string, ttl?: number): void;
+  set(prefix: string, key: string, value: string, ttl: number | undefined): void;
   del(prefix: string, key: string): void;
   clear(prefix: string): void;
 }

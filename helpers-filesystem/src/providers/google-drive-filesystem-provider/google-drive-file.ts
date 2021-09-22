@@ -24,9 +24,9 @@ import ItemType from '../../item-type';
 import GoogleDriveItem from './google-drive-item';
 
 export default class GoogleDriveFile extends GoogleDriveItem implements IFile {
-  private sizeInternal?: number;
+  private sizeInternal: number | undefined;
 
-  private mimeTypeInternal?: string;
+  private mimeTypeInternal: string | undefined;
 
   public get size(): number {
     if (this.sizeInternal === undefined) {

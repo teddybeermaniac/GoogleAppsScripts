@@ -44,7 +44,7 @@ import type NamedRange from './named-range';
 @setBindMetadata(GoogleSpreadsheetQueryableProviderSymbol, Scope.Transient)
 export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQueryableProvider
   implements IFileQueryableProvider, ICurrentQueryableProvider {
-  private spreadsheetInternal?: GoogleAppsScript.Spreadsheet.Spreadsheet;
+  private spreadsheetInternal: GoogleAppsScript.Spreadsheet.Spreadsheet | undefined;
 
   private initialized = false;
 
@@ -145,7 +145,7 @@ export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQuerya
   }
 
   @fromMethod('NAMEDRANGE')
-  public fromNamedRange(tableName: string, _options?: IFromMethodOptions): unknown[] {
+  public fromNamedRange(tableName: string, _options: IFromMethodOptions): unknown[] {
     this.logger.debug(`Getting data from named range '${tableName}'`);
     const namedRange = this.getNamedRange(tableName, true);
 

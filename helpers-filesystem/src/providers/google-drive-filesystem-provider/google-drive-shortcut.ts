@@ -25,7 +25,7 @@ import ItemType from '../../item-type';
 import GoogleDriveItem from './google-drive-item';
 
 export default class GoogleDriveShortcut extends GoogleDriveItem implements IShortcut {
-  private targetIdInternal?: string;
+  private targetIdInternal: string | undefined;
 
   public get targetId(): string {
     if (this.targetIdInternal === undefined) {

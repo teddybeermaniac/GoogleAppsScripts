@@ -24,5 +24,5 @@ import type Scope from './scope';
 export default interface IBindMetadata {
   symbol: symbol;
   scope: Scope;
-  name?: string;
+  name: string | undefined;
 }

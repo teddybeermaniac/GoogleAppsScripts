@@ -38,8 +38,8 @@ export default abstract class BaseQueryableProvider implements IQueryableProvide
 
   constructor(protected readonly logger: ILogger, private readonly cache: ICache) {}
 
-  private getCache<TValue>(query: string, cacheKey: string | boolean, parameters?: Parameters):
-  TValue | undefined {
+  private getCache<TValue>(query: string, cacheKey: string | boolean,
+    parameters: Parameters | undefined): TValue | undefined {
     this.logger.debug(`Getting result of '${query}' query from cache`);
     return this.cache.get<TValue>(objectHash.sha1([query, cacheKey, parameters]));
   }

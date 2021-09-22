@@ -46,7 +46,7 @@ export default class MemoryQueryableProvider extends BaseAlaSQLQueryableProvider
   }
 
   @fromMethod('MEMORY')
-  public fromMemory(tableName: string, _options?: IFromMethodOptions): unknown[] {
+  public fromMemory(tableName: string, _options: IFromMethodOptions): unknown[] {
     this.logger.debug(`Getting data from memory table '${tableName}'`);
     return [...(this.storage[tableName] ?? [])];
   }

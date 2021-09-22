@@ -36,7 +36,7 @@ interface ColumnDefinition {
 }
 
 interface IntoMethodCallback {
-  (data?: unknown): void;
+  (): void;
 }
 
 interface IntoMethod {

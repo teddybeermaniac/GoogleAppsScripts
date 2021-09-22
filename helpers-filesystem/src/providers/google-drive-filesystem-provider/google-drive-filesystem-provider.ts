@@ -114,7 +114,7 @@ export default class GoogleDriveFilesystemProvider implements IFilesystemProvide
     return folder;
   }
 
-  private getIdFromPath(path: string, folder?: boolean): string {
+  private getIdFromPath(path: string, folder: boolean): string {
     this.logger.trace(`Getting id for item with path '${path}'`);
     const pathElements = path.split('/').slice(1);
     const lastElement = pathElements.slice(-1)[0];
@@ -169,11 +169,11 @@ export default class GoogleDriveFilesystemProvider implements IFilesystemProvide
     return items;
   }
 
-  public stat(path: string, resolve?: boolean): IItem | undefined {
+  public stat(path: string, resolve: boolean): IItem | undefined {
     this.logger.trace(`Stat'ing path '${path}'`);
     let id: string;
     try {
-      id = this.getIdFromPath(path);
+      id = this.getIdFromPath(path, false);
     } catch (error) {
       if (error instanceof NotFoundPathError) {
         return undefined;

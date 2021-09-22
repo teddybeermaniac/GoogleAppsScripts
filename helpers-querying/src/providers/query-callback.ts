@@ -21,5 +21,6 @@
  */
 import type Parameters from './parameters';
 
-type QueryCallback<TRow> = (query: string, parameters?: Parameters) => TRow[] | undefined;
+type QueryCallback<TRow> = (query: string, parameters: Parameters | undefined)
+=> TRow[] | undefined;
 export default QueryCallback;

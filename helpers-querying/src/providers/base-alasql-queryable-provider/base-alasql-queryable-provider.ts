@@ -119,7 +119,6 @@ export default abstract class BaseAlaSQLQueryableProvider extends BaseQueryableP
           return callback();
         }
 
-        // eslint-disable-next-line unicorn/no-useless-undefined
         return undefined;
       };
     }
@@ -154,7 +153,6 @@ export default abstract class BaseAlaSQLQueryableProvider extends BaseQueryableP
     return context.execute(this, () => {
       const result = alasql(this.prepareQuery(query), parameters);
       if (!result) {
-        // eslint-disable-next-line unicorn/no-useless-undefined
         return undefined;
       }
 
@@ -168,7 +166,6 @@ export default abstract class BaseAlaSQLQueryableProvider extends BaseQueryableP
     return context.execute(this, () => {
       const result = alasql(this.prepareQuery(query), parameters);
       if (!result) {
-        // eslint-disable-next-line unicorn/no-useless-undefined
         return undefined;
       }
 

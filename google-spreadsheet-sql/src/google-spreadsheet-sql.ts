@@ -36,13 +36,13 @@ import { GoogleSpreadsheetSQLSymbol } from './symbols';
 
 @setBindMetadata(GoogleSpreadsheetSQLSymbol, Scope.Singleton)
 export default class GoogleSpreadsheetSQL {
-  private queryableProvider?: IQueryableProvider;
+  private queryableProvider: IQueryableProvider | undefined;
 
   constructor(@inject(LOGGING_TYPES.ILogger) private readonly logger: ILogger,
     @inject(QUERYING_TYPES.IQueryable) private readonly queryable: IQueryable) {}
 
-  private queryInternal(query: string, cacheKey?: string | boolean,
-    parameters?: ProviderParameters): unknown[][] | undefined {
+  private queryInternal(query: string, cacheKey: string | boolean | undefined,
+    parameters: ProviderParameters | undefined): unknown[][] | undefined {
     this.logger.information(`Running query '${query}'${cacheKey ? ' with cache' : ' without cache'}`);
     if (!this.queryableProvider) {
       this.queryableProvider = this.queryable.fromCurrentSpreadsheet();
