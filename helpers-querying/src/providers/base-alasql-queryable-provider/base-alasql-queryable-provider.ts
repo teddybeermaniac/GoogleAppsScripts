@@ -29,6 +29,7 @@ import { v4 } from 'uuid';
 import InvalidFromMethodError from '../../errors/invalid-from-method-error';
 import InvalidFunctionError from '../../errors/invalid-function-error';
 import InvalidIntoMethodError from '../../errors/invalid-into-method-error';
+import InvalidParameterError from '../../errors/invalid-parameter-error';
 import {
   fromMethodsSymbol,
   IAlaSQLFunctionDefinitionSymbol,
@@ -39,11 +40,13 @@ import {
 import BaseQueryableProvider from '../base-queryable-provider';
 import type ProviderType from '../provider-type';
 import type IExecutionContext from './execution-context/iexecution-context';
+import type FromMethodOptions from './from-method/from-method-options';
+import { FromMethodOptionsRuntype } from './from-method/from-method-options';
 import type IFromMethod from './from-method/ifrom-method';
-import type IFromMethodOptions from './from-method/ifrom-method-options';
 import type IAlaSQLFunction from './functions/ialasql-function';
 import type IIntoMethod from './into-method/iinto-method';
-import type IIntoMethodOptions from './into-method/iinto-method-options';
+import type IntoMethodOptions from './into-method/into-method-options';
+import { IntoMethodOptionsRuntype } from './into-method/into-method-options';
 
 @injectable()
 export default abstract class BaseAlaSQLQueryableProvider extends BaseQueryableProvider {
@@ -51,9 +54,9 @@ export default abstract class BaseAlaSQLQueryableProvider extends BaseQueryableP
 
   private static baseAlaSQLProviderInitialized = false;
 
-  private static readonly defaultFromMethodOptions: IFromMethodOptions = {};
+  private static readonly defaultFromMethodOptions: FromMethodOptions = {};
 
-  private static readonly defaultIntoMethodOptions: IIntoMethodOptions = {
+  private static readonly defaultIntoMethodOptions: IntoMethodOptions = {
     append: false,
   };
 
@@ -88,6 +91,10 @@ export default abstract class BaseAlaSQLQueryableProvider extends BaseQueryableP
           ...BaseAlaSQLQueryableProvider.defaultFromMethodOptions,
           ...options,
         };
+        if (!FromMethodOptionsRuntype.guard(mergedOptions)) {
+          throw new InvalidParameterError(method.name, 'options', mergedOptions);
+        }
+
         const data = method.callback.bind(context.provider)(tableName, mergedOptions);
         if (callback) {
           return callback(data, index, query);
@@ -113,6 +120,10 @@ export default abstract class BaseAlaSQLQueryableProvider extends BaseQueryableP
           ...BaseAlaSQLQueryableProvider.defaultIntoMethodOptions,
           ...options,
         };
+        if (!IntoMethodOptionsRuntype.guard(mergedOptions)) {
+          throw new InvalidParameterError(method.name, 'options', mergedOptions);
+        }
+
         const columnNames = columns.map((column) => column.columnid);
         method.callback.bind(context.provider)(tableName, mergedOptions, columnNames, data);
         if (callback) {

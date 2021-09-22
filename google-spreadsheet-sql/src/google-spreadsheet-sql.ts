@@ -51,7 +51,7 @@ export default class GoogleSpreadsheetSQL {
     return this.queryableProvider.queryAny(query, cacheKey, parameters);
   }
 
-  @exportMethod(true, 'query')
+  @exportMethod(true)
   public query(query: string, cacheKey?: string | boolean, parameters?: ProviderParameters):
   unknown[][] | undefined {
     if (parameters && !ProviderParametersRuntype.guard(parameters)) {

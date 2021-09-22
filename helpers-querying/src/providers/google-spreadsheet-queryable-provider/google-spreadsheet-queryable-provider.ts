@@ -32,9 +32,9 @@ import NotASpreadsheetContextError from '../../errors/not-a-spreadsheet-context-
 import { GoogleSpreadsheetQueryableProviderSymbol } from '../../symbols';
 import BaseAlaSQLQueryableProvider from '../base-alasql-queryable-provider/base-alasql-queryable-provider';
 import fromMethod from '../base-alasql-queryable-provider/from-method/from-method';
-import type IFromMethodOptions from '../base-alasql-queryable-provider/from-method/ifrom-method-options';
-import type IIntoMethodOptions from '../base-alasql-queryable-provider/into-method/iinto-method-options';
+import type FromMethodOptions from '../base-alasql-queryable-provider/from-method/from-method-options';
 import intoMethod from '../base-alasql-queryable-provider/into-method/into-method';
+import type IntoMethodOptions from '../base-alasql-queryable-provider/into-method/into-method-options';
 import type ICurrentQueryableProvider from '../icurrent-queryable-provider';
 import type IFileQueryableProvider from '../ifile-queryable-provider';
 import ProviderType from '../provider-type';
@@ -145,7 +145,7 @@ export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQuerya
   }
 
   @fromMethod('NAMEDRANGE')
-  public fromNamedRange(tableName: string, _options: IFromMethodOptions): unknown[] {
+  public fromNamedRange(tableName: string, _options: FromMethodOptions): unknown[] {
     this.logger.debug(`Getting data from named range '${tableName}'`);
     const namedRange = this.getNamedRange(tableName, true);
 
@@ -247,7 +247,7 @@ export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQuerya
   }
 
   @intoMethod('NAMEDRANGE')
-  public intoNamedRange(tableName: string, options: IIntoMethodOptions, columnNames: string[],
+  public intoNamedRange(tableName: string, options: IntoMethodOptions, columnNames: string[],
     data: unknown[]): void {
     this.logger.debug(`${options.append ? 'Appending' : 'Inserting'} data ${options.append ? 'to' : 'into'} named range '${tableName}'`);
     const namedRange = this.getNamedRange(tableName, false);

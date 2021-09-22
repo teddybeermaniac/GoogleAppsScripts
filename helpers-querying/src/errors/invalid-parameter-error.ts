@@ -19,6 +19,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export default interface IIntoMethodOptions {
-  append: boolean;
+import { JSONEx } from 'helpers-utilities';
+
+import QueryingError from './querying-error';
+
+export default class InvalidParameterError extends QueryingError {
+  constructor(public readonly method: string, public readonly parameter: string,
+    public readonly value: unknown) {
+    super(`Invalid parameter '${parameter}' to '${method}' method: ${JSONEx.stringify(value)}`);
+    this.name = 'InvalidParameterError';
+  }
 }

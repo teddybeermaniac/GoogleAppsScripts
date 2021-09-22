@@ -19,41 +19,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { bind, BuilderCallback } from 'helpers-utilities';
-import type { interfaces } from 'inversify';
+import { isMoment } from 'moment';
+import {
+  Array, InstanceOf, Null, Number, Record, Static, String, Undefined, Union, Unknown,
+} from 'runtypes';
 
-import type Currency from './currency';
-import { CurrencyRuntype } from './currency';
-import BadRateFetchResponseError from './errors/bad-rate-fetch-response-error';
-import ExchangeError from './errors/exchange-error';
-import InvalidCurrencyError from './errors/invalid-currency-error';
-import Exchange from './exchange';
-import ExchangeBuilder from './exchange-builder';
-import type IExchange from './iexchange';
-import type ProviderType from './providers/provider-type';
-import { IExchangeSymbol } from './symbols';
+export const InputRuntype = Union(
+  Unknown.withGuard(isMoment),
+  InstanceOf(Date),
+  String,
+  Number,
+  Array(Union(Number, String)),
+  Record({
+    years: Number.optional(),
+    year: Number.optional(),
+    y: Number.optional(),
+    months: Number.optional(),
+    month: Number.optional(),
+    M: Number.optional(),
+    days: Number.optional(),
+    day: Number.optional(),
+    d: Number.optional(),
+    dates: Number.optional(),
+    date: Number.optional(),
+    D: Number.optional(),
+    hours: Number.optional(),
+    hour: Number.optional(),
+    h: Number.optional(),
+    minutes: Number.optional(),
+    minute: Number.optional(),
+    m: Number.optional(),
+    seconds: Number.optional(),
+    second: Number.optional(),
+    s: Number.optional(),
+    milliseconds: Number.optional(),
+    millisecond: Number.optional(),
+    ms: Number.optional(),
+  }),
+  Null,
+  Undefined,
+);
 
-export default function addExchange(container: interfaces.Container,
-  build: BuilderCallback<ExchangeBuilder>): void {
-  const builder = new ExchangeBuilder(container);
-  build(builder);
-
-  bind(container, Exchange);
-}
-
-export const TYPES = {
-  IExchange: IExchangeSymbol,
-};
-
-export type {
-  Currency,
-  IExchange,
-};
-
-export {
-  BadRateFetchResponseError,
-  CurrencyRuntype,
-  ExchangeError,
-  InvalidCurrencyError,
-  ProviderType,
-};
+type Input = Static<typeof InputRuntype>;
+export default Input;

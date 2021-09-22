@@ -19,16 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import type IFromMethodOptions from '../providers/base-alasql-queryable-provider/from-method/ifrom-method-options';
-import type IIntoMethodOptions from '../providers/base-alasql-queryable-provider/into-method/iinto-method-options';
+import type FromMethodOptions from '../providers/base-alasql-queryable-provider/from-method/from-method-options';
+import type IntoMethodOptions from '../providers/base-alasql-queryable-provider/into-method/into-method-options';
 
 interface FromMethodCallback {
   (data: unknown[], index: number, query: unknown): unknown;
 }
 
 interface FromMethod {
-  (tableName: string, options: IFromMethodOptions, callback: FromMethodCallback, index: number,
-    query: unknown): unknown | undefined
+  (tableName: string, options: Partial<FromMethodOptions> | undefined, callback: FromMethodCallback,
+    index: number, query: unknown): unknown | undefined
 }
 
 interface ColumnDefinition {
@@ -40,8 +40,8 @@ interface IntoMethodCallback {
 }
 
 interface IntoMethod {
-  (tableName: string, options: IIntoMethodOptions, data: unknown[], columns: ColumnDefinition[],
-    callback: IntoMethodCallback): unknown | undefined;
+  (tableName: string, options: Partial<IntoMethodOptions> | undefined, data: unknown[],
+    columns: ColumnDefinition[], callback: IntoMethodCallback): unknown | undefined;
 }
 
 interface CustomFunction {

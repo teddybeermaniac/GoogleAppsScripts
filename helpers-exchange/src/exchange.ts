@@ -23,7 +23,7 @@ import { ILogger, TYPES as LOGGING_TYPES } from 'helpers-logging';
 import { Scope, setBindMetadata } from 'helpers-utilities';
 import { inject } from 'inversify';
 
-import Currency, { CurrencyRuntype } from './currency';
+import type Currency from './currency';
 import InvalidCurrencyError from './errors/invalid-currency-error';
 import type IExchange from './iexchange';
 import type IExchangeProvider from './providers/iexchange-provider';
@@ -36,10 +36,10 @@ export default class Exchange implements IExchange {
 
   convert(value: number, from: Currency, to: Currency): number {
     this.logger.debug(`Converting '${value}' from '${from}' to '${to}'`);
-    if (!CurrencyRuntype.guard(from) || !this.provider.currencyRuntype.guard(from)) {
+    if (!this.provider.currencyRuntype.guard(from)) {
       throw new InvalidCurrencyError(from);
     }
-    if (!CurrencyRuntype.guard(to) || !this.provider.currencyRuntype.guard(to)) {
+    if (!this.provider.currencyRuntype.guard(to)) {
       throw new InvalidCurrencyError(to);
     }
 
