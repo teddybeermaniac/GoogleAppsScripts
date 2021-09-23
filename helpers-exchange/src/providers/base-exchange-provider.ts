@@ -34,15 +34,10 @@ import type ProviderType from './provider-type';
 @injectable()
 export default abstract class BaseExchangeProvider<TResponse, TCurrency extends string>
 implements IExchangeProvider {
-  protected abstract readonly cacheTtl: number;
-
-  protected abstract readonly responseRuntype: RuntypeBase<TResponse>;
-
-  public abstract readonly currencyRuntype: RuntypeBase<TCurrency>;
-
-  public abstract readonly providerType: ProviderType;
-
-  constructor(protected readonly logger: ILogger, protected readonly cache: ICache) {}
+  constructor(protected readonly logger: ILogger, protected readonly cache: ICache,
+    public readonly providerType: ProviderType, private readonly cacheTtl: number,
+    private readonly responseRuntype: RuntypeBase<TResponse>,
+    public readonly currencyRuntype: RuntypeBase<TCurrency>) {}
 
   protected abstract getUrl(from: Currency, to: Currency): string;
 

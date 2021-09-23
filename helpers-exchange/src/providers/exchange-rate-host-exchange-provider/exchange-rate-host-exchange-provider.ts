@@ -33,18 +33,10 @@ import ExchangeRateHostResponse, { ExchangeRateHostResponseRuntype } from './mod
 @setBindMetadata(IExchangeProviderSymbol, Scope.Singleton)
 export default class ExchangeRateHostExchangeProvider
   extends BaseExchangeProvider<ExchangeRateHostResponse, ExchangeRateHostCurrency> {
-  protected readonly cacheTtl = 3600;
-
-  protected readonly responseRuntype = ExchangeRateHostResponseRuntype;
-
-  public readonly currencyRuntype = ExchangeRateHostCurrencyRuntype;
-
-  public readonly providerType = ProviderType.ExchangeRateHost;
-
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger,
     @inject(CACHING_TYPES.ICache) cache: ICache) {
-    super(logger, cache);
+    super(logger, cache, ProviderType.ExchangeRateHost, 3600, ExchangeRateHostResponseRuntype,
+      ExchangeRateHostCurrencyRuntype);
   }
 
   protected getUrl(from: ExchangeRateHostCurrency, _to: ExchangeRateHostCurrency): string {

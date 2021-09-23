@@ -36,13 +36,10 @@ import ProviderType from '../provider-type';
 export default class MemoryQueryableProvider extends BaseAlaSQLQueryableProvider {
   private readonly storage: Record<string, unknown[]> = {};
 
-  public readonly providerType = ProviderType.Memory;
-
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger,
     @inject(CACHING_TYPES.ICache) cache: ICache,
     @inject(UTILITIES_TYPES.Container) container: interfaces.Container) {
-    super(logger, cache, container);
+    super(logger, cache, container, ProviderType.Memory);
   }
 
   @fromMethod('MEMORY')

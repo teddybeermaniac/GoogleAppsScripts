@@ -60,10 +60,9 @@ export default abstract class BaseAlaSQLQueryableProvider extends BaseQueryableP
     append: false,
   };
 
-  public abstract get providerType(): ProviderType;
-
-  constructor(logger: ILogger, cache: ICache, private readonly container: interfaces.Container) {
-    super(logger, cache);
+  constructor(logger: ILogger, cache: ICache, private readonly container: interfaces.Container,
+    public readonly providerType: ProviderType) {
+    super(logger, cache, providerType);
 
     if (!BaseAlaSQLQueryableProvider.alaSQLProviderInitialized[this.constructor.name]) {
       this.addFromMethods();

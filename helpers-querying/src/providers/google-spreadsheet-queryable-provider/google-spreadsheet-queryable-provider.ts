@@ -48,8 +48,6 @@ export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQuerya
 
   private initialized = false;
 
-  public readonly providerType = ProviderType.GoogleSpreadsheet;
-
   private get spreadsheet(): GoogleAppsScript.Spreadsheet.Spreadsheet {
     if (!this.initialized || !this.spreadsheetInternal) {
       throw new NotInitializedError('GoogleSpreadsheetQueryableProvider');
@@ -58,11 +56,10 @@ export default class GoogleSpreadsheetQueryableProvider extends BaseAlaSQLQuerya
     return this.spreadsheetInternal;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
   constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger,
     @inject(CACHING_TYPES.ICache) cache: ICache,
     @inject(UTILITIES_TYPES.Container) container: interfaces.Container) {
-    super(logger, cache, container);
+    super(logger, cache, container, ProviderType.GoogleSpreadsheet);
   }
 
   private getLastDataRow(sheet: GoogleAppsScript.Spreadsheet.Sheet, originRow: number,

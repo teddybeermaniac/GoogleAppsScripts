@@ -31,13 +31,12 @@ import type ProviderType from './provider-type';
 import type QueryCallback from './query-callback';
 
 export default abstract class BaseQueryableProvider implements IQueryableProvider {
-  public abstract get providerType(): ProviderType;
-
   protected abstract runQuery<TRow>(query: string, parameters: unknown): TRow[] | undefined;
 
   protected abstract runQueryAny(query: string, parameters: unknown): unknown[][] | undefined;
 
-  constructor(protected readonly logger: ILogger, private readonly cache: ICache) {}
+  constructor(protected readonly logger: ILogger, private readonly cache: ICache,
+    public readonly providerType: ProviderType) {}
 
   private getCache<TValue>(query: string, cacheKey: CacheKey, parameters: Parameters | undefined):
   TValue | undefined {

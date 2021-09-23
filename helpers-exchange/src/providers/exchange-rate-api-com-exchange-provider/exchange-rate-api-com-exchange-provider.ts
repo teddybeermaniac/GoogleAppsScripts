@@ -34,19 +34,12 @@ import ExchangeRateApiComResponse, { ExchangeRateApiComResponseRuntype } from '.
 @setBindMetadata(IExchangeProviderSymbol, Scope.Singleton)
 export default class ExchangeRateApiComExchangeProvider
   extends BaseExchangeProvider<ExchangeRateApiComResponse, ExchangeRateApiComCurrency> {
-  protected readonly cacheTtl = 86_400;
-
-  protected readonly responseRuntype = ExchangeRateApiComResponseRuntype;
-
-  public readonly currencyRuntype = ExchangeRateApiComCurrencyRuntype;
-
-  public readonly providerType = ProviderType.ExchangeRateApiCom;
-
   constructor(@inject(LOGGING_TYPES.ILogger) logger: ILogger,
     @inject(CACHING_TYPES.ICache) cache: ICache,
     @inject(ExchangeRateApiComExchangeProviderSettingsSymbol) private readonly settings:
     ExchangeRateApiComExchangeProviderSettings) {
-    super(logger, cache);
+    super(logger, cache, ProviderType.ExchangeRateApiCom, 86_400, ExchangeRateApiComResponseRuntype,
+      ExchangeRateApiComCurrencyRuntype);
   }
 
   protected getUrl(from: ExchangeRateApiComCurrency, _to: ExchangeRateApiComCurrency): string {
